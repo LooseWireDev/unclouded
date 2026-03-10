@@ -6,4 +6,5 @@ dist/
 .env.*
 !.env.example
 drizzle/
+.wrangler/
 *.log

@@ -16,6 +16,7 @@ import {
   VECTOR_QUERIES,
   EMBEDDING_DIMENSIONS,
 } from "./schema";
+import type { TagType } from "./schema";
 import type { DrizzleDB, TursoClient } from "./client";
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -35,14 +36,9 @@ export async function listApps(
   const limit = Math.min(rawLimit, 100);
   const offset = (page - 1) * limit;
 
-  let query = db
-    .select()
-    .from(apps)
-    .limit(limit)
-    .offset(offset)
-    .orderBy(apps.name);
+  const whereClause = (() => {
+    if (!tagSlugs?.length) return undefined;
 
-  if (tagSlugs?.length) {
     const matchingTagIds = db
       .select({ id: tags.id })
       .from(tags)
@@ -55,10 +51,16 @@ export async function listApps(
       .groupBy(appTags.appId)
       .having(sql`count(distinct ${appTags.tagId}) = ${tagSlugs.length}`);
 
-    query = query.where(inArray(apps.id, appIdsWithAllTags));
-  }
+    return inArray(apps.id, appIdsWithAllTags);
+  })();
 
-  return query;
+  return db
+    .select()
+    .from(apps)
+    .where(whereClause)
+    .limit(limit)
+    .offset(offset)
+    .orderBy(apps.name);
 }
 
 export async function getAppBySlug(db: DrizzleDB, slug: string) {
@@ -163,7 +165,7 @@ export async function listTags(db: DrizzleDB) {
   );
 }
 
-export async function listTagsByType(db: DrizzleDB, type: string) {
+export async function listTagsByType(db: DrizzleDB, type: TagType) {
   return db
     .select()
     .from(tags)
