@@ -1,9 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/')({
-  component: IndexPage,
-})
+export const Route = createFileRoute("/")({
+	component: IndexPage,
+});
 
 function IndexPage() {
-  return <h1>Unclouded</h1>
+	return <h1>Unclouded</h1>;
 }

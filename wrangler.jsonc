@@ -1,11 +1,11 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "unclouded",
-  "compatibility_date": "2025-09-02",
-  "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry",
-  "vars": {
-    "TURSO_DATABASE_URL": "",
-    "TURSO_AUTH_TOKEN": ""
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "unclouded",
+	"compatibility_date": "2025-09-02",
+	"compatibility_flags": ["nodejs_compat"],
+	"main": "@tanstack/react-start/server-entry",
+	"vars": {
+		"TURSO_DATABASE_URL": "",
+		"TURSO_AUTH_TOKEN": ""
+	}
 }

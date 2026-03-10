@@ -1,51 +1,55 @@
 {
-  "name": "unclouded",
-  "version": "0.1.0",
-  "description": "Privacy-focused app discovery and comparison",
-  "scripts": {
-    "dev": "vite dev",
-    "build": "vite build && tsc --noEmit",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
-    "db:init-vectors": "tsx db/init.ts",
-    "preview": "vite preview",
-    "deploy": "pnpm run build && wrangler deploy",
-    "cf-typegen": "wrangler types"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "packageManager": "pnpm@10.29.2",
-  "dependencies": {
-    "@libsql/client": "^0.17.0",
-    "@tanstack/react-router": "^1.166.7",
-    "@tanstack/react-start": "^1.166.7",
-    "drizzle-orm": "^0.45.1",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
-  },
-  "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.27.0",
-    "@types/node": "^25.4.0",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.4",
-    "dotenv": "^17.3.1",
-    "drizzle-kit": "^0.31.9",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vite-tsconfig-paths": "^6.1.1",
-    "wrangler": "^4.72.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "workerd",
-      "sharp"
-    ]
-  },
-  "type": "module"
+	"name": "unclouded",
+	"version": "0.1.0",
+	"description": "Privacy-focused app discovery and comparison",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build && tsc --noEmit",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate",
+		"db:push": "drizzle-kit push",
+		"db:studio": "drizzle-kit studio",
+		"db:init-vectors": "tsx db/init.ts",
+		"preview": "vite preview",
+		"deploy": "pnpm run build && wrangler deploy",
+		"cf-typegen": "wrangler types",
+		"lint": "biome check .",
+		"format": "biome format --write .",
+		"typecheck": "tsc --noEmit"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"packageManager": "pnpm@10.29.2",
+	"dependencies": {
+		"@libsql/client": "^0.17.0",
+		"@tanstack/react-router": "^1.166.7",
+		"@tanstack/react-start": "^1.166.7",
+		"drizzle-orm": "^0.45.1",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.6",
+		"@cloudflare/vite-plugin": "^1.27.0",
+		"@types/node": "^25.4.0",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^5.1.4",
+		"dotenv": "^17.3.1",
+		"drizzle-kit": "^0.31.9",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3",
+		"vite": "^7.3.1",
+		"vite-tsconfig-paths": "^6.1.1",
+		"wrangler": "^4.72.0"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"esbuild",
+			"workerd",
+			"sharp"
+		]
+	},
+	"type": "module"
 }
