@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <rect width="120" height="120" rx="26" fill="#1A1A1A"/>
+  <line x1="18" y1="72" x2="102" y2="72" stroke="#B89030" stroke-width="2.5" stroke-linecap="round"/>
+  <clipPath id="h"><rect x="0" y="0" width="120" height="72"/></clipPath>
+  <circle cx="60" cy="72" r="22" fill="#EDD06A" clip-path="url(#h)"/>
+  <line x1="60" y1="44" x2="60" y2="35" stroke="#F5E090" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="76" y1="48" x2="81" y2="41" stroke="#F5E090" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="44" y1="48" x2="39" y2="41" stroke="#F5E090" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="84" y1="62" x2="92" y2="58" stroke="#F5E090" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="36" y1="62" x2="28" y2="58" stroke="#F5E090" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
