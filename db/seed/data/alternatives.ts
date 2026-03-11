@@ -14,7 +14,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "gmail",
 		appSlug: "proton-mail",
-		relationshipType: "direct",
+				relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "gmail",
@@ -24,6 +24,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "gmail",
 		appSlug: "tuta-mail",
+		appPackageName: "de.tutao.tutanota",
 		relationshipType: "direct",
 	},
 	{
@@ -59,7 +60,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "outlook",
 		appSlug: "proton-mail",
-		relationshipType: "direct",
+				relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "outlook",
@@ -69,6 +70,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "outlook",
 		appSlug: "tuta-mail",
+		appPackageName: "de.tutao.tutanota",
 		relationshipType: "direct",
 	},
 	{
@@ -104,7 +106,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "yahoo-mail",
 		appSlug: "proton-mail",
-		relationshipType: "direct",
+				relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "yahoo-mail",
@@ -114,6 +116,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "yahoo-mail",
 		appSlug: "tuta-mail",
+		appPackageName: "de.tutao.tutanota",
 		relationshipType: "direct",
 	},
 	{
@@ -149,7 +152,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "icloud-mail",
 		appSlug: "proton-mail",
-		relationshipType: "direct",
+				relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "icloud-mail",
@@ -159,6 +162,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "icloud-mail",
 		appSlug: "tuta-mail",
+		appPackageName: "de.tutao.tutanota",
 		relationshipType: "direct",
 	},
 	{
@@ -194,16 +198,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-photos",
 		appSlug: "ente-photos",
+		appPackageName: "io.ente.photos",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-photos",
 		appSlug: "proton-drive",
+		appPackageName: "me.proton.android.drive",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-photos",
 		appSlug: "immich",
+		appPackageName: "app.alextran.immich",
 		relationshipType: "direct",
 	},
 	{
@@ -234,16 +241,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-photos",
 		appSlug: "ente-photos",
+		appPackageName: "io.ente.photos",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "apple-photos",
 		appSlug: "proton-drive",
+		appPackageName: "me.proton.android.drive",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "apple-photos",
 		appSlug: "immich",
+		appPackageName: "app.alextran.immich",
 		relationshipType: "direct",
 	},
 	{
@@ -274,16 +284,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "amazon-photos",
 		appSlug: "ente-photos",
+		appPackageName: "io.ente.photos",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "amazon-photos",
 		appSlug: "proton-drive",
+		appPackageName: "me.proton.android.drive",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "amazon-photos",
 		appSlug: "immich",
+		appPackageName: "app.alextran.immich",
 		relationshipType: "direct",
 	},
 	{
@@ -314,16 +327,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "dropbox",
 		appSlug: "ente-photos",
+		appPackageName: "io.ente.photos",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "dropbox",
 		appSlug: "proton-drive",
+		appPackageName: "me.proton.android.drive",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "dropbox",
 		appSlug: "immich",
+		appPackageName: "app.alextran.immich",
 		relationshipType: "direct",
 	},
 	{
@@ -429,6 +445,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "chrome",
 		appSlug: "brave",
+		appPackageName: "com.brave.browser",
 		relationshipType: "direct",
 	},
 	{
@@ -439,6 +456,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "chrome",
 		appSlug: "firefox",
+		appPackageName: "org.mozilla.firefox",
 		relationshipType: "direct",
 	},
 	{
@@ -459,6 +477,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "chrome",
 		appSlug: "vivaldi",
+		appPackageName: "com.vivaldi.browser",
 		relationshipType: "direct",
 	},
 	{
@@ -489,6 +508,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "chrome",
 		appSlug: "duckduckgo-browser",
+		appPackageName: "com.duckduckgo.mobile.android",
 		relationshipType: "direct",
 	},
 	{
@@ -504,6 +524,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "safari",
 		appSlug: "brave",
+		appPackageName: "com.brave.browser",
 		relationshipType: "direct",
 	},
 	{
@@ -514,6 +535,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "safari",
 		appSlug: "firefox",
+		appPackageName: "org.mozilla.firefox",
 		relationshipType: "direct",
 	},
 	{
@@ -534,6 +556,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "safari",
 		appSlug: "vivaldi",
+		appPackageName: "com.vivaldi.browser",
 		relationshipType: "direct",
 	},
 	{
@@ -564,6 +587,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "safari",
 		appSlug: "duckduckgo-browser",
+		appPackageName: "com.duckduckgo.mobile.android",
 		relationshipType: "direct",
 	},
 	{
@@ -579,6 +603,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "edge",
 		appSlug: "brave",
+		appPackageName: "com.brave.browser",
 		relationshipType: "direct",
 	},
 	{
@@ -589,6 +614,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "edge",
 		appSlug: "firefox",
+		appPackageName: "org.mozilla.firefox",
 		relationshipType: "direct",
 	},
 	{
@@ -609,6 +635,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "edge",
 		appSlug: "vivaldi",
+		appPackageName: "com.vivaldi.browser",
 		relationshipType: "direct",
 	},
 	{
@@ -639,6 +666,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "edge",
 		appSlug: "duckduckgo-browser",
+		appPackageName: "com.duckduckgo.mobile.android",
 		relationshipType: "direct",
 	},
 	{
@@ -654,6 +682,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "opera",
 		appSlug: "brave",
+		appPackageName: "com.brave.browser",
 		relationshipType: "direct",
 	},
 	{
@@ -664,6 +693,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "opera",
 		appSlug: "firefox",
+		appPackageName: "org.mozilla.firefox",
 		relationshipType: "direct",
 	},
 	{
@@ -684,6 +714,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "opera",
 		appSlug: "vivaldi",
+		appPackageName: "com.vivaldi.browser",
 		relationshipType: "direct",
 	},
 	{
@@ -714,36 +745,43 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "opera",
 		appSlug: "duckduckgo-browser",
+		appPackageName: "com.duckduckgo.mobile.android",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "whatsapp",
 		appSlug: "signal",
+		appPackageName: "org.thoughtcrime.securesms",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "whatsapp",
 		appSlug: "simplex-chat",
+		appPackageName: "chat.simplex.app",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "whatsapp",
 		appSlug: "session",
+		appPackageName: "network.loki.messenger.fdroid",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "whatsapp",
 		appSlug: "threema",
+		appPackageName: "ch.threema.app.libre",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "whatsapp",
 		appSlug: "delta-chat",
+		appPackageName: "com.b44t.messenger",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "whatsapp",
 		appSlug: "briar",
+		appPackageName: "org.briarproject.briar.android",
 		relationshipType: "direct",
 	},
 	{
@@ -754,6 +792,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "whatsapp",
 		appSlug: "molly",
+		appPackageName: "im.molly.app",
 		relationshipType: "direct",
 	},
 	{
@@ -764,31 +803,37 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "messenger",
 		appSlug: "signal",
+		appPackageName: "org.thoughtcrime.securesms",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "messenger",
 		appSlug: "simplex-chat",
+		appPackageName: "chat.simplex.app",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "messenger",
 		appSlug: "session",
+		appPackageName: "network.loki.messenger.fdroid",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "messenger",
 		appSlug: "threema",
+		appPackageName: "ch.threema.app.libre",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "messenger",
 		appSlug: "delta-chat",
+		appPackageName: "com.b44t.messenger",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "messenger",
 		appSlug: "briar",
+		appPackageName: "org.briarproject.briar.android",
 		relationshipType: "direct",
 	},
 	{
@@ -799,6 +844,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "messenger",
 		appSlug: "molly",
+		appPackageName: "im.molly.app",
 		relationshipType: "direct",
 	},
 	{
@@ -809,31 +855,37 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "telegram",
 		appSlug: "signal",
+		appPackageName: "org.thoughtcrime.securesms",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "telegram",
 		appSlug: "simplex-chat",
+		appPackageName: "chat.simplex.app",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "telegram",
 		appSlug: "session",
+		appPackageName: "network.loki.messenger.fdroid",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "telegram",
 		appSlug: "threema",
+		appPackageName: "ch.threema.app.libre",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "telegram",
 		appSlug: "delta-chat",
+		appPackageName: "com.b44t.messenger",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "telegram",
 		appSlug: "briar",
+		appPackageName: "org.briarproject.briar.android",
 		relationshipType: "direct",
 	},
 	{
@@ -844,6 +896,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "telegram",
 		appSlug: "molly",
+		appPackageName: "im.molly.app",
 		relationshipType: "direct",
 	},
 	{
@@ -854,31 +907,37 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "imessage",
 		appSlug: "signal",
+		appPackageName: "org.thoughtcrime.securesms",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "imessage",
 		appSlug: "simplex-chat",
+		appPackageName: "chat.simplex.app",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "imessage",
 		appSlug: "session",
+		appPackageName: "network.loki.messenger.fdroid",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "imessage",
 		appSlug: "threema",
+		appPackageName: "ch.threema.app.libre",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "imessage",
 		appSlug: "delta-chat",
+		appPackageName: "com.b44t.messenger",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "imessage",
 		appSlug: "briar",
+		appPackageName: "org.briarproject.briar.android",
 		relationshipType: "direct",
 	},
 	{
@@ -889,6 +948,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "imessage",
 		appSlug: "molly",
+		appPackageName: "im.molly.app",
 		relationshipType: "direct",
 	},
 	{
@@ -899,31 +959,37 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-messages",
 		appSlug: "signal",
+		appPackageName: "org.thoughtcrime.securesms",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-messages",
 		appSlug: "simplex-chat",
+		appPackageName: "chat.simplex.app",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-messages",
 		appSlug: "session",
+		appPackageName: "network.loki.messenger.fdroid",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-messages",
 		appSlug: "threema",
+		appPackageName: "ch.threema.app.libre",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-messages",
 		appSlug: "delta-chat",
+		appPackageName: "com.b44t.messenger",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-messages",
 		appSlug: "briar",
+		appPackageName: "org.briarproject.briar.android",
 		relationshipType: "direct",
 	},
 	{
@@ -934,6 +1000,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-messages",
 		appSlug: "molly",
+		appPackageName: "im.molly.app",
 		relationshipType: "direct",
 	},
 	{
@@ -944,6 +1011,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-keep",
 		appSlug: "standard-notes",
+		appPackageName: "com.standardnotes",
 		relationshipType: "direct",
 	},
 	{
@@ -954,6 +1022,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-keep",
 		appSlug: "notesnook",
+		appPackageName: "com.streetwriters.notesnook",
 		relationshipType: "direct",
 	},
 	{
@@ -964,6 +1033,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-keep",
 		appSlug: "logseq",
+		appPackageName: "com.logseq.app",
 		relationshipType: "direct",
 	},
 	{
@@ -974,6 +1044,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-keep",
 		appSlug: "nextcloud-notes",
+		appPackageName: "it.niedermann.owncloud.notes",
 		relationshipType: "direct",
 	},
 	{
@@ -989,11 +1060,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-keep",
 		appSlug: "joplin",
+		appPackageName: "net.cozic.joplin",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "apple-notes",
 		appSlug: "standard-notes",
+		appPackageName: "com.standardnotes",
 		relationshipType: "direct",
 	},
 	{
@@ -1004,6 +1077,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-notes",
 		appSlug: "notesnook",
+		appPackageName: "com.streetwriters.notesnook",
 		relationshipType: "direct",
 	},
 	{
@@ -1014,6 +1088,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-notes",
 		appSlug: "logseq",
+		appPackageName: "com.logseq.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1024,6 +1099,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-notes",
 		appSlug: "nextcloud-notes",
+		appPackageName: "it.niedermann.owncloud.notes",
 		relationshipType: "direct",
 	},
 	{
@@ -1039,11 +1115,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-notes",
 		appSlug: "joplin",
+		appPackageName: "net.cozic.joplin",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "evernote",
 		appSlug: "standard-notes",
+		appPackageName: "com.standardnotes",
 		relationshipType: "direct",
 	},
 	{
@@ -1054,6 +1132,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "evernote",
 		appSlug: "notesnook",
+		appPackageName: "com.streetwriters.notesnook",
 		relationshipType: "direct",
 	},
 	{
@@ -1064,6 +1143,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "evernote",
 		appSlug: "logseq",
+		appPackageName: "com.logseq.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1074,6 +1154,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "evernote",
 		appSlug: "nextcloud-notes",
+		appPackageName: "it.niedermann.owncloud.notes",
 		relationshipType: "direct",
 	},
 	{
@@ -1089,11 +1170,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "evernote",
 		appSlug: "joplin",
+		appPackageName: "net.cozic.joplin",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "notion",
 		appSlug: "standard-notes",
+		appPackageName: "com.standardnotes",
 		relationshipType: "direct",
 	},
 	{
@@ -1104,6 +1187,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "notion",
 		appSlug: "notesnook",
+		appPackageName: "com.streetwriters.notesnook",
 		relationshipType: "direct",
 	},
 	{
@@ -1114,6 +1198,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "notion",
 		appSlug: "logseq",
+		appPackageName: "com.logseq.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1124,6 +1209,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "notion",
 		appSlug: "nextcloud-notes",
+		appPackageName: "it.niedermann.owncloud.notes",
 		relationshipType: "direct",
 	},
 	{
@@ -1139,6 +1225,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "notion",
 		appSlug: "joplin",
+		appPackageName: "net.cozic.joplin",
 		relationshipType: "direct",
 	},
 	{
@@ -1149,11 +1236,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-drive",
 		appSlug: "nextcloud",
+		appPackageName: "com.nextcloud.client",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-drive",
 		appSlug: "proton-drive",
+		appPackageName: "me.proton.android.drive",
 		relationshipType: "direct",
 	},
 	{
@@ -1174,6 +1263,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-drive",
 		appSlug: "cryptomator",
+		appPackageName: "org.cryptomator.lite",
 		relationshipType: "direct",
 	},
 	{
@@ -1184,6 +1274,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-drive",
 		appSlug: "syncthing",
+		appPackageName: "com.github.catfriend1.syncthingfork",
 		relationshipType: "direct",
 	},
 	{
@@ -1194,11 +1285,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "onedrive",
 		appSlug: "nextcloud",
+		appPackageName: "com.nextcloud.client",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "onedrive",
 		appSlug: "proton-drive",
+		appPackageName: "me.proton.android.drive",
 		relationshipType: "direct",
 	},
 	{
@@ -1219,6 +1312,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "onedrive",
 		appSlug: "cryptomator",
+		appPackageName: "org.cryptomator.lite",
 		relationshipType: "direct",
 	},
 	{
@@ -1229,6 +1323,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "onedrive",
 		appSlug: "syncthing",
+		appPackageName: "com.github.catfriend1.syncthingfork",
 		relationshipType: "direct",
 	},
 	{
@@ -1239,11 +1334,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "icloud",
 		appSlug: "nextcloud",
+		appPackageName: "com.nextcloud.client",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "icloud",
 		appSlug: "proton-drive",
+		appPackageName: "me.proton.android.drive",
 		relationshipType: "direct",
 	},
 	{
@@ -1264,6 +1361,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "icloud",
 		appSlug: "cryptomator",
+		appPackageName: "org.cryptomator.lite",
 		relationshipType: "direct",
 	},
 	{
@@ -1274,26 +1372,25 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "icloud",
 		appSlug: "syncthing",
+		appPackageName: "com.github.catfriend1.syncthingfork",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-passwords",
 		appSlug: "bitwarden",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "google-passwords",
-		appSlug: "1password",
+		appPackageName: "com.x8bit.bitwarden",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-passwords",
 		appSlug: "proton-pass",
+		appPackageName: "proton.android.pass",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-passwords",
 		appSlug: "keepass",
+		appPackageName: "com.android.keepass",
 		relationshipType: "direct",
 	},
 	{
@@ -1304,6 +1401,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-passwords",
 		appSlug: "aliasvault",
+		appPackageName: "net.aliasvault.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1319,21 +1417,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "samsung-pass",
 		appSlug: "bitwarden",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "samsung-pass",
-		appSlug: "1password",
+		appPackageName: "com.x8bit.bitwarden",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "samsung-pass",
 		appSlug: "proton-pass",
+		appPackageName: "proton.android.pass",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "samsung-pass",
 		appSlug: "keepass",
+		appPackageName: "com.android.keepass",
 		relationshipType: "direct",
 	},
 	{
@@ -1344,6 +1440,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "samsung-pass",
 		appSlug: "aliasvault",
+		appPackageName: "net.aliasvault.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1359,21 +1456,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "lastpass",
 		appSlug: "bitwarden",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "lastpass",
-		appSlug: "1password",
+		appPackageName: "com.x8bit.bitwarden",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "lastpass",
 		appSlug: "proton-pass",
+		appPackageName: "proton.android.pass",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "lastpass",
 		appSlug: "keepass",
+		appPackageName: "com.android.keepass",
 		relationshipType: "direct",
 	},
 	{
@@ -1384,6 +1479,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "lastpass",
 		appSlug: "aliasvault",
+		appPackageName: "net.aliasvault.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1399,21 +1495,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-passwords",
 		appSlug: "bitwarden",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "apple-passwords",
-		appSlug: "1password",
+		appPackageName: "com.x8bit.bitwarden",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "apple-passwords",
 		appSlug: "proton-pass",
+		appPackageName: "proton.android.pass",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "apple-passwords",
 		appSlug: "keepass",
+		appPackageName: "com.android.keepass",
 		relationshipType: "direct",
 	},
 	{
@@ -1424,6 +1518,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-passwords",
 		appSlug: "aliasvault",
+		appPackageName: "net.aliasvault.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1439,21 +1534,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "nordpass",
 		appSlug: "bitwarden",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "nordpass",
-		appSlug: "1password",
+		appPackageName: "com.x8bit.bitwarden",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "nordpass",
 		appSlug: "proton-pass",
+		appPackageName: "proton.android.pass",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "nordpass",
 		appSlug: "keepass",
+		appPackageName: "com.android.keepass",
 		relationshipType: "direct",
 	},
 	{
@@ -1464,6 +1557,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "nordpass",
 		appSlug: "aliasvault",
+		appPackageName: "net.aliasvault.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1479,21 +1573,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "dashlane",
 		appSlug: "bitwarden",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "dashlane",
-		appSlug: "1password",
+		appPackageName: "com.x8bit.bitwarden",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "dashlane",
 		appSlug: "proton-pass",
+		appPackageName: "proton.android.pass",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "dashlane",
 		appSlug: "keepass",
+		appPackageName: "com.android.keepass",
 		relationshipType: "direct",
 	},
 	{
@@ -1504,6 +1596,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "dashlane",
 		appSlug: "aliasvault",
+		appPackageName: "net.aliasvault.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1519,16 +1612,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-auth",
 		appSlug: "ente-auth",
+		appPackageName: "io.ente.auth",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-auth",
 		appSlug: "aegis-auth",
+		appPackageName: "com.beemdevelopment.aegis",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-auth",
 		appSlug: "proton-auth",
+		appPackageName: "proton.android.authenticator.fdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -1539,11 +1635,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-auth",
 		appSlug: "yubico-authenticator",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "google-auth",
-		appSlug: "1password",
+		appPackageName: "com.yubico.yubioath",
 		relationshipType: "direct",
 	},
 	{
@@ -1554,6 +1646,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-auth",
 		appSlug: "stratum",
+		appPackageName: "com.stratumauth.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1564,16 +1657,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "microsoft-auth",
 		appSlug: "ente-auth",
+		appPackageName: "io.ente.auth",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "microsoft-auth",
 		appSlug: "aegis-auth",
+		appPackageName: "com.beemdevelopment.aegis",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "microsoft-auth",
 		appSlug: "proton-auth",
+		appPackageName: "proton.android.authenticator.fdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -1584,11 +1680,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "microsoft-auth",
 		appSlug: "yubico-authenticator",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "microsoft-auth",
-		appSlug: "1password",
+		appPackageName: "com.yubico.yubioath",
 		relationshipType: "direct",
 	},
 	{
@@ -1599,6 +1691,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "microsoft-auth",
 		appSlug: "stratum",
+		appPackageName: "com.stratumauth.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1609,16 +1702,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "authy",
 		appSlug: "ente-auth",
+		appPackageName: "io.ente.auth",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "authy",
 		appSlug: "aegis-auth",
+		appPackageName: "com.beemdevelopment.aegis",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "authy",
 		appSlug: "proton-auth",
+		appPackageName: "proton.android.authenticator.fdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -1629,11 +1725,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "authy",
 		appSlug: "yubico-authenticator",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "authy",
-		appSlug: "1password",
+		appPackageName: "com.yubico.yubioath",
 		relationshipType: "direct",
 	},
 	{
@@ -1644,6 +1736,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "authy",
 		appSlug: "stratum",
+		appPackageName: "com.stratumauth.app",
 		relationshipType: "direct",
 	},
 	{
@@ -1654,6 +1747,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-calendar",
 		appSlug: "proton-calendar",
+		appPackageName: "me.proton.android.calendar",
 		relationshipType: "direct",
 	},
 	{
@@ -1664,6 +1758,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-calendar",
 		appSlug: "tuta-calendar",
+		appPackageName: "de.tutao.calendar",
 		relationshipType: "direct",
 	},
 	{
@@ -1679,6 +1774,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "outlook-calendar",
 		appSlug: "proton-calendar",
+		appPackageName: "me.proton.android.calendar",
 		relationshipType: "direct",
 	},
 	{
@@ -1689,6 +1785,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "outlook-calendar",
 		appSlug: "tuta-calendar",
+		appPackageName: "de.tutao.calendar",
 		relationshipType: "direct",
 	},
 	{
@@ -1704,6 +1801,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-calendar",
 		appSlug: "proton-calendar",
+		appPackageName: "me.proton.android.calendar",
 		relationshipType: "direct",
 	},
 	{
@@ -1714,6 +1812,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-calendar",
 		appSlug: "tuta-calendar",
+		appPackageName: "de.tutao.calendar",
 		relationshipType: "direct",
 	},
 	{
@@ -1734,16 +1833,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "play-store",
 		appSlug: "f-droid",
+		appPackageName: "org.fdroid.fdroid",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "play-store",
 		appSlug: "aurora-store",
+		appPackageName: "com.aurora.store",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "play-store",
 		appSlug: "obtainium",
+		appPackageName: "dev.imranr.obtainium.fdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -1754,26 +1856,31 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "app-store",
 		appSlug: "f-droid",
+		appPackageName: "org.fdroid.fdroid",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "app-store",
 		appSlug: "aurora-store",
+		appPackageName: "com.aurora.store",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "app-store",
 		appSlug: "obtainium",
+		appPackageName: "dev.imranr.obtainium.fdroid",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "no-vpn",
 		appSlug: "mullvad-vpn",
+		appPackageName: "net.mullvad.mullvadvpn",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "no-vpn",
 		appSlug: "proton-vpn",
+		appPackageName: "ch.protonvpn.android",
 		relationshipType: "direct",
 	},
 	{
@@ -1784,11 +1891,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "no-vpn",
 		appSlug: "ivpn",
+		appPackageName: "net.ivpn.client",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "no-vpn",
 		appSlug: "windscribe-vpn",
+		appPackageName: "com.windscribe.vpn",
 		relationshipType: "direct",
 	},
 	{
@@ -1814,11 +1923,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "no-vpn",
 		appSlug: "nymvpn",
+		appPackageName: "net.nymtech.nymvpn",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "no-vpn",
 		appSlug: "tor-vpn",
+		appPackageName: "org.torproject.vpn",
 		relationshipType: "direct",
 	},
 	{
@@ -1829,11 +1940,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "nordvpn",
 		appSlug: "mullvad-vpn",
+		appPackageName: "net.mullvad.mullvadvpn",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "nordvpn",
 		appSlug: "proton-vpn",
+		appPackageName: "ch.protonvpn.android",
 		relationshipType: "direct",
 	},
 	{
@@ -1844,11 +1957,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "nordvpn",
 		appSlug: "ivpn",
+		appPackageName: "net.ivpn.client",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "nordvpn",
 		appSlug: "windscribe-vpn",
+		appPackageName: "com.windscribe.vpn",
 		relationshipType: "direct",
 	},
 	{
@@ -1874,11 +1989,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "nordvpn",
 		appSlug: "nymvpn",
+		appPackageName: "net.nymtech.nymvpn",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "nordvpn",
 		appSlug: "tor-vpn",
+		appPackageName: "org.torproject.vpn",
 		relationshipType: "direct",
 	},
 	{
@@ -1889,11 +2006,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "expressvpn",
 		appSlug: "mullvad-vpn",
+		appPackageName: "net.mullvad.mullvadvpn",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "expressvpn",
 		appSlug: "proton-vpn",
+		appPackageName: "ch.protonvpn.android",
 		relationshipType: "direct",
 	},
 	{
@@ -1904,11 +2023,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "expressvpn",
 		appSlug: "ivpn",
+		appPackageName: "net.ivpn.client",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "expressvpn",
 		appSlug: "windscribe-vpn",
+		appPackageName: "com.windscribe.vpn",
 		relationshipType: "direct",
 	},
 	{
@@ -1934,11 +2055,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "expressvpn",
 		appSlug: "nymvpn",
+		appPackageName: "net.nymtech.nymvpn",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "expressvpn",
 		appSlug: "tor-vpn",
+		appPackageName: "org.torproject.vpn",
 		relationshipType: "direct",
 	},
 	{
@@ -1949,11 +2072,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "surfshark",
 		appSlug: "mullvad-vpn",
+		appPackageName: "net.mullvad.mullvadvpn",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "surfshark",
 		appSlug: "proton-vpn",
+		appPackageName: "ch.protonvpn.android",
 		relationshipType: "direct",
 	},
 	{
@@ -1964,11 +2089,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "surfshark",
 		appSlug: "ivpn",
+		appPackageName: "net.ivpn.client",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "surfshark",
 		appSlug: "windscribe-vpn",
+		appPackageName: "com.windscribe.vpn",
 		relationshipType: "direct",
 	},
 	{
@@ -1994,11 +2121,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "surfshark",
 		appSlug: "nymvpn",
+		appPackageName: "net.nymtech.nymvpn",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "surfshark",
 		appSlug: "tor-vpn",
+		appPackageName: "org.torproject.vpn",
 		relationshipType: "direct",
 	},
 	{
@@ -2014,16 +2143,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "chatgpt",
 		appSlug: "ollama",
+		appPackageName: "com.freakurl.apps.ollama",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "chatgpt",
 		appSlug: "lumo",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "chatgpt",
-		appSlug: "payperq",
+		appPackageName: "me.proton.android.lumo",
 		relationshipType: "direct",
 	},
 	{
@@ -2054,16 +2180,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "grok",
 		appSlug: "ollama",
+		appPackageName: "com.freakurl.apps.ollama",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "grok",
 		appSlug: "lumo",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "grok",
-		appSlug: "payperq",
+		appPackageName: "me.proton.android.lumo",
 		relationshipType: "direct",
 	},
 	{
@@ -2094,16 +2217,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "claude",
 		appSlug: "ollama",
+		appPackageName: "com.freakurl.apps.ollama",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "claude",
 		appSlug: "lumo",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "claude",
-		appSlug: "payperq",
+		appPackageName: "me.proton.android.lumo",
 		relationshipType: "direct",
 	},
 	{
@@ -2134,16 +2254,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-gemini",
 		appSlug: "ollama",
+		appPackageName: "com.freakurl.apps.ollama",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-gemini",
 		appSlug: "lumo",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "google-gemini",
-		appSlug: "payperq",
+		appPackageName: "me.proton.android.lumo",
 		relationshipType: "direct",
 	},
 	{
@@ -2174,16 +2291,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "microsoft-copilot",
 		appSlug: "ollama",
+		appPackageName: "com.freakurl.apps.ollama",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "microsoft-copilot",
 		appSlug: "lumo",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "microsoft-copilot",
-		appSlug: "payperq",
+		appPackageName: "me.proton.android.lumo",
 		relationshipType: "direct",
 	},
 	{
@@ -2214,16 +2328,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "deepseek",
 		appSlug: "ollama",
+		appPackageName: "com.freakurl.apps.ollama",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "deepseek",
 		appSlug: "lumo",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "deepseek",
-		appSlug: "payperq",
+		appPackageName: "me.proton.android.lumo",
 		relationshipType: "direct",
 	},
 	{
@@ -2254,16 +2365,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "meta-ai",
 		appSlug: "ollama",
+		appPackageName: "com.freakurl.apps.ollama",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "meta-ai",
 		appSlug: "lumo",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "meta-ai",
-		appSlug: "payperq",
+		appPackageName: "me.proton.android.lumo",
 		relationshipType: "direct",
 	},
 	{
@@ -2294,16 +2402,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "perplexity",
 		appSlug: "ollama",
+		appPackageName: "com.freakurl.apps.ollama",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "perplexity",
 		appSlug: "lumo",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "perplexity",
-		appSlug: "payperq",
+		appPackageName: "me.proton.android.lumo",
 		relationshipType: "direct",
 	},
 	{
@@ -2329,11 +2434,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-home",
 		appSlug: "home-assistant",
+		appPackageName: "io.homeassistant.companion.android.minimal",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-home",
 		appSlug: "openhab",
+		appPackageName: "org.openhab.habdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -2349,11 +2456,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-homekit",
 		appSlug: "home-assistant",
+		appPackageName: "io.homeassistant.companion.android.minimal",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "apple-homekit",
 		appSlug: "openhab",
+		appPackageName: "org.openhab.habdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -2369,11 +2478,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "amazon-alexa",
 		appSlug: "home-assistant",
+		appPackageName: "io.homeassistant.companion.android.minimal",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "amazon-alexa",
 		appSlug: "openhab",
+		appPackageName: "org.openhab.habdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -2389,11 +2500,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "samsung-smartthings",
 		appSlug: "home-assistant",
+		appPackageName: "io.homeassistant.companion.android.minimal",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "samsung-smartthings",
 		appSlug: "openhab",
+		appPackageName: "org.openhab.habdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -2409,11 +2522,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "philips-hue",
 		appSlug: "home-assistant",
+		appPackageName: "io.homeassistant.companion.android.minimal",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "philips-hue",
 		appSlug: "openhab",
+		appPackageName: "org.openhab.habdroid",
 		relationshipType: "direct",
 	},
 	{
@@ -2429,11 +2544,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-maps",
 		appSlug: "comaps",
+		appPackageName: "app.comaps",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "google-maps",
 		appSlug: "organic-maps",
+		appPackageName: "app.organicmaps",
 		relationshipType: "direct",
 	},
 	{
@@ -2449,16 +2566,19 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "google-maps",
 		appSlug: "osmand",
+		appPackageName: "net.osmand.plus",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "apple-maps",
 		appSlug: "comaps",
+		appPackageName: "app.comaps",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "apple-maps",
 		appSlug: "organic-maps",
+		appPackageName: "app.organicmaps",
 		relationshipType: "direct",
 	},
 	{
@@ -2474,6 +2594,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "apple-maps",
 		appSlug: "osmand",
+		appPackageName: "net.osmand.plus",
 		relationshipType: "direct",
 	},
 	{
@@ -2559,6 +2680,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "discord",
 		appSlug: "zulip",
+		appPackageName: "com.zulipmobile",
 		relationshipType: "direct",
 	},
 	{
@@ -2569,6 +2691,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "guilded",
 		appSlug: "zulip",
+		appPackageName: "com.zulipmobile",
 		relationshipType: "direct",
 	},
 	{
@@ -2579,6 +2702,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "slack",
 		appSlug: "zulip",
+		appPackageName: "com.zulipmobile",
 		relationshipType: "direct",
 	},
 	{
@@ -2718,11 +2842,6 @@ export const alternativeMappings: AlternativeSeed[] = [
 	},
 	{
 		proprietarySlug: "windows",
-		appSlug: "tiger-os",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "windows",
 		appSlug: "opensuse",
 		relationshipType: "direct",
 	},
@@ -2778,11 +2897,6 @@ export const alternativeMappings: AlternativeSeed[] = [
 	},
 	{
 		proprietarySlug: "macos",
-		appSlug: "tiger-os",
-		relationshipType: "direct",
-	},
-	{
-		proprietarySlug: "macos",
 		appSlug: "opensuse",
 		relationshipType: "direct",
 	},
@@ -2824,11 +2938,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "plex",
 		appSlug: "jellyfin",
+		appPackageName: "org.jellyfin.mobile",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "plex",
 		appSlug: "newpipe",
+		appPackageName: "org.schabi.newpipe",
 		relationshipType: "direct",
 	},
 	{
@@ -2839,11 +2955,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "netflix",
 		appSlug: "jellyfin",
+		appPackageName: "org.jellyfin.mobile",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "netflix",
 		appSlug: "newpipe",
+		appPackageName: "org.schabi.newpipe",
 		relationshipType: "direct",
 	},
 	{
@@ -2854,11 +2972,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "hulu",
 		appSlug: "jellyfin",
+		appPackageName: "org.jellyfin.mobile",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "hulu",
 		appSlug: "newpipe",
+		appPackageName: "org.schabi.newpipe",
 		relationshipType: "direct",
 	},
 	{
@@ -2869,11 +2989,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "hbo-max",
 		appSlug: "jellyfin",
+		appPackageName: "org.jellyfin.mobile",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "hbo-max",
 		appSlug: "newpipe",
+		appPackageName: "org.schabi.newpipe",
 		relationshipType: "direct",
 	},
 	{
@@ -2884,11 +3006,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "prime-video",
 		appSlug: "jellyfin",
+		appPackageName: "org.jellyfin.mobile",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "prime-video",
 		appSlug: "newpipe",
+		appPackageName: "org.schabi.newpipe",
 		relationshipType: "direct",
 	},
 	{
@@ -2899,11 +3023,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "paramount",
 		appSlug: "jellyfin",
+		appPackageName: "org.jellyfin.mobile",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "paramount",
 		appSlug: "newpipe",
+		appPackageName: "org.schabi.newpipe",
 		relationshipType: "direct",
 	},
 	{
@@ -2914,11 +3040,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "disney",
 		appSlug: "jellyfin",
+		appPackageName: "org.jellyfin.mobile",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "disney",
 		appSlug: "newpipe",
+		appPackageName: "org.schabi.newpipe",
 		relationshipType: "direct",
 	},
 	{
@@ -2929,11 +3057,13 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "youtube",
 		appSlug: "jellyfin",
+		appPackageName: "org.jellyfin.mobile",
 		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "youtube",
 		appSlug: "newpipe",
+		appPackageName: "org.schabi.newpipe",
 		relationshipType: "direct",
 	},
 	{
@@ -2949,6 +3079,488 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "postman",
 		appSlug: "hoppscotch",
+		relationshipType: "direct",
+	},
+
+	// ─── Fitness/Health ──────────────────────────────────────
+	{
+		proprietarySlug: "strava",
+		appSlug: "opentracks",
+		appPackageName: "de.dennisguse.opentracks",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "strava",
+		appSlug: "gadgetbridge",
+		appPackageName: "nodomain.freeyourgadget.gadgetbridge",
+		relationshipType: "partial",
+		notes: "Fitness tracker companion, not a standalone tracker",
+	},
+	{
+		proprietarySlug: "strava",
+		appSlug: "wger",
+		relationshipType: "partial",
+		notes: "Workout/gym tracking, not GPS activity tracking",
+	},
+	{
+		proprietarySlug: "fitbit",
+		appSlug: "opentracks",
+		appPackageName: "de.dennisguse.opentracks",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "fitbit",
+		appSlug: "gadgetbridge",
+		appPackageName: "nodomain.freeyourgadget.gadgetbridge",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "fitbit",
+		appSlug: "wger",
+		relationshipType: "partial",
+	},
+	{
+		proprietarySlug: "google-fit",
+		appSlug: "opentracks",
+		appPackageName: "de.dennisguse.opentracks",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-fit",
+		appSlug: "gadgetbridge",
+		appPackageName: "nodomain.freeyourgadget.gadgetbridge",
+		relationshipType: "partial",
+	},
+	{
+		proprietarySlug: "google-fit",
+		appSlug: "wger",
+		relationshipType: "partial",
+	},
+
+	// ─── Finance ────────────────────────────────────────────
+	{
+		proprietarySlug: "mint",
+		appSlug: "firefly-iii",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "mint",
+		appSlug: "actual-budget",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "mint",
+		appSlug: "gnucash",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "ynab",
+		appSlug: "firefly-iii",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "ynab",
+		appSlug: "actual-budget",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "ynab",
+		appSlug: "gnucash",
+		relationshipType: "direct",
+	},
+
+	// ─── RSS/News ───────────────────────────────────────────
+	{
+		proprietarySlug: "google-news",
+		appSlug: "feeder",
+		appPackageName: "com.nononsenseapps.feeder",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-news",
+		appSlug: "readyou",
+		appPackageName: "me.ash.reader",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-news",
+		appSlug: "miniflux",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-news",
+		appSlug: "newsblur",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "apple-news",
+		appSlug: "feeder",
+		appPackageName: "com.nononsenseapps.feeder",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "apple-news",
+		appSlug: "readyou",
+		appPackageName: "me.ash.reader",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "apple-news",
+		appSlug: "miniflux",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "apple-news",
+		appSlug: "newsblur",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "flipboard",
+		appSlug: "feeder",
+		appPackageName: "com.nononsenseapps.feeder",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "flipboard",
+		appSlug: "readyou",
+		appPackageName: "me.ash.reader",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "flipboard",
+		appSlug: "miniflux",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "flipboard",
+		appSlug: "newsblur",
+		relationshipType: "direct",
+	},
+
+	// ─── Photo Editing ──────────────────────────────────────
+	{
+		proprietarySlug: "adobe-photoshop",
+		appSlug: "gimp",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "adobe-photoshop",
+		appSlug: "darktable",
+		relationshipType: "partial",
+		notes: "Focused on RAW photo processing, not general image editing",
+	},
+	{
+		proprietarySlug: "adobe-photoshop",
+		appSlug: "rawtherapee",
+		relationshipType: "partial",
+		notes: "RAW processing only, not a full image editor",
+	},
+	{
+		proprietarySlug: "adobe-lightroom",
+		appSlug: "darktable",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "adobe-lightroom",
+		appSlug: "rawtherapee",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "adobe-lightroom",
+		appSlug: "gimp",
+		relationshipType: "partial",
+		notes: "General editor, lacks photo management workflow",
+	},
+	{
+		proprietarySlug: "snapseed",
+		appSlug: "gimp",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "snapseed",
+		appSlug: "darktable",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "snapseed",
+		appSlug: "rawtherapee",
+		relationshipType: "partial",
+	},
+
+	// ─── Office Suite ───────────────────────────────────────
+	{
+		proprietarySlug: "google-docs",
+		appSlug: "libreoffice",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-docs",
+		appSlug: "cryptpad",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-docs",
+		appSlug: "onlyoffice",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "microsoft-office",
+		appSlug: "libreoffice",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "microsoft-office",
+		appSlug: "cryptpad",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "microsoft-office",
+		appSlug: "onlyoffice",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "notion",
+		appSlug: "cryptpad",
+		relationshipType: "partial",
+		notes: "Collaborative docs, but lacks Notion's database features",
+	},
+
+	// ─── Podcast ────────────────────────────────────────────
+	{
+		proprietarySlug: "spotify",
+		appSlug: "antennapod",
+		appPackageName: "de.danoeh.antennapod",
+		relationshipType: "partial",
+		notes: "Podcast-only, no music streaming",
+	},
+	{
+		proprietarySlug: "spotify",
+		appSlug: "pocket-casts",
+		relationshipType: "partial",
+		notes: "Podcast-only, no music streaming",
+	},
+	{
+		proprietarySlug: "apple-podcasts",
+		appSlug: "antennapod",
+		appPackageName: "de.danoeh.antennapod",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "apple-podcasts",
+		appSlug: "pocket-casts",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-podcasts",
+		appSlug: "antennapod",
+		appPackageName: "de.danoeh.antennapod",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-podcasts",
+		appSlug: "pocket-casts",
+		relationshipType: "direct",
+	},
+
+	// ─── Torrent ────────────────────────────────────────────
+	{
+		proprietarySlug: "utorrent",
+		appSlug: "libretorrent",
+		appPackageName: "org.proninyaroslav.libretorrent",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "utorrent",
+		appSlug: "transmission",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "utorrent",
+		appSlug: "qbittorrent",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "bittorrent",
+		appSlug: "libretorrent",
+		appPackageName: "org.proninyaroslav.libretorrent",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "bittorrent",
+		appSlug: "transmission",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "bittorrent",
+		appSlug: "qbittorrent",
+		relationshipType: "direct",
+	},
+
+	// ─── Firewall ───────────────────────────────────────────
+	{
+		proprietarySlug: "stock-firewall",
+		appSlug: "netguard",
+		appPackageName: "eu.faircode.netguard",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "stock-firewall",
+		appSlug: "rethinkdns",
+		appPackageName: "com.celzero.bravedns",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "stock-firewall",
+		appSlug: "afwall",
+		appPackageName: "dev.ukanth.ufirewall",
+		relationshipType: "direct",
+	},
+
+	// ─── SMS/Dialer ─────────────────────────────────────────
+	{
+		proprietarySlug: "google-phone",
+		appSlug: "fossify-phone",
+		appPackageName: "org.fossify.phone",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-phone",
+		appSlug: "fossify-sms",
+		appPackageName: "org.fossify.messages",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-phone",
+		appSlug: "qksms",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "samsung-phone",
+		appSlug: "fossify-phone",
+		appPackageName: "org.fossify.phone",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "samsung-phone",
+		appSlug: "fossify-sms",
+		appPackageName: "org.fossify.messages",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "samsung-phone",
+		appSlug: "qksms",
+		relationshipType: "direct",
+	},
+
+	// ─── Backup ─────────────────────────────────────────────
+	{
+		proprietarySlug: "google-backup",
+		appSlug: "seedvault",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-backup",
+		appSlug: "neo-backup",
+		appPackageName: "com.machiav3lli.backup",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-backup",
+		appSlug: "syncthing",
+		appPackageName: "com.github.catfriend1.syncthingfork",
+		relationshipType: "partial",
+		notes: "File sync only, not full device backup",
+	},
+	{
+		proprietarySlug: "samsung-cloud",
+		appSlug: "seedvault",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "samsung-cloud",
+		appSlug: "neo-backup",
+		appPackageName: "com.machiav3lli.backup",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "samsung-cloud",
+		appSlug: "syncthing",
+		appPackageName: "com.github.catfriend1.syncthingfork",
+		relationshipType: "partial",
+		notes: "File sync only, not full device backup",
+	},
+
+	// ─── Keyboard ───────────────────────────────────────────
+	{
+		proprietarySlug: "gboard",
+		appSlug: "heliboard",
+		appPackageName: "helium314.keyboard",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "gboard",
+		appSlug: "florisboard",
+		appPackageName: "dev.patrickgold.florisboard",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "gboard",
+		appSlug: "openboard",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "swiftkey",
+		appSlug: "heliboard",
+		appPackageName: "helium314.keyboard",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "swiftkey",
+		appSlug: "florisboard",
+		appPackageName: "dev.patrickgold.florisboard",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "swiftkey",
+		appSlug: "openboard",
+		relationshipType: "direct",
+	},
+
+	// ─── Media Player ───────────────────────────────────────
+	{
+		proprietarySlug: "samsung-video-player",
+		appSlug: "vlc",
+		appPackageName: "org.videolan.vlc",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "samsung-video-player",
+		appSlug: "mpv-android",
+		appPackageName: "is.xyz.mpv",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "samsung-video-player",
+		appSlug: "nova-player",
+		appPackageName: "org.courville.nova",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-files",
+		appSlug: "vlc",
+		appPackageName: "org.videolan.vlc",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-files",
+		appSlug: "mpv-android",
+		appPackageName: "is.xyz.mpv",
+		relationshipType: "direct",
+	},
+	{
+		proprietarySlug: "google-files",
+		appSlug: "nova-player",
+		appPackageName: "org.courville.nova",
 		relationshipType: "direct",
 	},
 ];

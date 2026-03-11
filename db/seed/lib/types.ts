@@ -52,6 +52,16 @@ export type TagSeed = {
 	type: TagType;
 };
 
+/** Curated seed data: web/desktop app without Android package */
+export type WebAppSeed = {
+	name: string;
+	slug: string;
+	description: string;
+	websiteUrl: string;
+	repositoryUrl?: string;
+	tags: string[]; // tag slugs
+};
+
 /** Curated seed data: app override/enrichment */
 export type AppOverrideSeed = {
 	packageName: string;
