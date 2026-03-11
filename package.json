@@ -16,7 +16,9 @@
 		"lint": "biome check .",
 		"format": "biome format --write .",
 		"typecheck": "tsc --noEmit",
-		"seed:fetch": "tsx db/seed/fetch.ts"
+		"seed:fetch": "tsx db/seed/fetch.ts",
+		"seed:import": "tsx db/seed/import.ts",
+		"seed:enrich": "tsx db/seed/enrich.ts"
 	},
 	"keywords": [],
 	"author": "",
