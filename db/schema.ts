@@ -49,6 +49,12 @@ export type SourceType =
 	| "obtainium"
 	| "direct"; // APK from website, etc.
 
+export type AppSourceMetadata = {
+	apkFilterRegex?: string;
+	preferred?: boolean;
+	additionalSettings?: Record<string, unknown>;
+};
+
 export const appSources = sqliteTable(
 	"app_sources",
 	{
@@ -59,6 +65,7 @@ export const appSources = sqliteTable(
 		source: text("source").$type<SourceType>().notNull(),
 		url: text("url").notNull(),
 		packageName: text("package_name"), // e.g. "org.thoughtcrime.securesms"
+		metadata: text("metadata", { mode: "json" }).$type<AppSourceMetadata | null>(),
 	},
 	(table) => ({
 		uniqueSource: uniqueIndex("app_source_unique").on(
