@@ -2,6 +2,7 @@ import { Menu01Icon, Search01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { ThemeSwitcher } from "~/components/theme-switcher";
 import { Button } from "~/components/ui/button";
 import {
 	Sheet,
@@ -13,6 +14,7 @@ import {
 
 const navLinks = [
 	{ label: "Apps", href: "/apps" },
+	{ label: "Desktop", href: "/desktop" },
 	{ label: "Alternatives", href: "/alternatives" },
 	{ label: "Discover", href: "/discover" },
 ] as const;
@@ -81,6 +83,7 @@ export function SiteHeader() {
 
 				<div className="flex items-center gap-2">
 					<HeaderSearchForm />
+					<ThemeSwitcher />
 
 					<Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
 						<SheetTrigger

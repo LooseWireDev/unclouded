@@ -3,7 +3,8 @@
 	"name": "unclouded",
 	"compatibility_date": "2025-09-02",
 	"compatibility_flags": ["nodejs_compat"],
-	"main": "@tanstack/react-start/server-entry",
+	"main": "./src/worker-entry.ts",
+	"ai": { "binding": "AI" },
 	// Turso credentials: set via `wrangler secret put` for production,
 	// .dev.vars for local development
 	"vars": {}

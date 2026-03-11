@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { AppAvatar } from "~/components/app-avatar";
 import { ObtainiumButton } from "~/components/obtainium-button";
 import { SourceBadge } from "~/components/source-badge";
 import { TagPill } from "~/components/tag-pill";
@@ -9,6 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
+import { stripHtml } from "~/lib/strip-html";
 import { cn } from "~/lib/utils";
 
 const relationshipStyles = {
@@ -52,37 +54,30 @@ export function AlternativeCard({
 	const relationship = relationshipStyles[relationshipType];
 
 	return (
-		<Link to="/apps/$slug" params={{ slug: app.slug }} className="group block">
+		<Link
+			to="/apps/$slug"
+			params={{ slug: app.slug }}
+			className="group block h-full"
+		>
 			<Card
 				size="sm"
-				className="transition-all group-hover:border-sun-border group-hover:ring-sun-border"
+				className="h-full transition-all group-hover:border-sun-border group-hover:ring-sun-border"
 			>
 				<CardHeader>
 					<div className="flex items-start gap-3">
-						{app.iconUrl ? (
-							<img
-								src={app.iconUrl}
-								alt=""
-								className="size-10 shrink-0 rounded-lg object-cover"
-								loading="lazy"
-							/>
-						) : (
-							<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-base font-semibold text-muted-foreground">
-								{app.name.charAt(0).toUpperCase()}
-							</div>
-						)}
+						<AppAvatar iconUrl={app.iconUrl} name={app.name} />
 						<div className="min-w-0 flex-1">
 							<CardTitle className="truncate">{app.name}</CardTitle>
 							{app.description && (
 								<CardDescription className="mt-0.5 line-clamp-2">
-									{app.description}
+									{stripHtml(app.description)}
 								</CardDescription>
 							)}
 						</div>
 					</div>
 				</CardHeader>
 
-				<CardFooter className="flex flex-wrap gap-1.5">
+				<CardFooter className="mt-auto flex flex-wrap gap-1.5">
 					<span
 						className={cn(
 							"inline-flex h-5 items-center rounded-4xl border px-2 text-[10px] font-medium tracking-wide",

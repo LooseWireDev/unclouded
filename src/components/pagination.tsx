@@ -7,7 +7,8 @@ interface PaginationProps {
 	currentPage: number;
 	hasMore: boolean;
 	basePath: string;
-	searchParams?: Record<string, string>;
+	searchParams?: Record<string, string | number>;
+	params?: Record<string, string>;
 }
 
 export function Pagination({
@@ -15,24 +16,26 @@ export function Pagination({
 	hasMore,
 	basePath,
 	searchParams = {},
+	params,
 }: PaginationProps) {
 	function buildSearch(page: number) {
-		const params: Record<string, string> = { ...searchParams };
+		const search: Record<string, string | number> = { ...searchParams };
 		if (page > 1) {
-			params.page = String(page);
+			search.page = page;
 		} else {
-			delete params.page;
+			delete search.page;
 		}
-		return params;
+		return search;
 	}
 
 	// basePath is dynamic — routes are registered when route files are created
 	const to = basePath as "/";
+	const linkParams = params ?? {};
 
 	return (
 		<div className="flex items-center justify-center gap-4 pt-6">
 			{currentPage > 1 ? (
-				<Link to={to} search={buildSearch(currentPage - 1)}>
+				<Link to={to} search={buildSearch(currentPage - 1)} params={linkParams}>
 					<Button variant="outline" size="sm">
 						<HugeiconsIcon
 							icon={ArrowLeft01Icon}
@@ -56,7 +59,7 @@ export function Pagination({
 			<span className="text-sm text-muted-foreground">Page {currentPage}</span>
 
 			{hasMore ? (
-				<Link to={to} search={buildSearch(currentPage + 1)}>
+				<Link to={to} search={buildSearch(currentPage + 1)} params={linkParams}>
 					<Button variant="outline" size="sm">
 						Next
 						<HugeiconsIcon

@@ -36,14 +36,29 @@ export function SourceBadge({ source, url, className }: SourceBadgeProps) {
 
 	if (url) {
 		return (
-			<a
-				href={url}
-				target="_blank"
-				rel="noopener noreferrer"
-				className={cn(classes, "transition-opacity hover:opacity-80")}
+			// biome-ignore lint/a11y/useSemanticElements: can't use <a> here — SourceBadge is rendered inside a card <a> link
+			<span
+				role="link"
+				tabIndex={0}
+				onClick={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					window.open(url, "_blank", "noopener,noreferrer");
+				}}
+				onKeyDown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						e.stopPropagation();
+						window.open(url, "_blank", "noopener,noreferrer");
+					}
+				}}
+				className={cn(
+					classes,
+					"cursor-pointer transition-opacity hover:opacity-80",
+				)}
 			>
 				{label}
-			</a>
+			</span>
 		);
 	}
 

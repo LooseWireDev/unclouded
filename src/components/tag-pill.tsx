@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { cn } from "~/lib/utils";
 
 interface TagPillProps {
@@ -5,6 +6,7 @@ interface TagPillProps {
 	slug: string;
 	type?: "category" | "feature" | "platform";
 	interactive?: boolean;
+	linked?: boolean;
 	onClick?: () => void;
 	className?: string;
 }
@@ -14,6 +16,7 @@ export function TagPill({
 	slug,
 	type = "category",
 	interactive,
+	linked,
 	onClick,
 	className,
 }: TagPillProps) {
@@ -39,6 +42,24 @@ export function TagPill({
 			>
 				{name}
 			</button>
+		);
+	}
+
+	if (linked) {
+		const to =
+			type === "category"
+				? ("/category/$slug" as const)
+				: ("/tags/$type/$slug" as const);
+		const params = type === "category" ? { slug } : { type, slug };
+
+		return (
+			<Link
+				to={to}
+				params={params}
+				className={cn(base, typeStyles, "hover:text-foreground", className)}
+			>
+				{name}
+			</Link>
 		);
 	}
 

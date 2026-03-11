@@ -18,7 +18,10 @@
 		"typecheck": "tsc --noEmit",
 		"seed:fetch": "tsx db/seed/fetch.ts",
 		"seed:import": "tsx db/seed/import.ts",
-		"seed:enrich": "tsx db/seed/enrich.ts"
+		"seed:enrich": "tsx db/seed/enrich.ts",
+		"cache:purge": "tsx scripts/cache-purge.ts",
+		"seed:comparisons": "tsx db/seed/generate-comparisons.ts",
+		"seed:embeddings": "tsx db/seed/generate-embeddings.ts"
 	},
 	"keywords": [],
 	"author": "",
@@ -41,6 +44,7 @@
 		"nanoid": "^5.1.6",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
+		"sanitize-html": "^2.17.1",
 		"shadcn": "^4.0.5",
 		"tailwind-merge": "^3.5.0",
 		"tailwindcss": "^4.2.1",
@@ -52,6 +56,7 @@
 		"@types/node": "^25.4.0",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
+		"@types/sanitize-html": "^2.16.1",
 		"@vitejs/plugin-react": "^5.1.4",
 		"dotenv": "^17.3.1",
 		"drizzle-kit": "^0.31.9",

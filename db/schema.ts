@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+	index,
 	integer,
 	sqliteTable,
 	text,
@@ -36,6 +37,8 @@ export const appsRelations = relations(apps, ({ many }) => ({
 	sources: many(appSources),
 	tags: many(appTags),
 	alternatives: many(alternatives),
+	comparisonsAsA: many(comparisonPairs, { relationName: "comparisonAppA" }),
+	comparisonsAsB: many(comparisonPairs, { relationName: "comparisonAppB" }),
 }));
 
 // ─── App Sources ────────────────────────────────────────────────────
@@ -231,6 +234,53 @@ export const proprietaryAppTagsRelations = relations(
 		tag: one(tags, {
 			fields: [proprietaryAppTags.tagId],
 			references: [tags.id],
+		}),
+	}),
+);
+
+// ─── Comparison Pairs ───────────────────────────────────────────────
+// Pre-computed pairs of apps that share tags, for SEO comparison pages.
+
+export const comparisonPairs = sqliteTable(
+	"comparison_pairs",
+	{
+		id: text("id").primaryKey(),
+		appAId: text("app_a_id")
+			.notNull()
+			.references(() => apps.id, { onDelete: "cascade" }),
+		appBId: text("app_b_id")
+			.notNull()
+			.references(() => apps.id, { onDelete: "cascade" }),
+		slug: text("slug").notNull().unique(), // "app-a-vs-app-b"
+		sharedTagCount: integer("shared_tag_count").notNull().default(0),
+		sharedTagIds: text("shared_tag_ids", { mode: "json" })
+			.$type<string[]>()
+			.notNull()
+			.default([]),
+		...timestamps,
+	},
+	(table) => ({
+		uniquePair: uniqueIndex("comparison_pair_unique").on(
+			table.appAId,
+			table.appBId,
+		),
+		appAIdx: index("comparison_app_a_idx").on(table.appAId),
+		appBIdx: index("comparison_app_b_idx").on(table.appBId),
+	}),
+);
+
+export const comparisonPairsRelations = relations(
+	comparisonPairs,
+	({ one }) => ({
+		appA: one(apps, {
+			fields: [comparisonPairs.appAId],
+			references: [apps.id],
+			relationName: "comparisonAppA",
+		}),
+		appB: one(apps, {
+			fields: [comparisonPairs.appBId],
+			references: [apps.id],
+			relationName: "comparisonAppB",
 		}),
 	}),
 );
