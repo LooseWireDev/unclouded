@@ -15,7 +15,8 @@
 		"cf-typegen": "wrangler types",
 		"lint": "biome check .",
 		"format": "biome format --write .",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"seed:fetch": "tsx db/seed/fetch.ts"
 	},
 	"keywords": [],
 	"author": "",
