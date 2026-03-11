@@ -1,19 +1,11 @@
 import "dotenv/config";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import type { InStatement } from "@libsql/client";
 import { createClient } from "@libsql/client";
-import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "../schema";
-import {
-	alternatives,
-	appSources,
-	apps,
-	appTags,
-	proprietaryApps,
-	proprietaryAppTags,
-	tags,
-} from "../schema";
+import { appSources, apps, proprietaryApps, tags } from "../schema";
 import { alternativeMappings } from "./data/alternatives";
 import { appOverrides } from "./data/app-overrides";
 import { proprietaryApps as proprietaryAppSeeds } from "./data/proprietary-apps";
@@ -26,6 +18,7 @@ import { parseFDroidIndex } from "./parsers/fdroid";
 import { parseObtainiumConfigs } from "./parsers/obtainium";
 
 const CACHE_DIR = path.resolve(process.cwd(), ".cache");
+const BATCH_SIZE = 200;
 
 const client = createClient({
 	url: process.env.TURSO_DATABASE_URL!,
@@ -90,22 +83,21 @@ function parseAllSources(): ParsedApp[] {
 
 async function upsertTags() {
 	console.log("Upserting tags...");
-	for (const tag of tagSeeds) {
-		await db
-			.insert(tags)
-			.values({
-				id: generateId(),
-				name: tag.name,
-				slug: tag.slug,
-				type: tag.type,
-			})
-			.onConflictDoUpdate({
-				target: [tags.slug, tags.type],
-				set: { name: tag.name },
-			});
-		stats.tagsCreated++;
-	}
+	const stmts: InStatement[] = tagSeeds.map((tag) => ({
+		sql: `INSERT INTO tags (id, name, slug, type) VALUES (?, ?, ?, ?)
+			ON CONFLICT (slug, type) DO UPDATE SET name = excluded.name`,
+		args: [generateId(), tag.name, tag.slug, tag.type],
+	}));
+	await client.batch(stmts, "write");
+	stats.tagsCreated = tagSeeds.length;
 	console.log(`  ${stats.tagsCreated} tags upserted`);
+}
+
+async function executeBatched(stmts: InStatement[]) {
+	for (let i = 0; i < stmts.length; i += BATCH_SIZE) {
+		const batch = stmts.slice(i, i + BATCH_SIZE);
+		await client.batch(batch, "write");
+	}
 }
 
 async function upsertApps(dedupedApps: ParsedApp[]) {
@@ -114,10 +106,14 @@ async function upsertApps(dedupedApps: ParsedApp[]) {
 	const allTags = await db.select().from(tags);
 	const tagLookup = new Map(allTags.map((t) => [t.slug, t.id]));
 
+	// Track slug → appId for source/tag inserts
+	const slugToId = new Map<string, string>();
+	const now = new Date().toISOString();
+
+	// Phase 1: Upsert all apps
+	const appStmts: InStatement[] = [];
 	for (const parsed of dedupedApps) {
 		const slug = slugify(parsed.name);
-
-		// Apply overrides
 		const override = appOverrides.find(
 			(o) => o.packageName === parsed.packageName,
 		);
@@ -130,57 +126,81 @@ async function upsertApps(dedupedApps: ParsedApp[]) {
 		}
 
 		const appId = generateId();
-		const result = await db
-			.insert(apps)
-			.values({
-				id: appId,
-				name: parsed.name,
-				slug,
-				description: parsed.description || parsed.summary || null,
-				iconUrl: parsed.iconUrl || null,
-				license: parsed.license || null,
-				websiteUrl: parsed.websiteUrl || null,
-				repositoryUrl: parsed.repositoryUrl || null,
-			})
-			.onConflictDoUpdate({
-				target: apps.slug,
-				set: {
-					name: parsed.name,
-					description: sql`COALESCE(${parsed.description || parsed.summary || null}, ${apps.description})`,
-					iconUrl: sql`COALESCE(${parsed.iconUrl || null}, ${apps.iconUrl})`,
-					license: sql`COALESCE(${parsed.license || null}, ${apps.license})`,
-					websiteUrl: sql`COALESCE(${parsed.websiteUrl || null}, ${apps.websiteUrl})`,
-					repositoryUrl: sql`COALESCE(${parsed.repositoryUrl || null}, ${apps.repositoryUrl})`,
-					updatedAt: new Date(),
-				},
-			})
-			.returning({ id: apps.id });
+		slugToId.set(slug, appId);
 
-		const insertedId = result[0]?.id || appId;
+		appStmts.push({
+			sql: `INSERT INTO apps (id, name, slug, description, icon_url, license, website_url, repository_url, created_at, updated_at)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				ON CONFLICT (slug) DO UPDATE SET
+					name = excluded.name,
+					description = COALESCE(excluded.description, apps.description),
+					icon_url = COALESCE(excluded.icon_url, apps.icon_url),
+					license = COALESCE(excluded.license, apps.license),
+					website_url = COALESCE(excluded.website_url, apps.website_url),
+					repository_url = COALESCE(excluded.repository_url, apps.repository_url),
+					updated_at = excluded.updated_at`,
+			args: [
+				appId,
+				parsed.name,
+				slug,
+				parsed.description || parsed.summary || null,
+				parsed.iconUrl || null,
+				parsed.license || null,
+				parsed.websiteUrl || null,
+				parsed.repositoryUrl || null,
+				now,
+				now,
+			],
+		});
+	}
+
+	console.log(`  Inserting ${appStmts.length} apps...`);
+	await executeBatched(appStmts);
+
+	// Fetch actual IDs (some might have been updated rather than inserted)
+	const allApps = await db.select({ id: apps.id, slug: apps.slug }).from(apps);
+	const actualSlugToId = new Map(allApps.map((a) => [a.slug, a.id]));
+
+	// Phase 2: Upsert sources
+	const sourceStmts: InStatement[] = [];
+	for (const parsed of dedupedApps) {
+		const slug = slugify(parsed.name);
+		const appId = actualSlugToId.get(slug);
+		if (!appId) continue;
 
 		for (const source of parsed.sources) {
-			await db
-				.insert(appSources)
-				.values({
-					id: generateId(),
-					appId: insertedId,
-					source: source.source,
-					url: source.url,
-					packageName: parsed.packageName,
-					metadata: source.metadata || null,
-				})
-				.onConflictDoUpdate({
-					target: [appSources.appId, appSources.source],
-					set: {
-						url: source.url,
-						packageName: parsed.packageName,
-						metadata: source.metadata || null,
-					},
-				});
+			sourceStmts.push({
+				sql: `INSERT INTO app_sources (id, app_id, source, url, package_name, metadata)
+					VALUES (?, ?, ?, ?, ?, ?)
+					ON CONFLICT (app_id, source) DO UPDATE SET
+						url = excluded.url, package_name = excluded.package_name, metadata = excluded.metadata`,
+				args: [
+					generateId(),
+					appId,
+					source.source,
+					source.url,
+					parsed.packageName,
+					source.metadata ? JSON.stringify(source.metadata) : null,
+				],
+			});
 			stats.sourcesCreated++;
 		}
+	}
 
-		// Build tag set
+	console.log(`  Inserting ${sourceStmts.length} sources...`);
+	await executeBatched(sourceStmts);
+
+	// Phase 3: Upsert app tags
+	const tagStmts: InStatement[] = [];
+	for (const parsed of dedupedApps) {
+		const slug = slugify(parsed.name);
+		const appId = actualSlugToId.get(slug);
+		if (!appId) continue;
+
+		const override = appOverrides.find(
+			(o) => o.packageName === parsed.packageName,
+		);
+
 		const tagSlugsToApply = new Set<string>();
 		tagSlugsToApply.add("open-source");
 		tagSlugsToApply.add("android");
@@ -208,13 +228,16 @@ async function upsertApps(dedupedApps: ParsedApp[]) {
 		for (const tagSlug of tagSlugsToApply) {
 			const tagId = tagLookup.get(tagSlug);
 			if (!tagId) continue;
-			await db
-				.insert(appTags)
-				.values({ appId: insertedId, tagId })
-				.onConflictDoNothing();
+			tagStmts.push({
+				sql: "INSERT OR IGNORE INTO app_tags (app_id, tag_id) VALUES (?, ?)",
+				args: [appId, tagId],
+			});
 			stats.appTagsCreated++;
 		}
 	}
+
+	console.log(`  Inserting ${tagStmts.length} tag links...`);
+	await executeBatched(tagStmts);
 
 	console.log(
 		`  ${dedupedApps.length} apps, ${stats.sourcesCreated} sources, ${stats.appTagsCreated} tag links`,
@@ -226,47 +249,57 @@ async function upsertProprietaryApps() {
 
 	const allTags = await db.select().from(tags);
 	const tagLookup = new Map(allTags.map((t) => [t.slug, t.id]));
+	const now = new Date().toISOString();
+
+	const propStmts: InStatement[] = [];
+	const propTagStmts: InStatement[] = [];
 
 	for (const seed of proprietaryAppSeeds) {
 		const propId = generateId();
-		const result = await db
-			.insert(proprietaryApps)
-			.values({
-				id: propId,
-				name: seed.name,
-				slug: seed.slug,
-				description: seed.description || null,
-				iconUrl: seed.iconUrl || null,
-				websiteUrl: seed.websiteUrl || null,
-				packageName: seed.packageName || null,
-			})
-			.onConflictDoUpdate({
-				target: proprietaryApps.slug,
-				set: {
-					name: seed.name,
-					description: seed.description || null,
-					iconUrl: seed.iconUrl || null,
-					websiteUrl: seed.websiteUrl || null,
-					packageName: seed.packageName || null,
-					updatedAt: new Date(),
-				},
-			})
-			.returning({ id: proprietaryApps.id });
-
-		const insertedId = result[0]?.id || propId;
-
-		for (const tagSlug of seed.tags) {
-			const tagId = tagLookup.get(tagSlug);
-			if (!tagId) continue;
-			await db
-				.insert(proprietaryAppTags)
-				.values({ proprietaryAppId: insertedId, tagId })
-				.onConflictDoNothing();
-		}
-
+		propStmts.push({
+			sql: `INSERT INTO proprietary_apps (id, name, slug, description, icon_url, website_url, package_name, created_at, updated_at)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+				ON CONFLICT (slug) DO UPDATE SET
+					name = excluded.name, description = excluded.description,
+					icon_url = excluded.icon_url, website_url = excluded.website_url,
+					package_name = excluded.package_name, updated_at = excluded.updated_at`,
+			args: [
+				propId,
+				seed.name,
+				seed.slug,
+				seed.description || null,
+				seed.iconUrl || null,
+				seed.websiteUrl || null,
+				seed.packageName || null,
+				now,
+				now,
+			],
+		});
 		stats.proprietaryAppsCreated++;
 	}
 
+	await executeBatched(propStmts);
+
+	// Fetch actual IDs
+	const allProps = await db
+		.select({ id: proprietaryApps.id, slug: proprietaryApps.slug })
+		.from(proprietaryApps);
+	const propSlugToId = new Map(allProps.map((p) => [p.slug, p.id]));
+
+	for (const seed of proprietaryAppSeeds) {
+		const propId = propSlugToId.get(seed.slug);
+		if (!propId) continue;
+		for (const tagSlug of seed.tags) {
+			const tagId = tagLookup.get(tagSlug);
+			if (!tagId) continue;
+			propTagStmts.push({
+				sql: "INSERT OR IGNORE INTO proprietary_app_tags (proprietary_app_id, tag_id) VALUES (?, ?)",
+				args: [propId, tagId],
+			});
+		}
+	}
+
+	await executeBatched(propTagStmts);
 	console.log(`  ${stats.proprietaryAppsCreated} proprietary apps upserted`);
 }
 
@@ -286,6 +319,8 @@ async function upsertAlternatives() {
 
 	const allApps = await db.select().from(apps);
 	const appBySlug = new Map(allApps.map((a) => [a.slug, a.id]));
+
+	const altStmts: InStatement[] = [];
 
 	for (const mapping of alternativeMappings) {
 		const propId = propLookup.get(mapping.proprietarySlug);
@@ -311,25 +346,23 @@ async function upsertAlternatives() {
 			continue;
 		}
 
-		await db
-			.insert(alternatives)
-			.values({
-				id: generateId(),
-				proprietaryAppId: propId,
+		altStmts.push({
+			sql: `INSERT INTO alternatives (id, proprietary_app_id, app_id, relationship_type, notes)
+				VALUES (?, ?, ?, ?, ?)
+				ON CONFLICT (proprietary_app_id, app_id) DO UPDATE SET
+					relationship_type = excluded.relationship_type, notes = excluded.notes`,
+			args: [
+				generateId(),
+				propId,
 				appId,
-				relationshipType: mapping.relationshipType,
-				notes: mapping.notes || null,
-			})
-			.onConflictDoUpdate({
-				target: [alternatives.proprietaryAppId, alternatives.appId],
-				set: {
-					relationshipType: mapping.relationshipType,
-					notes: mapping.notes || null,
-				},
-			});
+				mapping.relationshipType,
+				mapping.notes || null,
+			],
+		});
 		stats.alternativesCreated++;
 	}
 
+	await executeBatched(altStmts);
 	console.log(`  ${stats.alternativesCreated} alternative mappings upserted`);
 }
 
