@@ -26,11 +26,15 @@ function RootComponent() {
 	);
 }
 
+const themeScript = `(function(){try{var t=localStorage.getItem('unclouded-theme')||'system';var r=t==='system'?window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark':t;if(r==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.classList.remove('dark')}else{document.documentElement.removeAttribute('data-theme');document.documentElement.classList.add('dark')}}catch(e){}})()`;
+
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 	return (
 		<html lang="en">
 			<head>
 				<HeadContent />
+				{/* biome-ignore lint/security/noDangerouslySetInnerHtml: inline script needed to prevent flash of wrong theme */}
+				<script dangerouslySetInnerHTML={{ __html: themeScript }} />
 			</head>
 			<body>
 				{children}

@@ -11,11 +11,17 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as DesktopRouteImport } from './routes/desktop'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LicenseIndexRouteImport } from './routes/license/index'
 import { Route as AppsIndexRouteImport } from './routes/apps/index'
 import { Route as AlternativesIndexRouteImport } from './routes/alternatives/index'
+import { Route as LicenseLicenseRouteImport } from './routes/license/$license'
+import { Route as ComparePairRouteImport } from './routes/compare/$pair'
+import { Route as CategorySlugRouteImport } from './routes/category/$slug'
 import { Route as AppsSlugRouteImport } from './routes/apps/$slug'
 import { Route as AlternativesSlugRouteImport } from './routes/alternatives/$slug'
+import { Route as TagsTypeSlugRouteImport } from './routes/tags/$type/$slug'
 
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
@@ -27,9 +33,19 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DesktopRoute = DesktopRouteImport.update({
+  id: '/desktop',
+  path: '/desktop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LicenseIndexRoute = LicenseIndexRouteImport.update({
+  id: '/license/',
+  path: '/license/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppsIndexRoute = AppsIndexRouteImport.update({
@@ -42,6 +58,21 @@ const AlternativesIndexRoute = AlternativesIndexRouteImport.update({
   path: '/alternatives/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LicenseLicenseRoute = LicenseLicenseRouteImport.update({
+  id: '/license/$license',
+  path: '/license/$license',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComparePairRoute = ComparePairRouteImport.update({
+  id: '/compare/$pair',
+  path: '/compare/$pair',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategorySlugRoute = CategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppsSlugRoute = AppsSlugRouteImport.update({
   id: '/apps/$slug',
   path: '/apps/$slug',
@@ -52,73 +83,120 @@ const AlternativesSlugRoute = AlternativesSlugRouteImport.update({
   path: '/alternatives/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TagsTypeSlugRoute = TagsTypeSlugRouteImport.update({
+  id: '/tags/$type/$slug',
+  path: '/tags/$type/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/desktop': typeof DesktopRoute
   '/discover': typeof DiscoverRoute
   '/search': typeof SearchRoute
   '/alternatives/$slug': typeof AlternativesSlugRoute
   '/apps/$slug': typeof AppsSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/compare/$pair': typeof ComparePairRoute
+  '/license/$license': typeof LicenseLicenseRoute
   '/alternatives/': typeof AlternativesIndexRoute
   '/apps/': typeof AppsIndexRoute
+  '/license/': typeof LicenseIndexRoute
+  '/tags/$type/$slug': typeof TagsTypeSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/desktop': typeof DesktopRoute
   '/discover': typeof DiscoverRoute
   '/search': typeof SearchRoute
   '/alternatives/$slug': typeof AlternativesSlugRoute
   '/apps/$slug': typeof AppsSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/compare/$pair': typeof ComparePairRoute
+  '/license/$license': typeof LicenseLicenseRoute
   '/alternatives': typeof AlternativesIndexRoute
   '/apps': typeof AppsIndexRoute
+  '/license': typeof LicenseIndexRoute
+  '/tags/$type/$slug': typeof TagsTypeSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/desktop': typeof DesktopRoute
   '/discover': typeof DiscoverRoute
   '/search': typeof SearchRoute
   '/alternatives/$slug': typeof AlternativesSlugRoute
   '/apps/$slug': typeof AppsSlugRoute
+  '/category/$slug': typeof CategorySlugRoute
+  '/compare/$pair': typeof ComparePairRoute
+  '/license/$license': typeof LicenseLicenseRoute
   '/alternatives/': typeof AlternativesIndexRoute
   '/apps/': typeof AppsIndexRoute
+  '/license/': typeof LicenseIndexRoute
+  '/tags/$type/$slug': typeof TagsTypeSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/desktop'
     | '/discover'
     | '/search'
     | '/alternatives/$slug'
     | '/apps/$slug'
+    | '/category/$slug'
+    | '/compare/$pair'
+    | '/license/$license'
     | '/alternatives/'
     | '/apps/'
+    | '/license/'
+    | '/tags/$type/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/desktop'
     | '/discover'
     | '/search'
     | '/alternatives/$slug'
     | '/apps/$slug'
+    | '/category/$slug'
+    | '/compare/$pair'
+    | '/license/$license'
     | '/alternatives'
     | '/apps'
+    | '/license'
+    | '/tags/$type/$slug'
   id:
     | '__root__'
     | '/'
+    | '/desktop'
     | '/discover'
     | '/search'
     | '/alternatives/$slug'
     | '/apps/$slug'
+    | '/category/$slug'
+    | '/compare/$pair'
+    | '/license/$license'
     | '/alternatives/'
     | '/apps/'
+    | '/license/'
+    | '/tags/$type/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DesktopRoute: typeof DesktopRoute
   DiscoverRoute: typeof DiscoverRoute
   SearchRoute: typeof SearchRoute
   AlternativesSlugRoute: typeof AlternativesSlugRoute
   AppsSlugRoute: typeof AppsSlugRoute
+  CategorySlugRoute: typeof CategorySlugRoute
+  ComparePairRoute: typeof ComparePairRoute
+  LicenseLicenseRoute: typeof LicenseLicenseRoute
   AlternativesIndexRoute: typeof AlternativesIndexRoute
   AppsIndexRoute: typeof AppsIndexRoute
+  LicenseIndexRoute: typeof LicenseIndexRoute
+  TagsTypeSlugRoute: typeof TagsTypeSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -137,11 +215,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/desktop': {
+      id: '/desktop'
+      path: '/desktop'
+      fullPath: '/desktop'
+      preLoaderRoute: typeof DesktopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/license/': {
+      id: '/license/'
+      path: '/license'
+      fullPath: '/license/'
+      preLoaderRoute: typeof LicenseIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/apps/': {
@@ -158,6 +250,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlternativesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/license/$license': {
+      id: '/license/$license'
+      path: '/license/$license'
+      fullPath: '/license/$license'
+      preLoaderRoute: typeof LicenseLicenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare/$pair': {
+      id: '/compare/$pair'
+      path: '/compare/$pair'
+      fullPath: '/compare/$pair'
+      preLoaderRoute: typeof ComparePairRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/category/$slug': {
+      id: '/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/category/$slug'
+      preLoaderRoute: typeof CategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/apps/$slug': {
       id: '/apps/$slug'
       path: '/apps/$slug'
@@ -172,17 +285,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AlternativesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tags/$type/$slug': {
+      id: '/tags/$type/$slug'
+      path: '/tags/$type/$slug'
+      fullPath: '/tags/$type/$slug'
+      preLoaderRoute: typeof TagsTypeSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DesktopRoute: DesktopRoute,
   DiscoverRoute: DiscoverRoute,
   SearchRoute: SearchRoute,
   AlternativesSlugRoute: AlternativesSlugRoute,
   AppsSlugRoute: AppsSlugRoute,
+  CategorySlugRoute: CategorySlugRoute,
+  ComparePairRoute: ComparePairRoute,
+  LicenseLicenseRoute: LicenseLicenseRoute,
   AlternativesIndexRoute: AlternativesIndexRoute,
   AppsIndexRoute: AppsIndexRoute,
+  LicenseIndexRoute: LicenseIndexRoute,
+  TagsTypeSlugRoute: TagsTypeSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

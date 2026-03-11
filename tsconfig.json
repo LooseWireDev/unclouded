@@ -14,5 +14,11 @@
 			"~/*": ["./src/*"]
 		}
 	},
-	"include": ["src", "db", "vite.config.ts", "drizzle.config.ts"]
+	"include": [
+		"src",
+		"db",
+		"vite.config.ts",
+		"drizzle.config.ts",
+		"worker-configuration.d.ts"
+	]
 }

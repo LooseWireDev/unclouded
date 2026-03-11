@@ -42,6 +42,10 @@ export const tagSeeds: TagSeed[] = [
 	{ name: "SMS", slug: "sms", type: "category" },
 	{ name: "Backup", slug: "backup", type: "category" },
 	{ name: "Media Player", slug: "media-player", type: "category" },
+	{ name: "Games", slug: "games", type: "category" },
+	{ name: "Ebook Reader", slug: "ebook-reader", type: "category" },
+	{ name: "News", slug: "news", type: "category" },
+	{ name: "Calculator", slug: "calculator", type: "category" },
 
 	// ─── Feature ─────────────────────────────────────────
 	{ name: "Encrypted", slug: "encrypted", type: "feature" },
@@ -76,15 +80,16 @@ export const tagSeeds: TagSeed[] = [
 	{ name: "macOS", slug: "macos", type: "platform" },
 ];
 
-export const fdroidCategoryMap: Record<string, string> = {
+export const fdroidCategoryMap: Record<string, string | string[]> = {
+	// ─── Legacy F-Droid categories ───────────────────────
 	Connectivity: "messaging",
 	Development: "dev-tools",
 	Graphics: "gallery",
 	Internet: "browser",
-	Money: "productivity",
-	Multimedia: "video",
+	Money: "finance",
+	Multimedia: "media-player",
 	Navigation: "navigation",
-	"Phone & SMS": "messaging",
+	"Phone & SMS": "sms",
 	Reading: "notes",
 	"Science & Education": "productivity",
 	Security: "password-manager",
@@ -93,6 +98,111 @@ export const fdroidCategoryMap: Record<string, string> = {
 	Theming: "launcher",
 	Time: "calendar",
 	Writing: "notes",
+
+	// ─── Granular F-Droid / Izzy categories ──────────────
+	// Media & entertainment
+	"Local Media Player": "music",
+	"Music Practice Tool": "music",
+	"Online Media Player": "video",
+	Podcast: "podcast",
+	"Ebook Reader": "ebook-reader",
+	"Media Downloader": "media-player",
+
+	// Communication
+	Messaging: "messaging",
+	"Voice & Video Chat": "messaging",
+	Email: "email",
+	"Social Network": "social",
+	Forum: "social",
+	"SMS & MMS": "sms",
+
+	// Productivity & organization
+	Task: "productivity",
+	Note: "notes",
+	"Text Editor": "notes",
+	"Calendar & Agenda": "calendar",
+	"Habit Tracker": "productivity",
+	Clock: "productivity",
+	"Shopping List": "productivity",
+	"Recipe Manager": "productivity",
+	Inventory: "productivity",
+	"Unit Convertor": "productivity",
+	Calculator: "calculator",
+	Office: "office",
+
+	// Finance
+	"Finance Manager": "finance",
+	Wallet: "finance",
+	"Pass Wallet": "finance",
+
+	// Privacy & security
+	"Password & 2FA": "password-manager",
+	"File Encryption & Vault": "password-manager",
+	VPN: "vpn",
+	"VPN & Proxy": "vpn",
+	Firewall: "firewall",
+	"DNS & Hosts": "firewall",
+	"Ad Blocker": "firewall",
+
+	// Navigation & location
+	"Public Transport": "navigation",
+	"Location Tracker & Sharer": "navigation",
+	Maps: "maps",
+
+	// System & tools
+	Browser: "browser",
+	Bookmark: "browser",
+	Launcher: "launcher",
+	"Icon Pack": "launcher",
+	Wallpaper: "launcher",
+	Keyboard: "keyboard",
+	"Keyboard & IME": "keyboard",
+	Contact: "contacts",
+	Gallery: "gallery",
+	Camera: "camera",
+	"File Manager": "file-manager",
+	"File Transfer": "file-manager",
+	"Cloud Storage & File Sync": "cloud-storage",
+	Backup: "backup",
+	"App Store & Updater": "app-store",
+
+	// Health & fitness
+	Workout: "fitness",
+
+	// Creative
+	Draw: "photo-editing",
+	"Photo Editor": "photo-editing",
+
+	// Information
+	Weather: "weather",
+	News: "news",
+	"RSS Reader": "rss",
+	"Translation & Dictionary": "translator",
+	"AI Chat": "ai-assistant",
+
+	// Tech
+	"Network Analyzer": "dev-tools",
+	"Developer Tool": "dev-tools",
+	Torrent: "torrent",
+
+	// Games
+	Games: "games",
+	"Board Game": "games",
+	"Card Game": "games",
+	Puzzle: "games",
+	"Racing Game": "games",
+	"Strategy Game": "games",
+	"Word Game": "games",
+	Trivia: "games",
+	"Retro & Emulator": "games",
+	"Game Collection": "games",
+	"Music Game": "games",
+	"Logic Game": "games",
+
+	// Smart home
+	"Home Automation": "smart-home",
+
+	// Skip (no good fit): Religion
 };
 
 export const fdroidAntiFeatureMap: Record<

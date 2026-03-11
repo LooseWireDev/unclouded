@@ -13,6 +13,7 @@ import { fdroidAntiFeatureMap, fdroidCategoryMap, tagSeeds } from "./data/tags";
 import { webApps as webAppSeeds } from "./data/web-apps";
 import { deduplicateApps } from "./lib/dedup";
 import { generateId } from "./lib/id";
+import { sanitizeDescription } from "./lib/sanitize";
 import { slugify } from "./lib/slugify";
 import type { ParsedApp } from "./lib/types";
 import { parseFDroidIndex } from "./parsers/fdroid";
@@ -144,7 +145,7 @@ async function upsertApps(dedupedApps: ParsedApp[]) {
 				appId,
 				parsed.name,
 				slug,
-				parsed.description || parsed.summary || null,
+				sanitizeDescription(parsed.description || parsed.summary || "") || null,
 				parsed.iconUrl || null,
 				parsed.license || null,
 				parsed.websiteUrl || null,
@@ -188,7 +189,39 @@ async function upsertApps(dedupedApps: ParsedApp[]) {
 		}
 	}
 
-	console.log(`  Inserting ${sourceStmts.length} sources...`);
+	// Add GitHub sources from repository_url
+	let githubSourcesAdded = 0;
+	for (const parsed of dedupedApps) {
+		const slug = slugify(parsed.name);
+		const appId = actualSlugToId.get(slug);
+		if (!appId) continue;
+
+		if (
+			parsed.repositoryUrl?.includes("github.com") &&
+			!parsed.sources.some((s) => s.source === "github")
+		) {
+			sourceStmts.push({
+				sql: `INSERT INTO app_sources (id, app_id, source, url, package_name, metadata)
+					VALUES (?, ?, ?, ?, ?, ?)
+					ON CONFLICT (app_id, source) DO UPDATE SET
+						url = excluded.url, package_name = excluded.package_name, metadata = excluded.metadata`,
+				args: [
+					generateId(),
+					appId,
+					"github",
+					parsed.repositoryUrl,
+					parsed.packageName,
+					null,
+				],
+			});
+			stats.sourcesCreated++;
+			githubSourcesAdded++;
+		}
+	}
+
+	console.log(
+		`  Inserting ${sourceStmts.length} sources (${githubSourcesAdded} GitHub)...`,
+	);
 	await executeBatched(sourceStmts);
 
 	// Phase 3: Upsert app tags
@@ -210,7 +243,13 @@ async function upsertApps(dedupedApps: ParsedApp[]) {
 
 		for (const cat of parsed.categories || []) {
 			const mapped = fdroidCategoryMap[cat];
-			if (mapped) tagSlugsToApply.add(mapped);
+			if (mapped) {
+				if (Array.isArray(mapped)) {
+					for (const slug of mapped) tagSlugsToApply.add(slug);
+				} else {
+					tagSlugsToApply.add(mapped);
+				}
+			}
 		}
 
 		for (const af of parsed.antiFeatures || []) {
@@ -328,7 +367,7 @@ async function upsertWebApps() {
 				generateId(),
 				seed.name,
 				seed.slug,
-				seed.description,
+				sanitizeDescription(seed.description),
 				seed.websiteUrl,
 				seed.repositoryUrl || null,
 				now,
