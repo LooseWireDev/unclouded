@@ -14,7 +14,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "gmail",
 		appSlug: "proton-mail",
-				relationshipType: "direct",
+		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "gmail",
@@ -60,7 +60,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "outlook",
 		appSlug: "proton-mail",
-				relationshipType: "direct",
+		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "outlook",
@@ -106,7 +106,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "yahoo-mail",
 		appSlug: "proton-mail",
-				relationshipType: "direct",
+		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "yahoo-mail",
@@ -152,7 +152,7 @@ export const alternativeMappings: AlternativeSeed[] = [
 	{
 		proprietarySlug: "icloud-mail",
 		appSlug: "proton-mail",
-				relationshipType: "direct",
+		relationshipType: "direct",
 	},
 	{
 		proprietarySlug: "icloud-mail",

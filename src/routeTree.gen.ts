@@ -8,61 +8,191 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppsIndexRouteImport } from './routes/apps/index'
+import { Route as AlternativesIndexRouteImport } from './routes/alternatives/index'
+import { Route as AppsSlugRouteImport } from './routes/apps/$slug'
+import { Route as AlternativesSlugRouteImport } from './routes/alternatives/$slug'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
-	id: "/",
-	path: "/",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppsIndexRoute = AppsIndexRouteImport.update({
+  id: '/apps/',
+  path: '/apps/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlternativesIndexRoute = AlternativesIndexRouteImport.update({
+  id: '/alternatives/',
+  path: '/alternatives/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppsSlugRoute = AppsSlugRouteImport.update({
+  id: '/apps/$slug',
+  path: '/apps/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlternativesSlugRoute = AlternativesSlugRouteImport.update({
+  id: '/alternatives/$slug',
+  path: '/alternatives/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-	"/": typeof IndexRoute;
+  '/': typeof IndexRoute
+  '/discover': typeof DiscoverRoute
+  '/search': typeof SearchRoute
+  '/alternatives/$slug': typeof AlternativesSlugRoute
+  '/apps/$slug': typeof AppsSlugRoute
+  '/alternatives/': typeof AlternativesIndexRoute
+  '/apps/': typeof AppsIndexRoute
 }
 export interface FileRoutesByTo {
-	"/": typeof IndexRoute;
+  '/': typeof IndexRoute
+  '/discover': typeof DiscoverRoute
+  '/search': typeof SearchRoute
+  '/alternatives/$slug': typeof AlternativesSlugRoute
+  '/apps/$slug': typeof AppsSlugRoute
+  '/alternatives': typeof AlternativesIndexRoute
+  '/apps': typeof AppsIndexRoute
 }
 export interface FileRoutesById {
-	__root__: typeof rootRouteImport;
-	"/": typeof IndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/discover': typeof DiscoverRoute
+  '/search': typeof SearchRoute
+  '/alternatives/$slug': typeof AlternativesSlugRoute
+  '/apps/$slug': typeof AppsSlugRoute
+  '/alternatives/': typeof AlternativesIndexRoute
+  '/apps/': typeof AppsIndexRoute
 }
 export interface FileRouteTypes {
-	fileRoutesByFullPath: FileRoutesByFullPath;
-	fullPaths: "/";
-	fileRoutesByTo: FileRoutesByTo;
-	to: "/";
-	id: "__root__" | "/";
-	fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/discover'
+    | '/search'
+    | '/alternatives/$slug'
+    | '/apps/$slug'
+    | '/alternatives/'
+    | '/apps/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/discover'
+    | '/search'
+    | '/alternatives/$slug'
+    | '/apps/$slug'
+    | '/alternatives'
+    | '/apps'
+  id:
+    | '__root__'
+    | '/'
+    | '/discover'
+    | '/search'
+    | '/alternatives/$slug'
+    | '/apps/$slug'
+    | '/alternatives/'
+    | '/apps/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-	IndexRoute: typeof IndexRoute;
+  IndexRoute: typeof IndexRoute
+  DiscoverRoute: typeof DiscoverRoute
+  SearchRoute: typeof SearchRoute
+  AlternativesSlugRoute: typeof AlternativesSlugRoute
+  AppsSlugRoute: typeof AppsSlugRoute
+  AlternativesIndexRoute: typeof AlternativesIndexRoute
+  AppsIndexRoute: typeof AppsIndexRoute
 }
 
-declare module "@tanstack/react-router" {
-	interface FileRoutesByPath {
-		"/": {
-			id: "/";
-			path: "/";
-			fullPath: "/";
-			preLoaderRoute: typeof IndexRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-	}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apps/': {
+      id: '/apps/'
+      path: '/apps'
+      fullPath: '/apps/'
+      preLoaderRoute: typeof AppsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alternatives/': {
+      id: '/alternatives/'
+      path: '/alternatives'
+      fullPath: '/alternatives/'
+      preLoaderRoute: typeof AlternativesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apps/$slug': {
+      id: '/apps/$slug'
+      path: '/apps/$slug'
+      fullPath: '/apps/$slug'
+      preLoaderRoute: typeof AppsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alternatives/$slug': {
+      id: '/alternatives/$slug'
+      path: '/alternatives/$slug'
+      fullPath: '/alternatives/$slug'
+      preLoaderRoute: typeof AlternativesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-	IndexRoute: IndexRoute,
-};
+  IndexRoute: IndexRoute,
+  DiscoverRoute: DiscoverRoute,
+  SearchRoute: SearchRoute,
+  AlternativesSlugRoute: AlternativesSlugRoute,
+  AppsSlugRoute: AppsSlugRoute,
+  AlternativesIndexRoute: AlternativesIndexRoute,
+  AppsIndexRoute: AppsIndexRoute,
+}
 export const routeTree = rootRouteImport
-	._addFileChildren(rootRouteChildren)
-	._addFileTypes<FileRouteTypes>();
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from "./router.tsx";
-
-declare module "@tanstack/react-start" {
-	interface Register {
-		ssr: true;
-		router: Awaited<ReturnType<typeof getRouter>>;
-	}
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
 }

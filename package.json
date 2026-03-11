@@ -26,7 +26,9 @@
 	"packageManager": "pnpm@10.29.2",
 	"dependencies": {
 		"@base-ui/react": "^1.2.0",
-		"@fontsource-variable/figtree": "^5.2.10",
+		"@fontsource-variable/fraunces": "^5.2.9",
+		"@fontsource-variable/plus-jakarta-sans": "^5.2.8",
+		"@fontsource/geist-mono": "^5.2.7",
 		"@hugeicons/core-free-icons": "^4.0.0",
 		"@hugeicons/react": "^1.1.6",
 		"@libsql/client": "^0.17.0",
