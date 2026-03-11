@@ -8,3 +8,4 @@ dist/
 drizzle/
 .wrangler/
 *.log
+.cache/
