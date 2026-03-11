@@ -10,6 +10,7 @@ import { alternativeMappings } from "./data/alternatives";
 import { appOverrides } from "./data/app-overrides";
 import { proprietaryApps as proprietaryAppSeeds } from "./data/proprietary-apps";
 import { fdroidAntiFeatureMap, fdroidCategoryMap, tagSeeds } from "./data/tags";
+import { webApps as webAppSeeds } from "./data/web-apps";
 import { deduplicateApps } from "./lib/dedup";
 import { generateId } from "./lib/id";
 import { slugify } from "./lib/slugify";
@@ -303,6 +304,64 @@ async function upsertProprietaryApps() {
 	console.log(`  ${stats.proprietaryAppsCreated} proprietary apps upserted`);
 }
 
+async function upsertWebApps() {
+	console.log("Upserting web/desktop apps...");
+
+	const allTags = await db.select().from(tags);
+	const tagLookup = new Map(allTags.map((t) => [t.slug, t.id]));
+	const now = new Date().toISOString();
+
+	const appStmts: InStatement[] = [];
+	const tagStmts: InStatement[] = [];
+
+	for (const seed of webAppSeeds) {
+		appStmts.push({
+			sql: `INSERT INTO apps (id, name, slug, description, website_url, repository_url, created_at, updated_at)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+				ON CONFLICT (slug) DO UPDATE SET
+					name = excluded.name,
+					description = COALESCE(excluded.description, apps.description),
+					website_url = COALESCE(excluded.website_url, apps.website_url),
+					repository_url = COALESCE(excluded.repository_url, apps.repository_url),
+					updated_at = excluded.updated_at`,
+			args: [
+				generateId(),
+				seed.name,
+				seed.slug,
+				seed.description,
+				seed.websiteUrl,
+				seed.repositoryUrl || null,
+				now,
+				now,
+			],
+		});
+	}
+
+	await executeBatched(appStmts);
+
+	// Fetch actual IDs for tag linking
+	const allApps = await db.select({ id: apps.id, slug: apps.slug }).from(apps);
+	const appBySlug = new Map(allApps.map((a) => [a.slug, a.id]));
+
+	for (const seed of webAppSeeds) {
+		const appId = appBySlug.get(seed.slug);
+		if (!appId) continue;
+		for (const tagSlug of seed.tags) {
+			const tagId = tagLookup.get(tagSlug);
+			if (!tagId) continue;
+			tagStmts.push({
+				sql: "INSERT OR IGNORE INTO app_tags (app_id, tag_id) VALUES (?, ?)",
+				args: [appId, tagId],
+			});
+		}
+	}
+
+	await executeBatched(tagStmts);
+	console.log(
+		`  ${webAppSeeds.length} web/desktop apps upserted, ${tagStmts.length} tag links`,
+	);
+}
+
 async function upsertAlternatives() {
 	console.log("Upserting alternative mappings...");
 
@@ -382,6 +441,7 @@ async function main() {
 
 	await upsertTags();
 	await upsertApps(dedupedApps);
+	await upsertWebApps();
 	await upsertProprietaryApps();
 	await upsertAlternatives();
 
