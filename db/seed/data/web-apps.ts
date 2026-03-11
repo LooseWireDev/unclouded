@@ -966,7 +966,16 @@ export const webApps: WebAppSeed[] = [
 			"Privacy-focused Firefox fork with enhanced security defaults and no telemetry.",
 		websiteUrl: "https://librewolf.net",
 		repositoryUrl: "https://codeberg.org/librewolf/source",
-		tags: ["browser", "open-source", "no-tracking", "ad-free", "desktop", "linux", "windows", "macos"],
+		tags: [
+			"browser",
+			"open-source",
+			"no-tracking",
+			"ad-free",
+			"desktop",
+			"linux",
+			"windows",
+			"macos",
+		],
 	},
 	{
 		name: "Mullvad Browser",
@@ -974,7 +983,15 @@ export const webApps: WebAppSeed[] = [
 		description:
 			"Privacy-focused browser developed by Mullvad VPN and the Tor Project to minimize tracking.",
 		websiteUrl: "https://mullvad.net/en/browser",
-		tags: ["browser", "open-source", "no-tracking", "desktop", "linux", "windows", "macos"],
+		tags: [
+			"browser",
+			"open-source",
+			"no-tracking",
+			"desktop",
+			"linux",
+			"windows",
+			"macos",
+		],
 	},
 	{
 		name: "Zen Browser",
@@ -982,7 +999,15 @@ export const webApps: WebAppSeed[] = [
 		description:
 			"Firefox-based browser with a focus on simplicity and privacy.",
 		websiteUrl: "https://zen-browser.app",
-		tags: ["browser", "open-source", "no-tracking", "desktop", "linux", "windows", "macos"],
+		tags: [
+			"browser",
+			"open-source",
+			"no-tracking",
+			"desktop",
+			"linux",
+			"windows",
+			"macos",
+		],
 	},
 	{
 		name: "Floorp",
@@ -990,7 +1015,15 @@ export const webApps: WebAppSeed[] = [
 		description:
 			"Customizable Firefox-based browser from Japan with built-in privacy features.",
 		websiteUrl: "https://floorp.app",
-		tags: ["browser", "open-source", "no-tracking", "desktop", "linux", "windows", "macos"],
+		tags: [
+			"browser",
+			"open-source",
+			"no-tracking",
+			"desktop",
+			"linux",
+			"windows",
+			"macos",
+		],
 	},
 	{
 		name: "Waterfox",
@@ -998,7 +1031,15 @@ export const webApps: WebAppSeed[] = [
 		description:
 			"Firefox fork focused on speed, privacy, and legacy extension support.",
 		websiteUrl: "https://www.waterfox.net",
-		tags: ["browser", "open-source", "no-tracking", "desktop", "linux", "windows", "macos"],
+		tags: [
+			"browser",
+			"open-source",
+			"no-tracking",
+			"desktop",
+			"linux",
+			"windows",
+			"macos",
+		],
 	},
 	{
 		name: "Orion",
@@ -1011,8 +1052,7 @@ export const webApps: WebAppSeed[] = [
 	{
 		name: "Vanadium",
 		slug: "vanadium",
-		description:
-			"Hardened Chromium browser included with GrapheneOS.",
+		description: "Hardened Chromium browser included with GrapheneOS.",
 		websiteUrl: "https://grapheneos.org",
 		tags: ["browser", "open-source", "no-tracking", "android"],
 	},
@@ -1032,7 +1072,18 @@ export const webApps: WebAppSeed[] = [
 			"Routes traffic through the Tor network for anonymous browsing.",
 		websiteUrl: "https://www.torproject.org",
 		repositoryUrl: "https://gitlab.torproject.org/tpo/applications/tor-browser",
-		tags: ["browser", "open-source", "no-tracking", "encrypted", "decentralized", "desktop", "linux", "windows", "macos", "android"],
+		tags: [
+			"browser",
+			"open-source",
+			"no-tracking",
+			"encrypted",
+			"decentralized",
+			"desktop",
+			"linux",
+			"windows",
+			"macos",
+			"android",
+		],
 	},
 
 	// ─── Messaging ─────────────────────────────────────────
@@ -1042,7 +1093,14 @@ export const webApps: WebAppSeed[] = [
 		description:
 			"Modern XMPP chat client for desktop with support for OMEMO encryption.",
 		websiteUrl: "https://dino.im",
-		tags: ["messaging", "open-source", "encrypted", "decentralized", "desktop", "linux"],
+		tags: [
+			"messaging",
+			"open-source",
+			"encrypted",
+			"decentralized",
+			"desktop",
+			"linux",
+		],
 	},
 	{
 		name: "Rocket.Chat",
@@ -1060,15 +1118,22 @@ export const webApps: WebAppSeed[] = [
 			"Open standard for decentralized, encrypted real-time communication.",
 		websiteUrl: "https://matrix.org",
 		repositoryUrl: "https://github.com/matrix-org",
-		tags: ["messaging", "open-source", "encrypted", "decentralized", "federated", "web", "desktop"],
+		tags: [
+			"messaging",
+			"open-source",
+			"encrypted",
+			"decentralized",
+			"federated",
+			"web",
+			"desktop",
+		],
 	},
 
 	// ─── Notes & Productivity ──────────────────────────────
 	{
 		name: "Memos",
 		slug: "memos",
-		description:
-			"Lightweight, self-hosted memo hub for knowledge management.",
+		description: "Lightweight, self-hosted memo hub for knowledge management.",
 		websiteUrl: "https://www.usememos.com",
 		repositoryUrl: "https://github.com/usememos/memos",
 		tags: ["notes", "open-source", "self-hostable", "web"],
@@ -1080,7 +1145,15 @@ export const webApps: WebAppSeed[] = [
 			"Plain-text note taking app with Markdown support and Nextcloud integration.",
 		websiteUrl: "https://www.qownnotes.org",
 		repositoryUrl: "https://github.com/pbek/QOwnNotes",
-		tags: ["notes", "open-source", "offline-capable", "desktop", "linux", "windows", "macos"],
+		tags: [
+			"notes",
+			"open-source",
+			"offline-capable",
+			"desktop",
+			"linux",
+			"windows",
+			"macos",
+		],
 	},
 
 	// ─── Photos & Gallery ──────────────────────────────────
@@ -1106,8 +1179,7 @@ export const webApps: WebAppSeed[] = [
 	{
 		name: "Nextcloud Calendar",
 		slug: "nextcloud-calendar",
-		description:
-			"CalDAV calendar app integrated with Nextcloud.",
+		description: "CalDAV calendar app integrated with Nextcloud.",
 		websiteUrl: "https://apps.nextcloud.com/apps/calendar",
 		repositoryUrl: "https://github.com/nextcloud/calendar",
 		tags: ["calendar", "open-source", "self-hostable", "web"],
@@ -1129,7 +1201,14 @@ export const webApps: WebAppSeed[] = [
 		description:
 			"German email and cloud provider with calendar, contacts, and file storage.",
 		websiteUrl: "https://mailbox.org",
-		tags: ["email", "cloud-storage", "no-tracking", "ad-free", "encrypted", "web"],
+		tags: [
+			"email",
+			"cloud-storage",
+			"no-tracking",
+			"ad-free",
+			"encrypted",
+			"web",
+		],
 	},
 
 	// ─── Password Managers & Auth ──────────────────────────
@@ -1145,8 +1224,7 @@ export const webApps: WebAppSeed[] = [
 	{
 		name: "Bitwarden Authenticator",
 		slug: "bitwarden-auth",
-		description:
-			"Standalone TOTP authenticator app from Bitwarden.",
+		description: "Standalone TOTP authenticator app from Bitwarden.",
 		websiteUrl: "https://bitwarden.com/products/authenticator",
 		tags: ["2fa", "open-source", "web", "android", "ios"],
 	},
@@ -1168,13 +1246,21 @@ export const webApps: WebAppSeed[] = [
 		description:
 			"VPN service from Mozilla using the WireGuard protocol on the Mullvad network.",
 		websiteUrl: "https://www.mozilla.org/en-US/products/vpn",
-		tags: ["vpn", "no-tracking", "desktop", "android", "ios", "linux", "windows", "macos"],
+		tags: [
+			"vpn",
+			"no-tracking",
+			"desktop",
+			"android",
+			"ios",
+			"linux",
+			"windows",
+			"macos",
+		],
 	},
 	{
 		name: "URnetwork dVPN",
 		slug: "urnetwork-dvpn",
-		description:
-			"Decentralized VPN built on a peer-to-peer network.",
+		description: "Decentralized VPN built on a peer-to-peer network.",
 		websiteUrl: "https://ur.io",
 		tags: ["vpn", "decentralized", "p2p", "web"],
 	},
@@ -1251,7 +1337,15 @@ export const webApps: WebAppSeed[] = [
 			"Open-source API client that stores collections directly in your filesystem.",
 		websiteUrl: "https://www.usebruno.com",
 		repositoryUrl: "https://github.com/usebruno/bruno",
-		tags: ["dev-tools", "open-source", "offline-capable", "desktop", "linux", "windows", "macos"],
+		tags: [
+			"dev-tools",
+			"open-source",
+			"offline-capable",
+			"desktop",
+			"linux",
+			"windows",
+			"macos",
+		],
 	},
 	{
 		name: "Hoppscotch",
@@ -1267,18 +1361,24 @@ export const webApps: WebAppSeed[] = [
 	{
 		name: "Proton Mail",
 		slug: "proton-mail",
-		description:
-			"End-to-end encrypted email service based in Switzerland.",
+		description: "End-to-end encrypted email service based in Switzerland.",
 		websiteUrl: "https://proton.me/mail",
-		tags: ["email", "encrypted", "no-tracking", "ad-free", "web", "android", "ios"],
+		tags: [
+			"email",
+			"encrypted",
+			"no-tracking",
+			"ad-free",
+			"web",
+			"android",
+			"ios",
+		],
 	},
 
 	// ─── SMS/Keyboard (Play Store only) ────────────────────
 	{
 		name: "QKSMS",
 		slug: "qksms",
-		description:
-			"Open-source replacement for the stock Android messaging app.",
+		description: "Open-source replacement for the stock Android messaging app.",
 		websiteUrl: "https://github.com/moezbhatti/qksms",
 		repositoryUrl: "https://github.com/moezbhatti/qksms",
 		tags: ["sms", "open-source", "no-tracking", "android"],
@@ -1286,8 +1386,7 @@ export const webApps: WebAppSeed[] = [
 	{
 		name: "OpenBoard",
 		slug: "openboard",
-		description:
-			"Privacy-respecting open-source keyboard based on AOSP.",
+		description: "Privacy-respecting open-source keyboard based on AOSP.",
 		websiteUrl: "https://github.com/openboard-team/openboard",
 		repositoryUrl: "https://github.com/openboard-team/openboard",
 		tags: ["keyboard", "open-source", "no-tracking", "android"],
@@ -1297,7 +1396,8 @@ export const webApps: WebAppSeed[] = [
 		slug: "seedvault",
 		description:
 			"Encrypted Android backup solution built into custom ROMs like GrapheneOS and CalyxOS.",
-		websiteUrl: "https://calyxinstitute.org/projects/seedvault-encrypted-backup-for-android",
+		websiteUrl:
+			"https://calyxinstitute.org/projects/seedvault-encrypted-backup-for-android",
 		repositoryUrl: "https://github.com/seedvault-app/seedvault",
 		tags: ["backup", "open-source", "encrypted", "android"],
 	},
@@ -1320,4 +1420,3 @@ export const webApps: WebAppSeed[] = [
 		tags: ["2fa", "open-source", "no-tracking", "android", "ios"],
 	},
 ];
-
