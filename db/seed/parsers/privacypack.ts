@@ -1,7 +1,7 @@
 import { slugify } from "../lib/slugify";
 import type { AlternativeSeed, ProprietaryAppSeed } from "../lib/types";
 
-type PrivacyPackData = {
+export type PrivacyPackData = {
 	categories: Array<{
 		name: string;
 		order: number;
