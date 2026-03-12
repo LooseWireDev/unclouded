@@ -10,3 +10,5 @@ drizzle/
 .wrangler/
 *.log
 .cache/
+.claude/
+.worktrees/
