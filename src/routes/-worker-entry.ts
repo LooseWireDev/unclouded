@@ -170,7 +170,9 @@ async function sitemapCategories(): Promise<Response> {
 async function sitemapTags(): Promise<Response> {
 	const db = getDb();
 	const slugs = await listAllTagSlugs(db);
-	const nonCategory = slugs.filter((s: { slug: string; type: string }) => s.type !== "category");
+	const nonCategory = slugs.filter(
+		(s: { slug: string; type: string }) => s.type !== "category",
+	);
 	return xmlResponse(
 		urlset(
 			nonCategory.map((s) => ({
@@ -227,7 +229,6 @@ const sitemapHandlers: Record<string, () => Response | Promise<Response>> = {
 
 export default {
 	async fetch(request: Request, _env: Env): Promise<Response> {
-
 		const url = new URL(request.url);
 		const { pathname } = url;
 
