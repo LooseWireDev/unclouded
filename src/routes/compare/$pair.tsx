@@ -35,6 +35,7 @@ export const Route = createFileRoute("/compare/$pair")({
 				{ property: "og:description", content: description },
 				{ property: "og:type", content: "website" },
 				{ property: "og:url", content: canonical },
+				...(comparison.appA.iconUrl ? [{ property: "og:image", content: comparison.appA.iconUrl }] : []),
 			],
 			links: [{ rel: "canonical", href: canonical }],
 		};
