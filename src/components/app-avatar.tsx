@@ -1,7 +1,9 @@
+import { useState } from "react";
 import {
 	avatarColorFromName,
 	avatarTextColorFromName,
 } from "~/lib/avatar-color";
+import { getIconUrl } from "~/lib/icon-url";
 import { cn } from "~/lib/utils";
 
 type AvatarSize = "xs" | "sm" | "md" | "lg";
@@ -20,25 +22,15 @@ interface AppAvatarProps {
 	className?: string;
 }
 
-export function AppAvatar({
+function InitialsFallback({
 	name,
-	iconUrl,
-	size = "md",
+	sizeClass,
 	className,
-}: AppAvatarProps) {
-	const sizeClass = sizeClasses[size];
-
-	if (iconUrl) {
-		return (
-			<img
-				src={iconUrl}
-				alt=""
-				className={cn("shrink-0 object-cover", sizeClass, className)}
-				loading="lazy"
-			/>
-		);
-	}
-
+}: {
+	name: string;
+	sizeClass: string;
+	className?: string;
+}) {
 	return (
 		<div
 			className={cn(
@@ -53,5 +45,35 @@ export function AppAvatar({
 		>
 			{name.charAt(0).toUpperCase()}
 		</div>
+	);
+}
+
+export function AppAvatar({
+	name,
+	iconUrl,
+	size = "md",
+	className,
+}: AppAvatarProps) {
+	const sizeClass = sizeClasses[size];
+	const [failed, setFailed] = useState(false);
+
+	if (!iconUrl || failed) {
+		return (
+			<InitialsFallback
+				name={name}
+				sizeClass={sizeClass}
+				className={className}
+			/>
+		);
+	}
+
+	return (
+		<img
+			src={getIconUrl(iconUrl)}
+			alt=""
+			className={cn("shrink-0 object-cover", sizeClass, className)}
+			loading="lazy"
+			onError={() => setFailed(true)}
+		/>
 	);
 }
