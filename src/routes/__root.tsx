@@ -16,6 +16,7 @@ export const Route = createRootRoute({
 			{ title: "Unclouded" },
 			{ property: "og:image", content: OG_IMAGE },
 		],
+		links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
 	}),
 	component: RootComponent,
 });
