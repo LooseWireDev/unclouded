@@ -122,6 +122,7 @@ function AlternativeDetailPage() {
 								<AlternativeCard
 									key={alt.app.id}
 									app={{
+										id: alt.app.id,
 										name: alt.app.name,
 										slug: alt.app.slug,
 										description: alt.app.description,

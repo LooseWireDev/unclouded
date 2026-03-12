@@ -9,6 +9,7 @@ import type { DrizzleDB, TursoClient } from "./client";
 import type { TagType } from "./schema";
 import {
 	alternatives,
+	appDownloads,
 	apps,
 	appTags,
 	comparisonPairs,
@@ -17,6 +18,7 @@ import {
 	tags,
 	VECTOR_QUERIES,
 } from "./schema";
+import type { SourceType } from "./schema";
 
 // ─── Desktop-Only Filter ─────────────────────────────────────────────
 // Desktop-only = has at least one desktop platform tag but NO mobile tag.
@@ -740,4 +742,17 @@ export async function semanticSearch(
 		.filter(<T>(v: T | undefined): v is T => v !== undefined);
 
 	return { apps: orderedApps, proprietaryApps: orderedProps };
+}
+
+// ─── Download Tracking ──────────────────────────────────────────────
+
+export async function recordAppDownload(
+	db: DrizzleDB,
+	data: { id: string; appId: string; source: SourceType },
+) {
+	await db.insert(appDownloads).values({
+		id: data.id,
+		appId: data.appId,
+		source: data.source,
+	});
 }
