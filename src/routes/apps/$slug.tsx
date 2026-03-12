@@ -5,7 +5,6 @@ import { Breadcrumb } from "~/components/breadcrumb";
 import { InstallSources } from "~/components/install-sources";
 import { JsonLd } from "~/components/json-ld";
 import { PageLayout } from "~/components/layout/page-layout";
-import { TagPill } from "~/components/tag-pill";
 import { SITE_URL } from "~/lib/constants";
 import {
 	fetchAppAlternatives,
@@ -29,16 +28,26 @@ export const Route = createFileRoute("/apps/$slug")({
 	head: ({ loaderData }) => {
 		if (!loaderData) return {};
 		const { app } = loaderData;
+		const categoryTags = app.tags.filter(
+			(t: { type: string }) => t.type === "category",
+		);
+		const categoryName = categoryTags.length > 0 ? categoryTags[0].name : null;
 		const plainDescription = app.description
 			? stripHtml(app.description)
 			: `${app.name} — privacy-focused alternative`;
+		const title = categoryName
+			? `${app.name} — Privacy-Focused ${categoryName} App | Unclouded`
+			: `${app.name} — Open Source App | Unclouded`;
+		const metaDescription = categoryName
+			? `${plainDescription.slice(0, 120)} — Compare privacy-focused ${categoryName.toLowerCase()} apps. Install via F-Droid or Obtainium.`
+			: `${plainDescription.slice(0, 140)} — Install via F-Droid or Obtainium.`;
 		const canonical = `${SITE_URL}/apps/${app.slug}`;
 		return {
 			meta: [
-				{ title: `${app.name} — Unclouded` },
-				{ name: "description", content: plainDescription },
-				{ property: "og:title", content: `${app.name} — Unclouded` },
-				{ property: "og:description", content: plainDescription },
+				{ title },
+				{ name: "description", content: metaDescription },
+				{ property: "og:title", content: title },
+				{ property: "og:description", content: metaDescription },
 				{ property: "og:type", content: "article" },
 				{ property: "og:url", content: canonical },
 			],
@@ -57,6 +66,7 @@ function AppDetailPage() {
 	const platformTags = app.tags.filter(
 		(t: { type: string }) => t.type === "platform",
 	);
+	const categoryName = categoryTags.length > 0 ? categoryTags[0].name : null;
 	const firstSource = app.sources[0];
 
 	const jsonLd = {
@@ -80,10 +90,13 @@ function AppDetailPage() {
 		offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 	};
 
+	const hasAlternativesOrComparisons =
+		alternatives.length > 0 || comparisons.length > 0;
+
 	return (
 		<PageLayout>
 			<JsonLd data={jsonLd} />
-			<div className="mx-auto max-w-3xl space-y-8">
+			<div className="mx-auto max-w-3xl space-y-10">
 				<Breadcrumb
 					items={[
 						{ label: "Home", href: "/" },
@@ -92,128 +105,126 @@ function AppDetailPage() {
 					]}
 				/>
 
-				<AppDetailHeader
-					name={app.name}
-					slug={app.slug}
-					description={app.description}
-					iconUrl={app.iconUrl}
-					license={app.license}
-					websiteUrl={app.websiteUrl}
-					repositoryUrl={app.repositoryUrl}
-				/>
+				{/* ── Act 1: About ── */}
+				<section>
+					<h2 className="sr-only">About {app.name}</h2>
+					<AppDetailHeader
+						name={app.name}
+						slug={app.slug}
+						description={app.description}
+						iconUrl={app.iconUrl}
+						license={app.license}
+						websiteUrl={app.websiteUrl}
+						repositoryUrl={app.repositoryUrl}
+						categoryName={categoryName}
+						tags={app.tags}
+					/>
+				</section>
 
-				{app.tags.length > 0 && (
-					<section>
-						<h2 className="mb-2 font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
-							Categories & Features
-						</h2>
-						<div className="flex flex-wrap gap-1.5">
-							{app.tags.map(
-								(tag: { name: string; slug: string; type: string }) => (
-									<TagPill
-										key={tag.slug}
-										name={tag.name}
-										slug={tag.slug}
-										type={tag.type as "category" | "feature" | "platform"}
-										linked
-									/>
-								),
-							)}
-						</div>
-					</section>
-				)}
-
+				{/* ── Act 2: Install ── */}
 				{app.sources.length > 0 && (
-					<InstallSources sources={app.sources} appName={app.name} />
-				)}
-
-				{alternatives.length > 0 && (
 					<section>
-						<h2 className="mb-2 font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
-							Replaces These Apps
+						<h2 className="mb-3 font-sans text-base font-bold text-foreground">
+							Install
 						</h2>
-						<div className="flex flex-wrap gap-2">
-							{alternatives.map((alt) => (
-								<Link
-									key={alt.proprietaryApp.id}
-									to="/alternatives/$slug"
-									params={{ slug: alt.proprietaryApp.slug }}
-									className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-sun-border"
-								>
-									<AppAvatar
-										name={alt.proprietaryApp.name}
-										iconUrl={alt.proprietaryApp.iconUrl}
-										size="xs"
-										className="rounded-full"
-									/>
-									{alt.proprietaryApp.name}
-									<span className="text-xs text-muted-foreground capitalize">
-										({alt.relationshipType})
-									</span>
-								</Link>
-							))}
-						</div>
+						<InstallSources sources={app.sources} appName={app.name} />
 					</section>
 				)}
 
-				{comparisons.length > 0 && (
-					<section>
-						<h2 className="mb-1 font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
-							Compare {app.name} with Similar Apps
+				{/* ── Act 3: Alternatives & Comparisons ── */}
+				{hasAlternativesOrComparisons && (
+					<section className="space-y-8">
+						<h2 className="mb-3 font-sans text-base font-bold text-foreground">
+							Alternatives & Comparisons
 						</h2>
-						<p className="mb-3 text-sm text-muted-foreground">
-							See how {app.name} stacks up against alternatives
-						</p>
-						<div className="grid gap-3 sm:grid-cols-2">
-							{comparisons.map(
-								(pair: {
-									id: string;
-									slug: string;
-									sharedTagCount: number;
-									appA: {
-										id: string;
-										name: string;
-										slug: string;
-										iconUrl: string | null;
-									};
-									appB: {
-										id: string;
-										name: string;
-										slug: string;
-										iconUrl: string | null;
-									};
-								}) => {
-									const other = pair.appA.id === app.id ? pair.appB : pair.appA;
-									return (
+
+						{alternatives.length > 0 && (
+							<div>
+								<h3 className="mb-2 text-sm font-semibold text-muted-foreground">
+									Replaces These Apps
+								</h3>
+								<div className="flex flex-wrap gap-2">
+									{alternatives.map((alt) => (
 										<Link
-											key={pair.id}
-											to="/compare/$pair"
-											params={{ pair: pair.slug }}
-											className="group flex items-center gap-3 rounded-lg border border-border bg-card p-3 transition-all hover:border-sun-border"
+											key={alt.proprietaryApp.id}
+											to="/alternatives/$slug"
+											params={{ slug: alt.proprietaryApp.slug }}
+											className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-sun-border"
 										>
 											<AppAvatar
-												name={other.name}
-												iconUrl={other.iconUrl}
-												size="sm"
+												name={alt.proprietaryApp.name}
+												iconUrl={alt.proprietaryApp.iconUrl}
+												size="xs"
+												className="rounded-full"
 											/>
-											<div className="min-w-0 flex-1">
-												<p className="truncate text-sm font-medium text-foreground">
-													vs {other.name}
-												</p>
-												<p className="text-xs text-muted-foreground">
-													{pair.sharedTagCount} shared{" "}
-													{pair.sharedTagCount === 1 ? "tag" : "tags"}
-												</p>
-											</div>
+											{alt.proprietaryApp.name}
+											<span className="text-xs text-muted-foreground capitalize">
+												({alt.relationshipType})
+											</span>
 										</Link>
-									);
-								},
-							)}
-						</div>
+									))}
+								</div>
+							</div>
+						)}
+
+						{comparisons.length > 0 && (
+							<div>
+								<h3 className="mb-2 text-sm font-semibold text-muted-foreground">
+									Compare with Similar Apps
+								</h3>
+								<div className="grid gap-3 sm:grid-cols-2">
+									{comparisons.map(
+										(pair: {
+											id: string;
+											slug: string;
+											sharedTagCount: number;
+											appA: {
+												id: string;
+												name: string;
+												slug: string;
+												iconUrl: string | null;
+											};
+											appB: {
+												id: string;
+												name: string;
+												slug: string;
+												iconUrl: string | null;
+											};
+										}) => {
+											const other =
+												pair.appA.id === app.id ? pair.appB : pair.appA;
+											return (
+												<Link
+													key={pair.id}
+													to="/compare/$pair"
+													params={{ pair: pair.slug }}
+													className="group flex items-center gap-3 rounded-lg border border-border bg-card p-3 transition-all hover:border-sun-border"
+												>
+													<AppAvatar
+														name={other.name}
+														iconUrl={other.iconUrl}
+														size="sm"
+													/>
+													<div className="min-w-0 flex-1">
+														<p className="truncate text-sm font-medium text-foreground">
+															vs {other.name}
+														</p>
+														<p className="text-xs text-muted-foreground">
+															{pair.sharedTagCount} shared{" "}
+															{pair.sharedTagCount === 1 ? "tag" : "tags"}
+														</p>
+													</div>
+												</Link>
+											);
+										},
+									)}
+								</div>
+							</div>
+						)}
 					</section>
 				)}
 
-				{/* Internal links */}
+				{/* ── Internal links ── */}
 				<nav className="flex flex-wrap gap-3 border-t border-border pt-6 text-sm">
 					{categoryTags.length > 0 && (
 						<Link
