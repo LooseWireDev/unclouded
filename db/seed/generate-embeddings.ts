@@ -19,7 +19,7 @@ if (!CF_ACCOUNT_ID || !CF_API_TOKEN) {
 	process.exit(1);
 }
 
-const MODEL = "@cf/bge-base-en-v1.5";
+const MODEL = "@cf/baai/bge-base-en-v1.5";
 const API_URL = `https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/ai/run/${MODEL}`;
 const BATCH_SIZE = 100;
 
