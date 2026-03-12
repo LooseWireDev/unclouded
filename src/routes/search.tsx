@@ -54,7 +54,7 @@ function SearchPage() {
 
 				{!hasQuery && (
 					<p className="text-center text-muted-foreground">
-						Start typing to search...
+						Type a query and press Search to find apps.
 					</p>
 				)}
 
