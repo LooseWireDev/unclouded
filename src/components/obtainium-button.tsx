@@ -1,6 +1,5 @@
 // Usage:
-// <ObtainiumButton appId={app.id} appName={app.name} sources={app.sources} />
-// Place in app detail install-sources section and alternative-card
+// <ObtainiumButton appId={app.id} sources={app.sources} />
 
 import { ArrowDown01Icon, Download04Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -22,7 +21,6 @@ import type { SourceType } from "../../db/schema";
 
 interface ObtainiumButtonProps {
 	appId: string;
-	appName: string;
 	sources: SourceInfo[];
 }
 
@@ -32,12 +30,8 @@ function track(appId: string, source: string) {
 	);
 }
 
-export function ObtainiumButton({
-	appId,
-	appName,
-	sources,
-}: ObtainiumButtonProps) {
-	const obtainiumSources = getObtainiumSources(appName, sources);
+export function ObtainiumButton({ appId, sources }: ObtainiumButtonProps) {
+	const obtainiumSources = getObtainiumSources(sources);
 
 	if (obtainiumSources.length === 0) return null;
 
@@ -47,9 +41,11 @@ export function ObtainiumButton({
 			<Tooltip>
 				<TooltipTrigger
 					render={
-						// biome-ignore lint/a11y/useAnchorContent: Button children provide content
 						<Button
-							render={<a href={link} />}
+							render={
+								// biome-ignore lint/a11y/useAnchorContent: content provided by Button children
+								<a href={link} />
+							}
 							onClick={() => track(appId, source)}
 						>
 							<HugeiconsIcon

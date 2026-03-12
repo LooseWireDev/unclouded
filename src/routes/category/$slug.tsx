@@ -41,8 +41,7 @@ export const Route = createFileRoute("/category/$slug")({
 	head: ({ loaderData }) => {
 		if (!loaderData) return {};
 		const { tag } = loaderData;
-		const label =
-			tag.name.charAt(0).toUpperCase() + tag.name.slice(1);
+		const label = tag.name.charAt(0).toUpperCase() + tag.name.slice(1);
 		const title = `Open Source ${label} Apps — Unclouded`;
 		const canonical = `${SITE_URL}/category/${tag.slug}`;
 		return {
@@ -61,14 +60,14 @@ export const Route = createFileRoute("/category/$slug")({
 				{ property: "og:url", content: canonical },
 			],
 			links: [
-			{ rel: "canonical", href: canonical },
-			...(loaderData.page > 1
-				? [{ rel: "prev", href: `${canonical}?page=${loaderData.page - 1}` }]
-				: []),
-			...(loaderData.hasMore
-				? [{ rel: "next", href: `${canonical}?page=${loaderData.page + 1}` }]
-				: []),
-		],
+				{ rel: "canonical", href: canonical },
+				...(loaderData.page > 1
+					? [{ rel: "prev", href: `${canonical}?page=${loaderData.page - 1}` }]
+					: []),
+				...(loaderData.hasMore
+					? [{ rel: "next", href: `${canonical}?page=${loaderData.page + 1}` }]
+					: []),
+			],
 		};
 	},
 	component: CategoryPage,

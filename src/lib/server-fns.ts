@@ -174,9 +174,7 @@ export const fetchAppsByLicense = createServerFn({ method: "GET" })
 	});
 
 export const fetchDesktopApps = createServerFn({ method: "GET" })
-	.inputValidator(
-		(input: { page?: number; limit?: number }) => input,
-	)
+	.inputValidator((input: { page?: number; limit?: number }) => input)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	.handler(async ({ data }): Promise<any> => {
 		const db = getDb();
@@ -206,9 +204,7 @@ export const fetchComparisonPairsForApp = createServerFn({ method: "GET" })
 	});
 
 export const trackDownload = createServerFn({ method: "POST" })
-	.inputValidator(
-		(input: { appId: string; source: SourceType }) => input,
-	)
+	.inputValidator((input: { appId: string; source: SourceType }) => input)
 	.handler(async ({ data }) => {
 		const db = getDb();
 		await recordAppDownload(db, { id: nanoid(), ...data });

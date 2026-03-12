@@ -4,7 +4,10 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { type PrivacyPackData, convertPrivacyPack } from "./parsers/privacypack";
+import {
+	convertPrivacyPack,
+	type PrivacyPackData,
+} from "./parsers/privacypack";
 
 const PRIVACYPACK_URL =
 	"https://raw.githubusercontent.com/ente-io/privacypack/main/data/apps.json";

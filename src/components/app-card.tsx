@@ -6,7 +6,6 @@ import {
 	CardDescription,
 	CardFooter,
 	CardHeader,
-	CardTitle,
 } from "~/components/ui/card";
 import { stripHtml } from "~/lib/strip-html";
 import { cn } from "~/lib/utils";
@@ -63,7 +62,9 @@ export function AppCard({
 						<AppAvatar iconUrl={iconUrl} name={name} />
 						<div className="min-w-0 flex-1">
 							<div className="flex items-center gap-1.5">
-								<span className="block truncate text-base font-medium">{name}</span>
+								<span className="block truncate text-base font-medium">
+									{name}
+								</span>
 								{platformPills.length > 0 && (
 									<div className="flex shrink-0 gap-0.5">
 										{platformPills.map((label) => (

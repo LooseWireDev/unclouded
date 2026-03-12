@@ -57,14 +57,14 @@ export const Route = createFileRoute("/license/$license")({
 				{ property: "og:url", content: canonical },
 			],
 			links: [
-			{ rel: "canonical", href: canonical },
-			...(loaderData.page > 1
-				? [{ rel: "prev", href: `${canonical}?page=${loaderData.page - 1}` }]
-				: []),
-			...(loaderData.hasMore
-				? [{ rel: "next", href: `${canonical}?page=${loaderData.page + 1}` }]
-				: []),
-		],
+				{ rel: "canonical", href: canonical },
+				...(loaderData.page > 1
+					? [{ rel: "prev", href: `${canonical}?page=${loaderData.page - 1}` }]
+					: []),
+				...(loaderData.hasMore
+					? [{ rel: "next", href: `${canonical}?page=${loaderData.page + 1}` }]
+					: []),
+			],
 		};
 	},
 	component: LicensePage,

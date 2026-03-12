@@ -52,10 +52,7 @@ function DiscoverPage() {
 			<div className="space-y-6">
 				<div>
 					<Breadcrumb
-						items={[
-							{ label: "Home", href: "/" },
-							{ label: "Recently Added" },
-						]}
+						items={[{ label: "Home", href: "/" }, { label: "Recently Added" }]}
 					/>
 					<h1 className="font-display text-2xl font-semibold text-foreground">
 						Recently Added
