@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { nanoid } from "nanoid";
 import { getDb, getTursoClient } from "../../db/client";
 import { embedText } from "../../db/embed";
 import {
@@ -20,10 +21,11 @@ import {
 	listTags,
 	listTagsByType,
 	listTagsWithCounts,
+	recordAppDownload,
 	searchApps,
 	semanticSearch,
 } from "../../db/queries";
-import type { TagType } from "../../db/schema";
+import type { SourceType, TagType } from "../../db/schema";
 import { getAI } from "./ai";
 
 export const fetchApps = createServerFn({ method: "GET" })
@@ -201,4 +203,13 @@ export const fetchComparisonPairsForApp = createServerFn({ method: "GET" })
 	.handler(async ({ data }) => {
 		const db = getDb();
 		return listComparisonPairsForApp(db, data.appId, data.limit);
+	});
+
+export const trackDownload = createServerFn({ method: "POST" })
+	.inputValidator(
+		(input: { appId: string; source: SourceType }) => input,
+	)
+	.handler(async ({ data }) => {
+		const db = getDb();
+		await recordAppDownload(db, { id: nanoid(), ...data });
 	});

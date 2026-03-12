@@ -9,10 +9,11 @@ interface InstallSourcesProps {
 		packageName: string | null;
 		metadata?: Record<string, unknown> | null;
 	}>;
+	appId: string;
 	appName: string;
 }
 
-export function InstallSources({ sources, appName }: InstallSourcesProps) {
+export function InstallSources({ sources, appId, appName }: InstallSourcesProps) {
 	return (
 		<div>
 			<div className="flex flex-wrap items-center gap-2">
@@ -25,7 +26,7 @@ export function InstallSources({ sources, appName }: InstallSourcesProps) {
 				))}
 			</div>
 			<div className="mt-4">
-				<ObtainiumButton appName={appName} sources={sources} />
+				<ObtainiumButton appId={appId} appName={appName} sources={sources} />
 			</div>
 		</div>
 	);

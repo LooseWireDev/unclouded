@@ -128,7 +128,7 @@ function AppDetailPage() {
 						<h2 className="mb-3 font-sans text-base font-bold text-foreground">
 							Install
 						</h2>
-						<InstallSources sources={app.sources} appName={app.name} />
+						<InstallSources sources={app.sources} appId={app.id} appName={app.name} />
 					</section>
 				)}
 
