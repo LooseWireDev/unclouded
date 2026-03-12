@@ -14,10 +14,7 @@ interface InstallSourcesProps {
 
 export function InstallSources({ sources, appName }: InstallSourcesProps) {
 	return (
-		<section>
-			<h2 className="mb-3 font-mono text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
-				Install Sources
-			</h2>
+		<div>
 			<div className="flex flex-wrap items-center gap-2">
 				{sources.map((source) => (
 					<SourceBadge
@@ -30,6 +27,6 @@ export function InstallSources({ sources, appName }: InstallSourcesProps) {
 			<div className="mt-4">
 				<ObtainiumButton appName={appName} sources={sources} />
 			</div>
-		</section>
+		</div>
 	);
 }
