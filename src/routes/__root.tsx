@@ -5,6 +5,7 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { OG_IMAGE } from "~/lib/constants";
 import "~/styles/globals.css";
 
 export const Route = createRootRoute({
@@ -13,6 +14,7 @@ export const Route = createRootRoute({
 			{ charSet: "utf-8" },
 			{ name: "viewport", content: "width=device-width, initial-scale=1" },
 			{ title: "Unclouded" },
+			{ property: "og:image", content: OG_IMAGE },
 		],
 	}),
 	component: RootComponent,
