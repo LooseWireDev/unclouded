@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import type { SourceType } from "../../schema";
 import type { ParsedApp, ParsedAppSource } from "../lib/types";
 
 type ObtainiumConfig = {
@@ -11,10 +12,11 @@ type ObtainiumConfig = {
 		preferredApkIndex?: number;
 		additionalSettings?: string;
 		overrideSource?: string | null;
+		altLabel?: string;
 	}>;
 	icon?: string;
 	categories?: string[];
-	description?: Record<string, string>;
+	description?: Record<string, string | null>;
 };
 
 type ObtainiumAdditionalSettings = {
@@ -33,6 +35,32 @@ function parseAdditionalSettings(
 		return JSON.parse(raw);
 	} catch {
 		return undefined;
+	}
+}
+
+/**
+ * Determine the real source type from a URL.
+ * Obtainium is a delivery mechanism, not a source — the actual source
+ * is wherever the APK comes from (GitHub, GitLab, Codeberg, etc.).
+ */
+function resolveSourceType(url: string): SourceType {
+	try {
+		const hostname = new URL(url).hostname.toLowerCase();
+
+		if (hostname === "github.com" || hostname === "raw.githubusercontent.com")
+			return "github";
+		if (hostname === "gitlab.com" || hostname.startsWith("gitlab."))
+			return "gitlab";
+		if (hostname === "codeberg.org") return "codeberg";
+		if (hostname === "sourceforge.net" || hostname.endsWith(".sourceforge.net"))
+			return "sourceforge";
+		if (hostname === "f-droid.org" || hostname.endsWith(".f-droid.org"))
+			return "fdroid";
+		if (hostname === "git.sr.ht") return "direct";
+
+		return "direct";
+	} catch {
+		return "direct";
 	}
 }
 
@@ -55,35 +83,30 @@ export function parseObtainiumConfigs(cacheDir: string): ParsedApp[] {
 
 			const primary = config.configs[0];
 			const settings = parseAdditionalSettings(primary.additionalSettings);
+			const sourceType = resolveSourceType(primary.url);
+
+			// Build the full Obtainium config object that can be used to generate
+			// a working obtainium://app/ deep link
+			const obtainiumConfig: Record<string, unknown> = {
+				url: primary.url,
+				name: primary.name,
+			};
+			if (primary.author) obtainiumConfig.author = primary.author;
+			if (primary.additionalSettings)
+				obtainiumConfig.additionalSettings = primary.additionalSettings;
+			if (primary.overrideSource !== undefined)
+				obtainiumConfig.overrideSource = primary.overrideSource;
+			if (primary.preferredApkIndex !== undefined)
+				obtainiumConfig.preferredApkIndex = primary.preferredApkIndex;
 
 			const source: ParsedAppSource = {
-				source: "obtainium",
+				source: sourceType,
 				url: primary.url,
 				metadata: {
 					apkFilterRegex: settings?.apkFilterRegEx || undefined,
-					additionalSettings: settings
-						? Object.fromEntries(
-								Object.entries(settings).filter(
-									([k]) =>
-										![
-											"apkFilterRegEx",
-											"appName",
-											"appAuthor",
-											"about",
-										].includes(k),
-								),
-							)
-						: undefined,
+					obtainiumConfig,
 				},
 			};
-
-			if (
-				source.metadata &&
-				!source.metadata.apkFilterRegex &&
-				!source.metadata.additionalSettings
-			) {
-				source.metadata = undefined;
-			}
 
 			apps.push({
 				packageName: primary.id,

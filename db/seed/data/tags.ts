@@ -202,6 +202,27 @@ export const fdroidCategoryMap: Record<string, string | string[]> = {
 	// Smart home
 	"Home Automation": "smart-home",
 
+	// ─── Obtainium categories (snake_case) ──────────────
+	system: "productivity",
+	utilities: "productivity",
+	notes: "notes",
+	synchronisation: "cloud-storage",
+	sandboxing: "password-manager",
+	research_and_development: "dev-tools",
+	"research_&_development": "dev-tools",
+	text_editors: "notes",
+	launcher_and_desktop: "launcher",
+	rss_readers: "rss",
+	messaging: "messaging",
+	games: "games",
+	file_manager: "file-manager",
+	calendar: "calendar",
+	browser: "browser",
+	automation: "productivity",
+	video_player: "video",
+	icon_packs: "launcher",
+	wallpapers: "launcher",
+
 	// Skip (no good fit): Religion
 };
 

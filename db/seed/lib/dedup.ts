@@ -27,11 +27,17 @@ export function deduplicateApps(allApps: ParsedApp[]): {
 		existing.repositoryUrl = existing.repositoryUrl || app.repositoryUrl;
 
 		for (const source of app.sources) {
-			const hasSameSource = existing.sources.some(
+			const existingSource = existing.sources.find(
 				(s) => s.source === source.source,
 			);
-			if (!hasSameSource) {
+			if (!existingSource) {
 				existing.sources.push(source);
+			} else if (source.metadata?.obtainiumConfig) {
+				// Merge Obtainium config into existing source metadata
+				existingSource.metadata = {
+					...existingSource.metadata,
+					obtainiumConfig: source.metadata.obtainiumConfig,
+				};
 			}
 		}
 

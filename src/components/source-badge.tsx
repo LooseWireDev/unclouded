@@ -4,8 +4,10 @@ const sourceStyles: Record<string, string> = {
 	fdroid: "border-blue-500/30 bg-blue-500/10 text-blue-400",
 	izzyondroid: "border-green-500/30 bg-green-500/10 text-green-400",
 	github: "border-neutral-400/30 bg-neutral-400/10 text-neutral-300",
-	obtainium: "border-purple-500/30 bg-purple-500/10 text-purple-400",
-	direct: "border-orange-500/30 bg-orange-500/10 text-orange-400",
+	gitlab: "border-orange-500/30 bg-orange-500/10 text-orange-400",
+	codeberg: "border-teal-500/30 bg-teal-500/10 text-teal-400",
+	sourceforge: "border-amber-500/30 bg-amber-500/10 text-amber-400",
+	direct: "border-purple-500/30 bg-purple-500/10 text-purple-400",
 	play_store: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
 };
 
@@ -13,7 +15,9 @@ const sourceLabels: Record<string, string> = {
 	fdroid: "F-Droid",
 	izzyondroid: "IzzyOnDroid",
 	github: "GitHub",
-	obtainium: "Obtainium",
+	gitlab: "GitLab",
+	codeberg: "Codeberg",
+	sourceforge: "SourceForge",
 	direct: "Direct",
 	play_store: "Play Store",
 };
