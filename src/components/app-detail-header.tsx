@@ -46,22 +46,20 @@ export function AppDetailHeader({
 			<AppAvatar iconUrl={iconUrl} name={name} size="lg" />
 
 			<div className="min-w-0 flex-1">
-				<div className="flex items-center gap-3">
-					<h1 className="font-display text-2xl font-semibold leading-tight text-foreground">
-						{name}
-						{categoryName && (
-							<span className="font-sans text-lg font-normal text-muted-foreground">
-								{" "}
-								— Open Source {categoryName} App
-							</span>
-						)}
-					</h1>
-					{license && (
-						<span className="inline-flex h-6 items-center rounded-4xl border border-border bg-muted px-2.5 text-xs font-medium text-muted-foreground">
-							{license}
+				<h1 className="font-display text-2xl font-semibold leading-tight text-foreground">
+					{name}
+					{categoryName && (
+						<span className="font-sans text-lg font-normal text-muted-foreground">
+							{" "}
+							— Open Source {categoryName} App
 						</span>
 					)}
-				</div>
+				</h1>
+				{license && (
+					<span className="mt-2 inline-flex h-6 items-center rounded-4xl border border-border bg-muted px-2.5 text-xs font-medium text-muted-foreground">
+						{license}
+					</span>
+				)}
 
 				{description && (
 					<div className="relative mt-2">
