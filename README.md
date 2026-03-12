@@ -166,8 +166,11 @@ unclouded/
 
 Unclouded is built and maintained by [Loose Wire LLC](https://loosewire.dev).
 
-- **GitHub Sponsors** — [Sponsor on GitHub](https://github.com/sponsors/LooseWireDev)
-- **Ko-fi** — [Buy me a coffee](https://ko-fi.com/loosewire)
+<p>
+  <a href="https://github.com/sponsors/LooseWireDev"><img alt="Sponsor on GitHub" src="https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ea4aaa?logo=githubsponsors&logoColor=white" /></a>
+  <a href="https://ko-fi.com/loosewire"><img alt="Support on Ko-fi" src="https://img.shields.io/badge/support-Ko--fi-FF5E5B?logo=ko-fi&logoColor=white" /></a>
+</p>
+
 - **Bug reports** — [GitHub Issues](https://github.com/LooseWireDev/unclouded/issues)
 
 ## License
