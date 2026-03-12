@@ -103,7 +103,10 @@ export const fetchSearchResults = createServerFn({ method: "GET" })
 
 		const [keywordResults, embedding] = await Promise.all([
 			searchApps(db, data.query),
-			embedText(getAI(), data.query).catch(() => null),
+			embedText(getAI(), data.query).catch((err) => {
+				console.error("Embedding failed:", err);
+				return null;
+			}),
 		]);
 
 		if (!embedding) return keywordResults;
