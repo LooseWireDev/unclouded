@@ -12,31 +12,52 @@ type ObtainiumSource = {
 };
 
 const SOURCE_PRIORITY: Record<string, number> = {
-	obtainium: 0,
-	github: 1,
-	fdroid: 2,
-	izzyondroid: 3,
-	direct: 4,
+	github: 0,
+	gitlab: 1,
+	codeberg: 2,
+	fdroid: 3,
+	izzyondroid: 4,
+	sourceforge: 5,
+	direct: 6,
 };
 
 const SOURCE_LABELS: Record<string, string> = {
 	github: "via GitHub",
+	gitlab: "via GitLab",
+	codeberg: "via Codeberg",
 	fdroid: "via F-Droid",
 	izzyondroid: "via IzzyOnDroid",
-	obtainium: "via Obtainium",
+	sourceforge: "via SourceForge",
 	direct: "Direct download",
 };
 
 /**
  * Generate a single Obtainium deep link for one source.
- * Returns null if the source type is unsupported (e.g. play_store).
+ * If the source has a stored Obtainium config (from the Obtainium community repo),
+ * use the full config to generate a proper obtainium://app/ link.
+ * Otherwise, generate a simple obtainium://add/ link from the URL.
  */
 export function generateObtainiumLink(
 	appName: string,
 	source: SourceInfo,
 ): string | null {
+	const meta = source.metadata as {
+		obtainiumConfig?: Record<string, unknown>;
+		apkFilterRegex?: string;
+	} | null;
+
+	// If we have a full Obtainium config, use it for a proper deep link
+	if (meta?.obtainiumConfig) {
+		return `obtainium://app/${encodeURIComponent(JSON.stringify(meta.obtainiumConfig))}`;
+	}
+
+	// Otherwise generate a simple add link based on source type
 	switch (source.source) {
 		case "github":
+		case "gitlab":
+		case "codeberg":
+		case "direct":
+		case "sourceforge":
 			return `obtainium://add/${source.url}`;
 
 		case "fdroid": {
@@ -51,30 +72,6 @@ export function generateObtainiumLink(
 			return `obtainium://add/https://apt.izzysoft.de/fdroid/index/apk/${pkg}`;
 		}
 
-		case "obtainium": {
-			const meta = source.metadata as {
-				apkFilterRegex?: string;
-				additionalSettings?: Record<string, unknown>;
-			} | null;
-			if (meta?.apkFilterRegex || meta?.additionalSettings) {
-				const config = {
-					url: source.url,
-					name: appName,
-					additionalSettings: JSON.stringify({
-						...(meta.additionalSettings ?? {}),
-						...(meta.apkFilterRegex
-							? { apkFilterRegEx: meta.apkFilterRegex }
-							: {}),
-					}),
-				};
-				return `obtainium://app/${encodeURIComponent(JSON.stringify(config))}`;
-			}
-			return `obtainium://add/${source.url}`;
-		}
-
-		case "direct":
-			return `obtainium://add/${source.url}`;
-
 		default:
 			return null;
 	}
@@ -83,7 +80,7 @@ export function generateObtainiumLink(
 /**
  * Given all sources for an app, return a ranked list of compatible sources
  * with Obtainium deep links.
- * Priority: obtainium > github > fdroid > izzyondroid > direct
+ * Sources with a stored Obtainium config are prioritized first.
  */
 export function getObtainiumSources(
 	appName: string,
@@ -95,21 +92,31 @@ export function getObtainiumSources(
 		const link = generateObtainiumLink(appName, source);
 		if (!link) continue;
 
+		const meta = source.metadata as {
+			obtainiumConfig?: Record<string, unknown>;
+		} | null;
+
 		results.push({
 			source: source.source,
-			label: SOURCE_LABELS[source.source] ?? source.source,
+			label: meta?.obtainiumConfig
+				? "Obtainium config"
+				: (SOURCE_LABELS[source.source] ?? source.source),
 			link,
 		});
 	}
 
-	return results.sort(
-		(a, b) =>
-			(SOURCE_PRIORITY[a.source] ?? 99) - (SOURCE_PRIORITY[b.source] ?? 99),
-	);
+	// Sources with obtainiumConfig get top priority, then by source type
+	return results.sort((a, b) => {
+		const aHasConfig = a.label === "Obtainium config" ? 0 : 1;
+		const bHasConfig = b.label === "Obtainium config" ? 0 : 1;
+		if (aHasConfig !== bHasConfig) return aHasConfig - bHasConfig;
+		return (
+			(SOURCE_PRIORITY[a.source] ?? 99) - (SOURCE_PRIORITY[b.source] ?? 99)
+		);
+	});
 }
 
 function extractPackageFromUrl(url: string): string | null {
-	// Match patterns like /packages/org.example.app or /apk/org.example.app
 	const match = url.match(/(?:packages|apk)\/([\w.]+)/);
 	return match?.[1] ?? null;
 }

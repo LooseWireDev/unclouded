@@ -22,6 +22,8 @@ export type ParsedAppSource = {
 		apkFilterRegex?: string;
 		preferred?: boolean;
 		additionalSettings?: Record<string, unknown>;
+		/** Full Obtainium config for generating deep links */
+		obtainiumConfig?: Record<string, unknown>;
 	};
 };
 

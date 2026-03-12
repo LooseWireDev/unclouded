@@ -37,6 +37,7 @@ export const appsRelations = relations(apps, ({ many }) => ({
 	sources: many(appSources),
 	tags: many(appTags),
 	alternatives: many(alternatives),
+	downloads: many(appDownloads),
 	comparisonsAsA: many(comparisonPairs, { relationName: "comparisonAppA" }),
 	comparisonsAsB: many(comparisonPairs, { relationName: "comparisonAppB" }),
 }));
@@ -48,14 +49,18 @@ export type SourceType =
 	| "fdroid"
 	| "izzyondroid"
 	| "github"
+	| "gitlab"
+	| "codeberg"
+	| "sourceforge"
 	| "play_store"
-	| "obtainium"
 	| "direct"; // APK from website, etc.
 
 export type AppSourceMetadata = {
 	apkFilterRegex?: string;
 	preferred?: boolean;
 	additionalSettings?: Record<string, unknown>;
+	/** Full Obtainium config for generating deep links */
+	obtainiumConfig?: Record<string, unknown>;
 };
 
 export const appSources = sqliteTable(
@@ -284,6 +289,34 @@ export const comparisonPairsRelations = relations(
 		}),
 	}),
 );
+
+// ─── App Downloads ──────────────────────────────────────────────
+// Tracks Obtainium button clicks for popularity ranking
+
+export const appDownloads = sqliteTable(
+	"app_downloads",
+	{
+		id: text("id").primaryKey(),
+		appId: text("app_id")
+			.notNull()
+			.references(() => apps.id, { onDelete: "cascade" }),
+		source: text("source").$type<SourceType>().notNull(),
+		createdAt: integer("created_at", { mode: "timestamp" })
+			.notNull()
+			.$defaultFn(() => new Date()),
+	},
+	(table) => ({
+		appIdx: index("app_downloads_app_idx").on(table.appId),
+		createdAtIdx: index("app_downloads_created_at_idx").on(table.createdAt),
+	}),
+);
+
+export const appDownloadsRelations = relations(appDownloads, ({ one }) => ({
+	app: one(apps, {
+		fields: [appDownloads.appId],
+		references: [apps.id],
+	}),
+}));
 
 // ═══════════════════════════════════════════════════════════════════
 // VECTOR SEARCH (Turso native)
