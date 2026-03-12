@@ -4,7 +4,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { convertPrivacyPack } from "./parsers/privacypack";
+import { type PrivacyPackData, convertPrivacyPack } from "./parsers/privacypack";
 
 const PRIVACYPACK_URL =
 	"https://raw.githubusercontent.com/ente-io/privacypack/main/data/apps.json";
@@ -15,7 +15,7 @@ async function main() {
 	if (!response.ok) {
 		throw new Error(`Failed to fetch: ${response.status}`);
 	}
-	const data = await response.json();
+	const data: PrivacyPackData = await response.json();
 
 	console.log("Converting...");
 	const { proprietaryApps, alternativeMappings } = convertPrivacyPack(data);
