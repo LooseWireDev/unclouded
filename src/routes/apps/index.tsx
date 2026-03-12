@@ -7,6 +7,7 @@ import {
 	GridLayoutSwitcher,
 	gridLayoutClasses,
 } from "~/components/grid-layout-switcher";
+import { JsonLd } from "~/components/json-ld";
 import { PageLayout } from "~/components/layout/page-layout";
 import { Pagination } from "~/components/pagination";
 import { SITE_URL } from "~/lib/constants";
@@ -112,12 +113,25 @@ function AppsPage() {
 	if (tagsParam) searchParams.tags = tagsParam;
 	if (limit !== DEFAULT_LIMIT) searchParams.limit = limit;
 
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "ItemList",
+		name: "Open Source Privacy-Respecting Apps",
+		numberOfItems: apps.length,
+		// biome-ignore lint/suspicious/noExplicitAny: loader return type
+		itemListElement: apps.map((app: any, index: number) => ({
+			"@type": "ListItem",
+			position: index + 1,
+			url: `${SITE_URL}/apps/${app.slug}`,
+			name: app.name,
+		})),
+	};
+
 	return (
 		<PageLayout>
+			<JsonLd data={jsonLd} />
 			<div>
-				<Breadcrumb
-					items={[{ label: "Home", href: "/" }, { label: "Apps" }]}
-				/>
+				<Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Apps" }]} />
 				<div className="mb-6 flex flex-wrap items-center justify-between gap-3">
 					<h1 className="font-display text-2xl font-semibold text-foreground">
 						Apps
