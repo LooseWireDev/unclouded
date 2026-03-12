@@ -1,4 +1,5 @@
 {
+	// Cloudflare Workers configuration
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "unclouded",
 	"compatibility_date": "2025-09-02",
