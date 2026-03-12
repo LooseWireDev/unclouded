@@ -97,11 +97,7 @@ function SearchPage() {
 									href={`/alternatives/${app.slug}`}
 									className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-sun-border"
 								>
-									<AppAvatar
-										name={app.name}
-										iconUrl={app.iconUrl}
-										size="sm"
-									/>
+									<AppAvatar name={app.name} iconUrl={app.iconUrl} size="sm" />
 									<div className="min-w-0">
 										<p className="truncate font-medium">{app.name}</p>
 										<p className="text-xs text-muted-foreground">
