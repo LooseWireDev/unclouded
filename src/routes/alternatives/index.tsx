@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppAvatar } from "~/components/app-avatar";
 import { Breadcrumb } from "~/components/breadcrumb";
+import { JsonLd } from "~/components/json-ld";
 import { PageLayout } from "~/components/layout/page-layout";
 import {
 	Card,
@@ -38,15 +39,27 @@ export const Route = createFileRoute("/alternatives/")({
 function AlternativesIndexPage() {
 	const apps = Route.useLoaderData();
 
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "ItemList",
+		name: "Open Source Alternatives to Popular Apps",
+		numberOfItems: apps.length,
+		// biome-ignore lint/suspicious/noExplicitAny: loader return type
+		itemListElement: apps.map((app: any, index: number) => ({
+			"@type": "ListItem",
+			position: index + 1,
+			url: `${SITE_URL}/alternatives/${app.slug}`,
+			name: `Alternatives to ${app.name}`,
+		})),
+	};
+
 	return (
 		<PageLayout>
+			<JsonLd data={jsonLd} />
 			<div className="space-y-6">
 				<div>
 					<Breadcrumb
-						items={[
-							{ label: "Home", href: "/" },
-							{ label: "Alternatives" },
-						]}
+						items={[{ label: "Home", href: "/" }, { label: "Alternatives" }]}
 					/>
 					<h1 className="font-display text-2xl font-semibold text-foreground">
 						Privacy Alternatives

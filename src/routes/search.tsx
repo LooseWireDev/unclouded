@@ -48,6 +48,8 @@ function SearchPage() {
 					items={[{ label: "Home", href: "/" }, { label: "Search" }]}
 				/>
 
+				<h1 className="sr-only">Search Apps</h1>
+
 				<SearchBar size="lg" defaultValue={q} />
 
 				{!hasQuery && (
@@ -88,32 +90,26 @@ function SearchPage() {
 						<h2 className="mb-4 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
 							Proprietary Apps
 						</h2>
-						<ul className="space-y-2">
+						<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 							{proprietaryApps.map((app: any) => (
-								<li key={app.id}>
-									<a
-										href={`/alternatives/${app.slug}`}
-										className="flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-muted/50"
-									>
-										<AppAvatar
-											name={app.name}
-											iconUrl={app.iconUrl}
-											size="sm"
-										/>
-										<div className="min-w-0">
-											<p className="truncate font-medium">{app.name}</p>
-											<p className="text-xs text-muted-foreground">
-												has open source alternatives
-											</p>
-										</div>
-									</a>
-								</li>
+								<a
+									key={app.id}
+									href={`/alternatives/${app.slug}`}
+									className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-sun-border"
+								>
+									<AppAvatar name={app.name} iconUrl={app.iconUrl} size="sm" />
+									<div className="min-w-0">
+										<p className="truncate font-medium">{app.name}</p>
+										<p className="text-xs text-muted-foreground">
+											has open source alternatives
+										</p>
+									</div>
+								</a>
 							))}
-						</ul>
+						</div>
 					</section>
 				)}
 			</div>
 		</PageLayout>
 	);
 }
-
