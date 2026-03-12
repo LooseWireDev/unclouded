@@ -60,7 +60,15 @@ export const Route = createFileRoute("/category/$slug")({
 				{ property: "og:type", content: "website" },
 				{ property: "og:url", content: canonical },
 			],
-			links: [{ rel: "canonical", href: canonical }],
+			links: [
+			{ rel: "canonical", href: canonical },
+			...(loaderData.page > 1
+				? [{ rel: "prev", href: `${canonical}?page=${loaderData.page - 1}` }]
+				: []),
+			...(loaderData.hasMore
+				? [{ rel: "next", href: `${canonical}?page=${loaderData.page + 1}` }]
+				: []),
+		],
 		};
 	},
 	component: CategoryPage,
