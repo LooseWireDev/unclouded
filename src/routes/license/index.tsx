@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Breadcrumb } from "~/components/breadcrumb";
+import { JsonLd } from "~/components/json-ld";
 import { PageLayout } from "~/components/layout/page-layout";
 import {
 	Card,
@@ -40,8 +41,26 @@ export const Route = createFileRoute("/license/")({
 function LicenseIndexPage() {
 	const { licenses } = Route.useLoaderData();
 
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "CollectionPage",
+		name: "Open Source Licenses",
+		url: `${SITE_URL}/license`,
+		mainEntity: {
+			"@type": "ItemList",
+			numberOfItems: licenses.length,
+			itemListElement: licenses.map((item, index) => ({
+				"@type": "ListItem",
+				position: index + 1,
+				url: `${SITE_URL}/license/${encodeURIComponent(item.license!)}`,
+				name: item.license,
+			})),
+		},
+	};
+
 	return (
 		<PageLayout>
+			<JsonLd data={jsonLd} />
 			<div>
 				<div className="mb-6">
 					<Breadcrumb
