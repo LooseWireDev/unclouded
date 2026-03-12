@@ -28,9 +28,35 @@ interface SourceBadgeProps {
 	className?: string;
 }
 
+const hiddenSources = new Set(["obtainium"]);
+
+/**
+ * Normalize source URLs to user-friendly pages.
+ * Strips raw.githubusercontent.com to the repo page, etc.
+ */
+function normalizeUrl(url: string): string | undefined {
+	try {
+		const parsed = new URL(url);
+		// raw.githubusercontent.com/user/repo/... → github.com/user/repo
+		if (parsed.hostname === "raw.githubusercontent.com") {
+			const parts = parsed.pathname.split("/").filter(Boolean);
+			if (parts.length >= 2) {
+				return `https://github.com/${parts[0]}/${parts[1]}`;
+			}
+			return undefined;
+		}
+		return url;
+	} catch {
+		return undefined;
+	}
+}
+
 export function SourceBadge({ source, url, className }: SourceBadgeProps) {
+	if (hiddenSources.has(source)) return null;
+
 	const style = sourceStyles[source] ?? sourceStyles.direct;
 	const label = sourceLabels[source] ?? source;
+	const resolvedUrl = url ? normalizeUrl(url) : undefined;
 
 	const classes = cn(
 		"inline-flex h-5 items-center rounded-4xl border px-2 text-[10px] font-medium tracking-wide",
@@ -38,7 +64,7 @@ export function SourceBadge({ source, url, className }: SourceBadgeProps) {
 		className,
 	);
 
-	if (url) {
+	if (resolvedUrl) {
 		return (
 			// biome-ignore lint/a11y/useSemanticElements: can't use <a> here — SourceBadge is rendered inside a card <a> link
 			<span
@@ -47,13 +73,13 @@ export function SourceBadge({ source, url, className }: SourceBadgeProps) {
 				onClick={(e) => {
 					e.preventDefault();
 					e.stopPropagation();
-					window.open(url, "_blank", "noopener,noreferrer");
+					window.open(resolvedUrl, "_blank", "noopener,noreferrer");
 				}}
 				onKeyDown={(e) => {
 					if (e.key === "Enter" || e.key === " ") {
 						e.preventDefault();
 						e.stopPropagation();
-						window.open(url, "_blank", "noopener,noreferrer");
+						window.open(resolvedUrl, "_blank", "noopener,noreferrer");
 					}
 				}}
 				className={cn(
