@@ -112,7 +112,6 @@ export function AlternativeCard({
 					>
 						<ObtainiumButton
 							appId={app.id}
-							appName={app.name}
 							sources={app.sources.filter(
 								(s): s is typeof s & { url: string } => s.url !== null,
 							)}

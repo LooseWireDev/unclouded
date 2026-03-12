@@ -50,7 +50,9 @@ export const Route = createFileRoute("/apps/$slug")({
 				{ property: "og:description", content: metaDescription },
 				{ property: "og:type", content: "article" },
 				{ property: "og:url", content: canonical },
-				...(app.iconUrl ? [{ property: "og:image", content: app.iconUrl }] : []),
+				...(app.iconUrl
+					? [{ property: "og:image", content: app.iconUrl }]
+					: []),
 			],
 			links: [{ rel: "canonical", href: canonical }],
 		};
@@ -128,7 +130,7 @@ function AppDetailPage() {
 						<h2 className="mb-3 font-sans text-base font-bold text-foreground">
 							Install
 						</h2>
-						<InstallSources sources={app.sources} appId={app.id} appName={app.name} />
+						<InstallSources sources={app.sources} appId={app.id} />
 					</section>
 				)}
 

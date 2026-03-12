@@ -37,10 +37,7 @@ const SOURCE_LABELS: Record<string, string> = {
  * use the full config to generate a proper obtainium://app/ link.
  * Otherwise, generate a simple obtainium://add/ link from the URL.
  */
-export function generateObtainiumLink(
-	appName: string,
-	source: SourceInfo,
-): string | null {
+export function generateObtainiumLink(source: SourceInfo): string | null {
 	const meta = source.metadata as {
 		obtainiumConfig?: Record<string, unknown>;
 		apkFilterRegex?: string;
@@ -82,14 +79,11 @@ export function generateObtainiumLink(
  * with Obtainium deep links.
  * Sources with a stored Obtainium config are prioritized first.
  */
-export function getObtainiumSources(
-	appName: string,
-	sources: SourceInfo[],
-): ObtainiumSource[] {
+export function getObtainiumSources(sources: SourceInfo[]): ObtainiumSource[] {
 	const results: ObtainiumSource[] = [];
 
 	for (const source of sources) {
-		const link = generateObtainiumLink(appName, source);
+		const link = generateObtainiumLink(source);
 		if (!link) continue;
 
 		const meta = source.metadata as {

@@ -6,7 +6,7 @@
 
 import { and, desc, eq, inArray, like, notInArray, or, sql } from "drizzle-orm";
 import type { DrizzleDB, TursoClient } from "./client";
-import type { TagType } from "./schema";
+import type { SourceType, TagType } from "./schema";
 import {
 	alternatives,
 	appDownloads,
@@ -18,7 +18,6 @@ import {
 	tags,
 	VECTOR_QUERIES,
 } from "./schema";
-import type { SourceType } from "./schema";
 
 // ─── Desktop-Only Filter ─────────────────────────────────────────────
 // Desktop-only = has at least one desktop platform tag but NO mobile tag.
@@ -483,11 +482,21 @@ export async function listComparisonPairsForApp(
 	limit = 5,
 ) {
 	const aliasA = db
-		.select({ id: apps.id, name: apps.name, slug: apps.slug, iconUrl: apps.iconUrl })
+		.select({
+			id: apps.id,
+			name: apps.name,
+			slug: apps.slug,
+			iconUrl: apps.iconUrl,
+		})
 		.from(apps)
 		.as("appA");
 	const aliasB = db
-		.select({ id: apps.id, name: apps.name, slug: apps.slug, iconUrl: apps.iconUrl })
+		.select({
+			id: apps.id,
+			name: apps.name,
+			slug: apps.slug,
+			iconUrl: apps.iconUrl,
+		})
 		.from(apps)
 		.as("appB");
 
@@ -518,8 +527,18 @@ export async function listComparisonPairsForApp(
 		id: r.id,
 		slug: r.slug,
 		sharedTagCount: r.sharedTagCount,
-		appA: { id: r.appAId, name: r.appAName, slug: r.appASlug, iconUrl: r.appAIcon },
-		appB: { id: r.appBId, name: r.appBName, slug: r.appBSlug, iconUrl: r.appBIcon },
+		appA: {
+			id: r.appAId,
+			name: r.appAName,
+			slug: r.appASlug,
+			iconUrl: r.appAIcon,
+		},
+		appB: {
+			id: r.appBId,
+			name: r.appBName,
+			slug: r.appBSlug,
+			iconUrl: r.appBIcon,
+		},
 	}));
 }
 

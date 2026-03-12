@@ -52,10 +52,7 @@ function DesktopPage() {
 			<div className="space-y-6">
 				<div>
 					<Breadcrumb
-						items={[
-							{ label: "Home", href: "/" },
-							{ label: "Desktop Apps" },
-						]}
+						items={[{ label: "Home", href: "/" }, { label: "Desktop Apps" }]}
 					/>
 					<h1 className="font-display text-2xl font-semibold text-foreground">
 						Desktop Apps

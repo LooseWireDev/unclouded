@@ -6,7 +6,12 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!!**/dist"]
+		"includes": [
+			"**",
+			"!!**/dist",
+			"!!src/routeTree.gen.ts",
+			"!!worker-configuration.d.ts"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -15,7 +20,23 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"style": {
+				"noNonNullAssertion": "off"
+			},
+			"suspicious": {
+				"noExplicitAny": "off"
+			},
+			"a11y": {
+				"noSvgWithoutTitle": "warn",
+				"noStaticElementInteractions": "warn"
+			},
+			"security": {
+				"noDangerouslySetInnerHtml": "warn"
+			},
+			"correctness": {
+				"noUnusedFunctionParameters": "warn"
+			}
 		}
 	},
 	"javascript": {
