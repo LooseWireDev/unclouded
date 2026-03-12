@@ -2,15 +2,14 @@ import {
 	createStartHandler,
 	defaultStreamHandler,
 } from "@tanstack/react-start/server";
-import { getDb } from "../db/client";
+import { getDb } from "../../db/client";
 import {
 	listAllAppSlugs,
 	listAllComparisonSlugs,
 	listAllProprietaryAppSlugs,
 	listAllTagSlugs,
 	listLicenses,
-} from "../db/queries";
-import { setAI } from "./lib/ai";
+} from "../../db/queries";
 
 const tanstackFetch = createStartHandler(defaultStreamHandler);
 
@@ -171,7 +170,7 @@ async function sitemapCategories(): Promise<Response> {
 async function sitemapTags(): Promise<Response> {
 	const db = getDb();
 	const slugs = await listAllTagSlugs(db);
-	const nonCategory = slugs.filter((s) => s.type !== "category");
+	const nonCategory = slugs.filter((s: { slug: string; type: string }) => s.type !== "category");
 	return xmlResponse(
 		urlset(
 			nonCategory.map((s) => ({
@@ -203,8 +202,8 @@ async function sitemapLicenses(): Promise<Response> {
 	return xmlResponse(
 		urlset(
 			licenses
-				.filter((l) => l.license)
-				.map((l) => ({
+				.filter((l: { license: string | null }) => l.license)
+				.map((l: { license: string | null }) => ({
 					loc: `${SITE_URL}/license/${encodeURIComponent(l.license!)}`,
 					changefreq: "weekly",
 					priority: "0.6",
@@ -227,8 +226,7 @@ const sitemapHandlers: Record<string, () => Response | Promise<Response>> = {
 // ─── Worker Entry ───────────────────────────────────────────────────
 
 export default {
-	async fetch(request: Request, env: Env): Promise<Response> {
-		setAI(env.AI);
+	async fetch(request: Request, _env: Env): Promise<Response> {
 
 		const url = new URL(request.url);
 		const { pathname } = url;
