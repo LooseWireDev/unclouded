@@ -225,6 +225,83 @@ const sitemapHandlers: Record<string, () => Response | Promise<Response>> = {
 	"/sitemap-licenses.xml": sitemapLicenses,
 };
 
+// ─── Icon Proxy ─────────────────────────────────────────────────────
+
+const ALLOWED_ICON_HOSTS = [
+	"f-droid.org",
+	"guardianproject.info",
+	"apt.izzysoft.de",
+	"github.com",
+	"raw.githubusercontent.com",
+	"gitlab.com",
+	"codeberg.org",
+	"avatars.githubusercontent.com",
+];
+
+const ICON_CACHE_SECONDS = 7 * 24 * 60 * 60; // 7 days
+
+function isAllowedIconHost(hostname: string): boolean {
+	return ALLOWED_ICON_HOSTS.some(
+		(allowed) => hostname === allowed || hostname.endsWith(`.${allowed}`),
+	);
+}
+
+async function handleIconProxy(request: Request): Promise<Response> {
+	const requestUrl = new URL(request.url);
+	const iconParam = requestUrl.searchParams.get("url");
+
+	if (!iconParam) {
+		return new Response("Missing url parameter", { status: 400 });
+	}
+
+	let parsed: URL;
+	try {
+		parsed = new URL(iconParam);
+	} catch {
+		return new Response("Invalid url", { status: 400 });
+	}
+
+	if (!isAllowedIconHost(parsed.hostname)) {
+		return new Response("Domain not allowed", { status: 403 });
+	}
+
+	// Use the full request URL as cache key
+	const cache = (caches as unknown as { default: Cache }).default;
+	const cacheKey = new Request(request.url, { method: "GET" });
+
+	const cached = await cache.match(cacheKey);
+	if (cached) return cached;
+
+	try {
+		const origin = await fetch(iconParam, {
+			headers: { "User-Agent": "unclouded-icon-proxy/1.0" },
+		});
+
+		if (!origin.ok) {
+			return new Response(null, { status: 404 });
+		}
+
+		const contentType = origin.headers.get("Content-Type") ?? "";
+		if (!contentType.startsWith("image/")) {
+			return new Response(null, { status: 404 });
+		}
+
+		const response = new Response(origin.body, {
+			headers: {
+				"Content-Type": contentType,
+				"Cache-Control": `public, s-maxage=${ICON_CACHE_SECONDS}, max-age=${ICON_CACHE_SECONDS}`,
+			},
+		});
+
+		// Store in edge cache (fire-and-forget)
+		cache.put(cacheKey, response.clone()).catch(() => {});
+
+		return response;
+	} catch {
+		return new Response(null, { status: 502 });
+	}
+}
+
 // ─── Worker Entry ───────────────────────────────────────────────────
 
 export default {
@@ -241,6 +318,11 @@ export default {
 		const sitemapHandler = sitemapHandlers[pathname];
 		if (sitemapHandler) {
 			return sitemapHandler();
+		}
+
+		// Icon proxy
+		if (pathname === "/icon") {
+			return handleIconProxy(request);
 		}
 
 		// Pass through to TanStack Start
