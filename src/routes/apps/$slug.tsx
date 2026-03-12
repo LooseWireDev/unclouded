@@ -50,6 +50,7 @@ export const Route = createFileRoute("/apps/$slug")({
 				{ property: "og:description", content: metaDescription },
 				{ property: "og:type", content: "article" },
 				{ property: "og:url", content: canonical },
+				...(app.iconUrl ? [{ property: "og:image", content: app.iconUrl }] : []),
 			],
 			links: [{ rel: "canonical", href: canonical }],
 		};
