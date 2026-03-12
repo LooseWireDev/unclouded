@@ -1,7 +1,11 @@
-import { Menu01Icon, Search01Icon } from "@hugeicons/core-free-icons";
+import {
+	Cancel01Icon,
+	Menu01Icon,
+	Search01Icon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ThemeSwitcher } from "~/components/theme-switcher";
 import { Button } from "~/components/ui/button";
 import {
@@ -60,8 +64,66 @@ function HeaderSearchForm() {
 	);
 }
 
+function MobileSearchBar({
+	onClose,
+}: {
+	onClose: () => void;
+}) {
+	const navigate = useNavigate();
+	const [query, setQuery] = useState("");
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		inputRef.current?.focus();
+	}, []);
+
+	function handleSubmit(event: React.FormEvent) {
+		event.preventDefault();
+		const trimmed = query.trim();
+		if (trimmed) {
+			navigate({ to: "/search", search: { q: trimmed } });
+			onClose();
+		}
+	}
+
+	return (
+		<div className="border-b border-border bg-background/80 backdrop-blur-md md:hidden">
+			<form
+				onSubmit={handleSubmit}
+				className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2"
+			>
+				<div className="relative flex-1">
+					<HugeiconsIcon
+						icon={Search01Icon}
+						className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+						strokeWidth={2}
+					/>
+					<input
+						ref={inputRef}
+						type="text"
+						placeholder="Search apps..."
+						value={query}
+						onChange={(event) => setQuery(event.target.value)}
+						className="h-9 w-full rounded-4xl border border-input bg-input/30 pl-9 pr-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-[3px] focus:ring-ring/50 focus:outline-none"
+					/>
+				</div>
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon-sm"
+					onClick={onClose}
+				>
+					<HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
+					<span className="sr-only">Close search</span>
+				</Button>
+			</form>
+		</div>
+	);
+}
+
 export function SiteHeader() {
 	const [mobileOpen, setMobileOpen] = useState(false);
+	const [searchOpen, setSearchOpen] = useState(false);
 
 	return (
 		<header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-md">
@@ -84,6 +146,16 @@ export function SiteHeader() {
 				<div className="flex items-center gap-2">
 					<HeaderSearchForm />
 					<ThemeSwitcher />
+
+					<Button
+						variant="ghost"
+						size="icon-sm"
+						className="md:hidden"
+						onClick={() => setSearchOpen((prev) => !prev)}
+					>
+						<HugeiconsIcon icon={Search01Icon} strokeWidth={2} />
+						<span className="sr-only">Search</span>
+					</Button>
 
 					<Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
 						<SheetTrigger
@@ -116,6 +188,10 @@ export function SiteHeader() {
 					</Sheet>
 				</div>
 			</div>
+
+			{searchOpen && (
+				<MobileSearchBar onClose={() => setSearchOpen(false)} />
+			)}
 		</header>
 	);
 }
