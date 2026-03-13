@@ -7,6 +7,7 @@ import {
 	getAppAlternatives,
 	getAppBySlug,
 	getComparisonBySlug,
+	getPopularApps,
 	getProprietaryAppAlternatives,
 	getProprietaryAppBySlug,
 	getRecentApps,
@@ -229,6 +230,15 @@ export const fetchRecentApps = createServerFn({ method: "GET" })
 		return kvCached(cacheKey("getRecentApps"), () => {
 			const db = getDb();
 			return getRecentApps(db);
+		});
+	});
+
+export const fetchPopularApps = createServerFn({ method: "GET" })
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	.handler(async (): Promise<any> => {
+		return kvCached(cacheKey("getPopularApps"), () => {
+			const db = getDb();
+			return getPopularApps(db);
 		});
 	});
 
