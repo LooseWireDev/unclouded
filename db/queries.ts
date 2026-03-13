@@ -11,6 +11,7 @@ import {
 	alternatives,
 	appDownloads,
 	apps,
+	appSources,
 	appTags,
 	comparisonPairs,
 	EMBEDDING_DIMENSIONS,
@@ -39,6 +40,93 @@ function desktopOnlyAppIds(db: DrizzleDB) {
 			sql`sum(case when ${tags.slug} in ('desktop','linux','macos','windows') then 1 else 0 end) > 0
 			and sum(case when ${tags.slug} in ('android','ios') then 1 else 0 end) = 0`,
 		);
+}
+
+// ─── Slim List Helper ────────────────────────────────────────────────
+// List pages only need card-relevant fields. Loading full sources
+// (with metadata/packageName) and all tags wastes rows.
+
+const appCardColumns = {
+	id: apps.id,
+	name: apps.name,
+	slug: apps.slug,
+	description: apps.description,
+	iconUrl: apps.iconUrl,
+};
+
+const sourceCardColumns = {
+	source: appSources.source,
+	url: appSources.url,
+};
+
+async function withSlimRelations(
+	db: DrizzleDB,
+	appRows: { id: string }[],
+): Promise<
+	{
+		id: string;
+		name: string;
+		slug: string;
+		description: string | null;
+		iconUrl: string | null;
+		sources: { source: string; url: string }[];
+		tags: { name: string; slug: string; type: string }[];
+	}[]
+> {
+	if (appRows.length === 0) return [];
+
+	const appIds = appRows.map((a) => a.id);
+
+	const [sources, platformTags] = await Promise.all([
+		db
+			.select({
+				appId: appSources.appId,
+				source: appSources.source,
+				url: appSources.url,
+			})
+			.from(appSources)
+			.where(inArray(appSources.appId, appIds)),
+		db
+			.select({
+				appId: appTags.appId,
+				name: tags.name,
+				slug: tags.slug,
+				type: tags.type,
+			})
+			.from(appTags)
+			.innerJoin(tags, eq(appTags.tagId, tags.id))
+			.where(
+				and(
+					inArray(appTags.appId, appIds),
+					eq(tags.type, "platform"),
+				),
+			),
+	]);
+
+	const sourcesByApp = new Map<string, { source: string; url: string }[]>();
+	for (const s of sources) {
+		const arr = sourcesByApp.get(s.appId) ?? [];
+		arr.push({ source: s.source, url: s.url });
+		sourcesByApp.set(s.appId, arr);
+	}
+
+	const tagsByApp = new Map<
+		string,
+		{ name: string; slug: string; type: string }[]
+	>();
+	for (const t of platformTags) {
+		const arr = tagsByApp.get(t.appId) ?? [];
+		arr.push({ name: t.name, slug: t.slug, type: t.type });
+		tagsByApp.set(t.appId, arr);
+	}
+
+	return (appRows as (typeof appRows[number] & Record<string, unknown>)[]).map(
+		(app) => ({
+			...(app as any),
+			sources: sourcesByApp.get(app.id) ?? [],
+			tags: tagsByApp.get(app.id) ?? [],
+		}),
+	);
 }
 
 // ─── Types ──────────────────────────────────────────────────────────
