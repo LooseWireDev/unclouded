@@ -10,6 +10,7 @@ import type { SourceType, TagType } from "./schema";
 import {
 	alternatives,
 	appDownloads,
+	appSources,
 	apps,
 	appTags,
 	comparisonPairs,
@@ -39,6 +40,83 @@ function desktopOnlyAppIds(db: DrizzleDB) {
 			sql`sum(case when ${tags.slug} in ('desktop','linux','macos','windows') then 1 else 0 end) > 0
 			and sum(case when ${tags.slug} in ('android','ios') then 1 else 0 end) = 0`,
 		);
+}
+
+// ─── Slim List Helper ────────────────────────────────────────────────
+// List pages only need card-relevant fields. Loading full sources
+// (with metadata/packageName) and all tags wastes rows.
+
+const appCardColumns = {
+	id: apps.id,
+	name: apps.name,
+	slug: apps.slug,
+	description: apps.description,
+	iconUrl: apps.iconUrl,
+};
+
+async function withSlimRelations(
+	db: DrizzleDB,
+	appRows: { id: string }[],
+): Promise<
+	{
+		id: string;
+		name: string;
+		slug: string;
+		description: string | null;
+		iconUrl: string | null;
+		sources: { source: string; url: string }[];
+		tags: { name: string; slug: string; type: string }[];
+	}[]
+> {
+	if (appRows.length === 0) return [];
+
+	const appIds = appRows.map((a) => a.id);
+
+	const [sources, platformTags] = await Promise.all([
+		db
+			.select({
+				appId: appSources.appId,
+				source: appSources.source,
+				url: appSources.url,
+			})
+			.from(appSources)
+			.where(inArray(appSources.appId, appIds)),
+		db
+			.select({
+				appId: appTags.appId,
+				name: tags.name,
+				slug: tags.slug,
+				type: tags.type,
+			})
+			.from(appTags)
+			.innerJoin(tags, eq(appTags.tagId, tags.id))
+			.where(and(inArray(appTags.appId, appIds), eq(tags.type, "platform"))),
+	]);
+
+	const sourcesByApp = new Map<string, { source: string; url: string }[]>();
+	for (const s of sources) {
+		const arr = sourcesByApp.get(s.appId) ?? [];
+		arr.push({ source: s.source, url: s.url });
+		sourcesByApp.set(s.appId, arr);
+	}
+
+	const tagsByApp = new Map<
+		string,
+		{ name: string; slug: string; type: string }[]
+	>();
+	for (const t of platformTags) {
+		const arr = tagsByApp.get(t.appId) ?? [];
+		arr.push({ name: t.name, slug: t.slug, type: t.type });
+		tagsByApp.set(t.appId, arr);
+	}
+
+	return (
+		appRows as ((typeof appRows)[number] & Record<string, unknown>)[]
+	).map((app) => ({
+		...(app as any),
+		sources: sourcesByApp.get(app.id) ?? [],
+		tags: tagsByApp.get(app.id) ?? [],
+	}));
 }
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -79,18 +157,15 @@ export async function listApps(
 		conditions.push(inArray(apps.id, appIdsWithAllTags));
 	}
 
-	const results = await db.query.apps.findMany({
-		where: and(...conditions),
-		with: { sources: true, tags: { with: { tag: true } } },
-		limit,
-		offset,
-		orderBy: apps.name,
-	});
+	const rows = await db
+		.select(appCardColumns)
+		.from(apps)
+		.where(and(...conditions))
+		.limit(limit)
+		.offset(offset)
+		.orderBy(apps.name);
 
-	return results.map((app) => ({
-		...app,
-		tags: app.tags.map((at) => at.tag),
-	}));
+	return withSlimRelations(db, rows);
 }
 
 export async function getAppBySlug(db: DrizzleDB, slug: string) {
@@ -200,7 +275,7 @@ export async function listTagsByType(db: DrizzleDB, type: TagType) {
 }
 
 export async function listCategoriesWithApps(db: DrizzleDB) {
-	const rows = await db
+	return db
 		.select({
 			id: tags.id,
 			name: tags.name,
@@ -208,12 +283,8 @@ export async function listCategoriesWithApps(db: DrizzleDB) {
 			type: tags.type,
 		})
 		.from(tags)
-		.innerJoin(appTags, eq(tags.id, appTags.tagId))
-		.where(eq(tags.type, "category"))
-		.groupBy(tags.id)
+		.where(and(eq(tags.type, "category"), sql`${tags.appCount} > 0`))
 		.orderBy(tags.name);
-
-	return rows;
 }
 
 // ─── Tag / Category Page Queries ────────────────────────────────────
@@ -265,18 +336,15 @@ export async function listAppsByTag(
 		.from(appTags)
 		.where(eq(appTags.tagId, tagRow[0].id));
 
-	const results = await db.query.apps.findMany({
-		where: inArray(apps.id, appIdsWithTag),
-		with: { sources: true, tags: { with: { tag: true } } },
-		limit,
-		offset,
-		orderBy: apps.name,
-	});
+	const rows = await db
+		.select(appCardColumns)
+		.from(apps)
+		.where(inArray(apps.id, appIdsWithTag))
+		.limit(limit)
+		.offset(offset)
+		.orderBy(apps.name);
 
-	return results.map((app) => ({
-		...app,
-		tags: app.tags.map((at) => at.tag),
-	}));
+	return withSlimRelations(db, rows);
 }
 
 export async function listTagsWithCounts(db: DrizzleDB, type?: TagType) {
@@ -288,12 +356,10 @@ export async function listTagsWithCounts(db: DrizzleDB, type?: TagType) {
 			name: tags.name,
 			slug: tags.slug,
 			type: tags.type,
-			appCount: sql<number>`count(${appTags.appId})`,
+			appCount: tags.appCount,
 		})
 		.from(tags)
-		.leftJoin(appTags, eq(tags.id, appTags.tagId))
 		.where(conditions.length ? and(...conditions) : undefined)
-		.groupBy(tags.id)
 		.orderBy(tags.name);
 }
 
@@ -302,16 +368,18 @@ export async function listTagsWithCounts(db: DrizzleDB, type?: TagType) {
 export async function searchApps(db: DrizzleDB, query: string) {
 	const pattern = `%${query}%`;
 
-	const [appResults, propResults] = await Promise.all([
-		db.query.apps.findMany({
-			where: and(
-				like(apps.name, pattern),
-				notInArray(apps.id, desktopOnlyAppIds(db)),
-			),
-			with: { sources: true, tags: { with: { tag: true } } },
-			limit: 20,
-			orderBy: apps.name,
-		}),
+	const [appRows, propResults] = await Promise.all([
+		db
+			.select(appCardColumns)
+			.from(apps)
+			.where(
+				and(
+					like(apps.name, pattern),
+					notInArray(apps.id, desktopOnlyAppIds(db)),
+				),
+			)
+			.limit(20)
+			.orderBy(apps.name),
 		db
 			.select()
 			.from(proprietaryApps)
@@ -321,10 +389,7 @@ export async function searchApps(db: DrizzleDB, query: string) {
 	]);
 
 	return {
-		apps: appResults.map((app) => ({
-			...app,
-			tags: app.tags.map((at) => at.tag),
-		})),
+		apps: await withSlimRelations(db, appRows),
 		proprietaryApps: propResults,
 	};
 }
@@ -332,17 +397,14 @@ export async function searchApps(db: DrizzleDB, query: string) {
 // ─── Discovery Queries ──────────────────────────────────────────────
 
 export async function getRecentApps(db: DrizzleDB) {
-	const results = await db.query.apps.findMany({
-		where: notInArray(apps.id, desktopOnlyAppIds(db)),
-		with: { sources: true, tags: { with: { tag: true } } },
-		orderBy: sql`${apps.createdAt} desc`,
-		limit: 20,
-	});
+	const rows = await db
+		.select(appCardColumns)
+		.from(apps)
+		.where(notInArray(apps.id, desktopOnlyAppIds(db)))
+		.orderBy(sql`${apps.createdAt} desc`)
+		.limit(20);
 
-	return results.map((app) => ({
-		...app,
-		tags: app.tags.map((at) => at.tag),
-	}));
+	return withSlimRelations(db, rows);
 }
 
 // ─── Desktop App Queries ────────────────────────────────────────────
@@ -366,18 +428,15 @@ export async function listDesktopApps(
 		.where(inArray(appTags.tagId, desktopTagIds))
 		.groupBy(appTags.appId);
 
-	const results = await db.query.apps.findMany({
-		where: inArray(apps.id, appsWithDesktopTag),
-		with: { sources: true, tags: { with: { tag: true } } },
-		limit,
-		offset,
-		orderBy: apps.name,
-	});
+	const rows = await db
+		.select(appCardColumns)
+		.from(apps)
+		.where(inArray(apps.id, appsWithDesktopTag))
+		.limit(limit)
+		.offset(offset)
+		.orderBy(apps.name);
 
-	return results.map((app) => ({
-		...app,
-		tags: app.tags.map((at) => at.tag),
-	}));
+	return withSlimRelations(db, rows);
 }
 
 // ─── Scan Query ─────────────────────────────────────────────────────
@@ -569,18 +628,15 @@ export async function listAppsByLicense(
 	const limit = Math.min(rawLimit, 100);
 	const offset = (page - 1) * limit;
 
-	const results = await db.query.apps.findMany({
-		where: eq(apps.license, license),
-		with: { sources: true, tags: { with: { tag: true } } },
-		limit,
-		offset,
-		orderBy: apps.name,
-	});
+	const rows = await db
+		.select(appCardColumns)
+		.from(apps)
+		.where(eq(apps.license, license))
+		.limit(limit)
+		.offset(offset)
+		.orderBy(apps.name);
 
-	return results.map((app) => ({
-		...app,
-		tags: app.tags.map((at) => at.tag),
-	}));
+	return withSlimRelations(db, rows);
 }
 
 // ─── Sitemap Queries ────────────────────────────────────────────────

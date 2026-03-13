@@ -170,6 +170,7 @@ export const tags = sqliteTable(
 		name: text("name").notNull(),
 		slug: text("slug").notNull(),
 		type: text("type").$type<TagType>().notNull(),
+		appCount: integer("app_count").notNull().default(0),
 	},
 	(table) => ({
 		uniqueTag: uniqueIndex("tag_unique").on(table.slug, table.type),
