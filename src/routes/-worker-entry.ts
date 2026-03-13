@@ -245,9 +245,13 @@ const ALLOWED_ICON_HOSTS = [
 	"apt.izzysoft.de",
 	"github.com",
 	"raw.githubusercontent.com",
+	"camo.githubusercontent.com",
 	"gitlab.com",
 	"codeberg.org",
 	"avatars.githubusercontent.com",
+	"assets-prod.sumo.prod.webservices.mozgcp.net",
+	"brave.com",
+	"play-lh.googleusercontent.com",
 ];
 
 const ICON_CACHE_SECONDS = 7 * 24 * 60 * 60; // 7 days
