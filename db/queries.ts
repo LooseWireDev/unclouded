@@ -407,6 +407,35 @@ export async function getRecentApps(db: DrizzleDB) {
 	return withSlimRelations(db, rows);
 }
 
+export async function getPopularApps(db: DrizzleDB, limit = 6) {
+	const popular = await db
+		.select({ appId: appDownloads.appId, count: sql<number>`count(*)` })
+		.from(appDownloads)
+		.groupBy(appDownloads.appId)
+		.orderBy(sql`count(*) desc`)
+		.limit(limit);
+
+	if (popular.length === 0) return [];
+
+	const rows = await db
+		.select(appCardColumns)
+		.from(apps)
+		.where(
+			inArray(
+				apps.id,
+				popular.map((p) => p.appId),
+			),
+		);
+
+	const hydrated = await withSlimRelations(db, rows);
+
+	// Preserve download count ordering
+	const orderMap = new Map(popular.map((p, i) => [p.appId, i]));
+	return hydrated.sort(
+		(a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0),
+	);
+}
+
 // ─── Desktop App Queries ────────────────────────────────────────────
 
 export async function listDesktopApps(

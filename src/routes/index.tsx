@@ -4,7 +4,11 @@ import { JsonLd } from "~/components/json-ld";
 import { PageLayout } from "~/components/layout/page-layout";
 import { SearchBar } from "~/components/search-bar";
 import { SITE_URL } from "~/lib/constants";
-import { fetchCategoriesWithApps, fetchRecentApps } from "~/lib/server-fns";
+import {
+	fetchCategoriesWithApps,
+	fetchPopularApps,
+	fetchRecentApps,
+} from "~/lib/server-fns";
 
 const popularAlternatives = [
 	{ name: "WhatsApp", slug: "whatsapp" },
@@ -21,11 +25,12 @@ const popularAlternatives = [
 
 export const Route = createFileRoute("/")({
 	loader: async () => {
-		const [recentApps, categories] = await Promise.all([
+		const [recentApps, popularApps, categories] = await Promise.all([
 			fetchRecentApps(),
+			fetchPopularApps(),
 			fetchCategoriesWithApps(),
 		]);
-		return { recentApps, categories };
+		return { recentApps, popularApps, categories };
 	},
 	head: () => ({
 		meta: [
@@ -53,7 +58,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-	const { recentApps, categories } = Route.useLoaderData();
+	const { recentApps, popularApps, categories } = Route.useLoaderData();
 
 	const jsonLd = {
 		"@context": "https://schema.org",
@@ -103,6 +108,28 @@ function HomePage() {
 						))}
 					</div>
 				</section>
+
+				{/* Popular Apps */}
+				{popularApps.length > 0 && (
+					<section>
+						<h2 className="mb-3 font-sans text-base font-bold text-foreground">
+							Popular Apps
+						</h2>
+						<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+							{popularApps.map((app: any) => (
+								<AppCard
+									key={app.slug}
+									name={app.name}
+									slug={app.slug}
+									description={app.description}
+									iconUrl={app.iconUrl}
+									sources={app.sources}
+									tags={app.tags}
+								/>
+							))}
+						</div>
+					</section>
+				)}
 
 				{/* Recently Added */}
 				{recentApps.length > 0 && (
