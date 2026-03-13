@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { nanoid } from "nanoid";
 import { getDb, getTursoClient } from "../../db/client";
 import { embedText } from "../../db/embed";
+import { cacheKey, kvCached } from "../../db/kv-cache";
 import {
 	getAppAlternatives,
 	getAppBySlug,
@@ -34,37 +35,53 @@ export const fetchApps = createServerFn({ method: "GET" })
 	)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Drizzle's AppSourceMetadata (Record<string, unknown>) doesn't satisfy TanStack's serialization check
 	.handler(async ({ data }): Promise<any> => {
-		const db = getDb();
-		return listApps(db, data);
+		return kvCached(cacheKey("listApps", data), () => {
+			const db = getDb();
+			return listApps(db, data);
+		});
 	});
 
 export const fetchAppBySlug = createServerFn({ method: "GET" })
 	.inputValidator((input: { slug: string }) => input)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Drizzle's AppSourceMetadata (Record<string, unknown>) doesn't satisfy TanStack's serialization check
 	.handler(async ({ data }): Promise<any> => {
-		const db = getDb();
-		return getAppBySlug(db, data.slug);
+		return kvCached(cacheKey("getAppBySlug", { slug: data.slug }), () => {
+			const db = getDb();
+			return getAppBySlug(db, data.slug);
+		});
 	});
 
 export const fetchAppAlternatives = createServerFn({ method: "GET" })
 	.inputValidator((input: { appId: string }) => input)
 	.handler(async ({ data }) => {
-		const db = getDb();
-		return getAppAlternatives(db, data.appId);
+		return kvCached(
+			cacheKey("getAppAlternatives", { appId: data.appId }),
+			() => {
+				const db = getDb();
+				return getAppAlternatives(db, data.appId);
+			},
+		);
 	});
 
 export const fetchProprietaryApps = createServerFn({ method: "GET" })
 	.inputValidator((input: { page?: number; limit?: number }) => input)
 	.handler(async ({ data }) => {
-		const db = getDb();
-		return listProprietaryApps(db, data);
+		return kvCached(cacheKey("listProprietaryApps", data), () => {
+			const db = getDb();
+			return listProprietaryApps(db, data);
+		});
 	});
 
 export const fetchProprietaryAppBySlug = createServerFn({ method: "GET" })
 	.inputValidator((input: { slug: string }) => input)
 	.handler(async ({ data }) => {
-		const db = getDb();
-		return getProprietaryAppBySlug(db, data.slug);
+		return kvCached(
+			cacheKey("getProprietaryAppBySlug", { slug: data.slug }),
+			() => {
+				const db = getDb();
+				return getProprietaryAppBySlug(db, data.slug);
+			},
+		);
 	});
 
 export const fetchProprietaryAppAlternatives = createServerFn({
@@ -73,27 +90,40 @@ export const fetchProprietaryAppAlternatives = createServerFn({
 	.inputValidator((input: { proprietaryAppId: string }) => input)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Drizzle's AppSourceMetadata (Record<string, unknown>) doesn't satisfy TanStack's serialization check
 	.handler(async ({ data }): Promise<any> => {
-		const db = getDb();
-		return getProprietaryAppAlternatives(db, data.proprietaryAppId);
+		return kvCached(
+			cacheKey("getProprietaryAppAlternatives", {
+				proprietaryAppId: data.proprietaryAppId,
+			}),
+			() => {
+				const db = getDb();
+				return getProprietaryAppAlternatives(db, data.proprietaryAppId);
+			},
+		);
 	});
 
 export const fetchTags = createServerFn({ method: "GET" }).handler(async () => {
-	const db = getDb();
-	return listTags(db);
+	return kvCached(cacheKey("listTags"), () => {
+		const db = getDb();
+		return listTags(db);
+	});
 });
 
 export const fetchTagsByType = createServerFn({ method: "GET" })
 	.inputValidator((input: { type: TagType }) => input)
 	.handler(async ({ data }) => {
-		const db = getDb();
-		return listTagsByType(db, data.type);
+		return kvCached(cacheKey("listTagsByType", { type: data.type }), () => {
+			const db = getDb();
+			return listTagsByType(db, data.type);
+		});
 	});
 
 export const fetchCategoriesWithApps = createServerFn({
 	method: "GET",
 }).handler(async () => {
-	const db = getDb();
-	return listCategoriesWithApps(db);
+	return kvCached(cacheKey("listCategoriesWithApps"), () => {
+		const db = getDb();
+		return listCategoriesWithApps(db);
+	});
 });
 
 export const fetchSearchResults = createServerFn({ method: "GET" })
@@ -135,8 +165,10 @@ export const fetchSearchResults = createServerFn({ method: "GET" })
 export const fetchTagBySlug = createServerFn({ method: "GET" })
 	.inputValidator((input: { slug: string; type?: TagType }) => input)
 	.handler(async ({ data }) => {
-		const db = getDb();
-		return getTagBySlug(db, data.slug, data.type);
+		return kvCached(cacheKey("getTagBySlug", data), () => {
+			const db = getDb();
+			return getTagBySlug(db, data.slug, data.type);
+		});
 	});
 
 export const fetchAppsByTag = createServerFn({ method: "GET" })
@@ -145,21 +177,27 @@ export const fetchAppsByTag = createServerFn({ method: "GET" })
 	)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	.handler(async ({ data }): Promise<any> => {
-		const db = getDb();
-		return listAppsByTag(db, data.tagSlug, data);
+		return kvCached(cacheKey("listAppsByTag", data), () => {
+			const db = getDb();
+			return listAppsByTag(db, data.tagSlug, data);
+		});
 	});
 
 export const fetchTagsWithCounts = createServerFn({ method: "GET" })
 	.inputValidator((input: { type?: TagType }) => input)
 	.handler(async ({ data }) => {
-		const db = getDb();
-		return listTagsWithCounts(db, data.type);
+		return kvCached(cacheKey("listTagsWithCounts", data), () => {
+			const db = getDb();
+			return listTagsWithCounts(db, data.type);
+		});
 	});
 
 export const fetchLicenses = createServerFn({ method: "GET" }).handler(
 	async () => {
-		const db = getDb();
-		return listLicenses(db);
+		return kvCached(cacheKey("listLicenses"), () => {
+			const db = getDb();
+			return listLicenses(db);
+		});
 	},
 );
 
@@ -169,38 +207,51 @@ export const fetchAppsByLicense = createServerFn({ method: "GET" })
 	)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	.handler(async ({ data }): Promise<any> => {
-		const db = getDb();
-		return listAppsByLicense(db, data.license, data);
+		return kvCached(cacheKey("listAppsByLicense", data), () => {
+			const db = getDb();
+			return listAppsByLicense(db, data.license, data);
+		});
 	});
 
 export const fetchDesktopApps = createServerFn({ method: "GET" })
 	.inputValidator((input: { page?: number; limit?: number }) => input)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	.handler(async ({ data }): Promise<any> => {
-		const db = getDb();
-		return listDesktopApps(db, data);
+		return kvCached(cacheKey("listDesktopApps", data), () => {
+			const db = getDb();
+			return listDesktopApps(db, data);
+		});
 	});
 
 export const fetchRecentApps = createServerFn({ method: "GET" })
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Drizzle's AppSourceMetadata (Record<string, unknown>) doesn't satisfy TanStack's serialization check
 	.handler(async (): Promise<any> => {
-		const db = getDb();
-		return getRecentApps(db);
+		return kvCached(cacheKey("getRecentApps"), () => {
+			const db = getDb();
+			return getRecentApps(db);
+		});
 	});
 
 export const fetchComparisonBySlug = createServerFn({ method: "GET" })
 	.inputValidator((input: { slug: string }) => input)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	.handler(async ({ data }): Promise<any> => {
-		const db = getDb();
-		return getComparisonBySlug(db, data.slug);
+		return kvCached(
+			cacheKey("getComparisonBySlug", { slug: data.slug }),
+			() => {
+				const db = getDb();
+				return getComparisonBySlug(db, data.slug);
+			},
+		);
 	});
 
 export const fetchComparisonPairsForApp = createServerFn({ method: "GET" })
 	.inputValidator((input: { appId: string; limit?: number }) => input)
 	.handler(async ({ data }) => {
-		const db = getDb();
-		return listComparisonPairsForApp(db, data.appId, data.limit);
+		return kvCached(cacheKey("listComparisonPairsForApp", data), () => {
+			const db = getDb();
+			return listComparisonPairsForApp(db, data.appId, data.limit);
+		});
 	});
 
 export const trackDownload = createServerFn({ method: "POST" })

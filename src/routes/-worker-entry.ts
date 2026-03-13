@@ -3,6 +3,7 @@ import {
 	defaultStreamHandler,
 } from "@tanstack/react-start/server";
 import { getDb } from "../../db/client";
+import { kvCached } from "../../db/kv-cache";
 import {
 	listAllAppSlugs,
 	listAllComparisonSlugs,
@@ -132,7 +133,7 @@ function sitemapPages(): Response {
 
 async function sitemapApps(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllAppSlugs(db);
+	const slugs = await kvCached("sitemapAppSlugs", () => listAllAppSlugs(db));
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -146,7 +147,9 @@ async function sitemapApps(): Promise<Response> {
 
 async function sitemapAlternatives(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllProprietaryAppSlugs(db);
+	const slugs = await kvCached("sitemapProprietaryAppSlugs", () =>
+		listAllProprietaryAppSlugs(db),
+	);
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -160,7 +163,9 @@ async function sitemapAlternatives(): Promise<Response> {
 
 async function sitemapCategories(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllTagSlugs(db, "category");
+	const slugs = await kvCached("sitemapCategorySlugs", () =>
+		listAllTagSlugs(db, "category"),
+	);
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -174,7 +179,7 @@ async function sitemapCategories(): Promise<Response> {
 
 async function sitemapTags(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllTagSlugs(db);
+	const slugs = await kvCached("sitemapTagSlugs", () => listAllTagSlugs(db));
 	const nonCategory = slugs.filter(
 		(s: { slug: string; type: string }) => s.type !== "category",
 	);
@@ -191,7 +196,9 @@ async function sitemapTags(): Promise<Response> {
 
 async function sitemapComparisons(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllComparisonSlugs(db);
+	const slugs = await kvCached("sitemapComparisonSlugs", () =>
+		listAllComparisonSlugs(db),
+	);
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -205,7 +212,7 @@ async function sitemapComparisons(): Promise<Response> {
 
 async function sitemapLicenses(): Promise<Response> {
 	const db = getDb();
-	const licenses = await listLicenses(db);
+	const licenses = await kvCached("sitemapLicenses", () => listLicenses(db));
 	return xmlResponse(
 		urlset(
 			licenses
@@ -309,56 +316,35 @@ async function handleIconProxy(request: Request): Promise<Response> {
 
 // ─── Worker Entry ───────────────────────────────────────────────────
 
-const cache = (caches as unknown as { default: Cache }).default;
-
 export default {
 	async fetch(request: Request, _env: Env): Promise<Response> {
 		const url = new URL(request.url);
 		const { pathname } = url;
 
-		// robots.txt + sitemaps — serve from edge cache
-		if (pathname === "/robots.txt" || sitemapHandlers[pathname]) {
-			const cacheKey = new Request(url.toString(), { method: "GET" });
-			const cached = await cache.match(cacheKey);
-			if (cached) return cached;
-
-			const response =
-				pathname === "/robots.txt"
-					? robotsTxt()
-					: await sitemapHandlers[pathname]();
-			cache.put(cacheKey, response.clone()).catch(() => {});
-			return response;
+		// robots.txt + sitemaps
+		if (pathname === "/robots.txt") {
+			return robotsTxt();
 		}
 
-		// Icon proxy
+		const sitemapHandler = sitemapHandlers[pathname];
+		if (sitemapHandler) {
+			return sitemapHandler();
+		}
+
+		// Icon proxy (keeps its own Cache API usage)
 		if (pathname === "/icon") {
 			return handleIconProxy(request);
-		}
-
-		// Determine if this route is cacheable
-		const cacheHeader = getCacheHeader(pathname);
-
-		// Check edge cache for cacheable GET requests
-		if (cacheHeader && request.method === "GET") {
-			const cacheKey = new Request(url.toString(), { method: "GET" });
-			const cached = await cache.match(cacheKey);
-			if (cached) return cached;
 		}
 
 		// Pass through to TanStack Start
 		const response = await tanstackFetch(request);
 
-		// Buffer and store cacheable responses in edge cache.
-		// TanStack streams HTML (no Content-Length), so we must read the
-		// full body before cache.put() will accept it.
-		if (cacheHeader && response.status === 200 && request.method === "GET") {
-			const cacheKey = new Request(url.toString(), { method: "GET" });
-			const body = await response.arrayBuffer();
-			const headers = new Headers(response.headers);
-			headers.set("Cache-Control", cacheHeader);
-			const buffered = new Response(body, { status: 200, headers });
-			cache.put(cacheKey, buffered.clone()).catch(() => {});
-			return buffered;
+		// Set cache headers for browser caching
+		const cacheHeader = getCacheHeader(pathname);
+		if (cacheHeader && response.status === 200) {
+			const newResponse = new Response(response.body, response);
+			newResponse.headers.set("Cache-Control", cacheHeader);
+			return newResponse;
 		}
 
 		return response;
