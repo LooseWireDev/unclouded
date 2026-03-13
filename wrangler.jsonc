@@ -6,6 +6,13 @@
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "src/routes/-worker-entry.ts",
 	"ai": { "binding": "AI" },
+	"kv_namespaces": [
+		{
+			"binding": "KV",
+			"id": "47a12e13810f43f0b110ac082b60e133",
+			"preview_id": "8759a6a5e84c401d90984a20f7f060b5"
+		}
+	],
 	// Turso credentials: set via `wrangler secret put` for production,
 	// .dev.vars for local development
 	"vars": {}
