@@ -200,7 +200,7 @@ export async function listTagsByType(db: DrizzleDB, type: TagType) {
 }
 
 export async function listCategoriesWithApps(db: DrizzleDB) {
-	const rows = await db
+	return db
 		.select({
 			id: tags.id,
 			name: tags.name,
@@ -208,12 +208,8 @@ export async function listCategoriesWithApps(db: DrizzleDB) {
 			type: tags.type,
 		})
 		.from(tags)
-		.innerJoin(appTags, eq(tags.id, appTags.tagId))
-		.where(eq(tags.type, "category"))
-		.groupBy(tags.id)
+		.where(and(eq(tags.type, "category"), sql`${tags.appCount} > 0`))
 		.orderBy(tags.name);
-
-	return rows;
 }
 
 // ─── Tag / Category Page Queries ────────────────────────────────────
@@ -288,12 +284,10 @@ export async function listTagsWithCounts(db: DrizzleDB, type?: TagType) {
 			name: tags.name,
 			slug: tags.slug,
 			type: tags.type,
-			appCount: sql<number>`count(${appTags.appId})`,
+			appCount: tags.appCount,
 		})
 		.from(tags)
-		.leftJoin(appTags, eq(tags.id, appTags.tagId))
 		.where(conditions.length ? and(...conditions) : undefined)
-		.groupBy(tags.id)
 		.orderBy(tags.name);
 }
 
