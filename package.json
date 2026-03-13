@@ -17,8 +17,8 @@
 		"format": "biome format --write .",
 		"typecheck": "tsc --noEmit",
 		"seed:fetch": "tsx db/seed/fetch.ts",
-		"seed:import": "tsx db/seed/import.ts",
-		"seed:enrich": "tsx db/seed/enrich.ts",
+		"seed:import": "tsx db/seed/import.ts && pnpm cache:purge",
+		"seed:enrich": "tsx db/seed/enrich.ts && pnpm cache:purge",
 		"cache:purge": "tsx scripts/cache-purge.ts",
 		"seed:comparisons": "tsx db/seed/generate-comparisons.ts",
 		"seed:embeddings": "tsx db/seed/generate-embeddings.ts"
