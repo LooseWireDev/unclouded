@@ -1,6 +1,6 @@
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
 
@@ -16,6 +16,9 @@ export function SearchBar({
 	size = "default",
 }: SearchBarProps) {
 	const navigate = useNavigate();
+	const isLoading = useRouterState({
+		select: (s) => s.status === "pending",
+	});
 	const [query, setQuery] = useState(defaultValue);
 
 	useEffect(() => {
@@ -59,12 +62,20 @@ export function SearchBar({
 			</div>
 			<button
 				type="submit"
+				disabled={isLoading}
 				className={cn(
-					"shrink-0 rounded-4xl bg-sun-bg font-medium text-sun-text transition-colors hover:bg-sun-bg/80",
+					"flex shrink-0 items-center justify-center gap-2 rounded-4xl bg-sun-bg font-medium text-sun-text transition-colors hover:bg-sun-bg/80 disabled:opacity-70",
 					isLarge ? "h-12 px-6 text-base" : "h-9 px-4 text-sm",
 				)}
 			>
-				Search
+				{isLoading ? (
+					<>
+						<span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+						Searching…
+					</>
+				) : (
+					"Search"
+				)}
 			</button>
 		</form>
 	);
