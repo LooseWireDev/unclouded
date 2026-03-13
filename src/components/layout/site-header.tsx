@@ -64,11 +64,7 @@ function HeaderSearchForm() {
 	);
 }
 
-function MobileSearchBar({
-	onClose,
-}: {
-	onClose: () => void;
-}) {
+function MobileSearchBar({ onClose }: { onClose: () => void }) {
 	const navigate = useNavigate();
 	const [query, setQuery] = useState("");
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -107,12 +103,7 @@ function MobileSearchBar({
 						className="h-9 w-full rounded-4xl border border-input bg-input/30 pl-9 pr-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-ring focus:ring-[3px] focus:ring-ring/50 focus:outline-none"
 					/>
 				</div>
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-sm"
-					onClick={onClose}
-				>
+				<Button type="button" variant="ghost" size="icon-sm" onClick={onClose}>
 					<HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
 					<span className="sr-only">Close search</span>
 				</Button>
@@ -189,9 +180,7 @@ export function SiteHeader() {
 				</div>
 			</div>
 
-			{searchOpen && (
-				<MobileSearchBar onClose={() => setSearchOpen(false)} />
-			)}
+			{searchOpen && <MobileSearchBar onClose={() => setSearchOpen(false)} />}
 		</header>
 	);
 }
