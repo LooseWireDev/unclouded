@@ -19,23 +19,27 @@ const SITE_URL = "https://unclouded.app";
 
 type CacheRule = { pattern: RegExp; header: string };
 
+// Data only changes on manual DB writes (seed/enrich), then cache:purge.
+// Cache everything aggressively — 1 week fresh, 1 week stale fallback.
+const ONE_WEEK = 604800;
+
 const cacheRules: CacheRule[] = [
 	{ pattern: /^\/search/, header: "no-store" },
 	{
 		pattern: /^\/sitemap.*\.xml$|^\/robots\.txt$/,
-		header: "public, s-maxage=86400",
+		header: `public, s-maxage=${ONE_WEEK}`,
 	},
 	{
 		pattern: /^\/compare\//,
-		header: "public, s-maxage=86400, stale-while-revalidate=604800",
+		header: `public, s-maxage=${ONE_WEEK}, stale-while-revalidate=${ONE_WEEK}`,
 	},
 	{
 		pattern: /^\/(apps|alternatives)\/[^/]+$|^\/(category|tags|license)\//,
-		header: "public, s-maxage=3600, stale-while-revalidate=86400",
+		header: `public, s-maxage=${ONE_WEEK}, stale-while-revalidate=${ONE_WEEK}`,
 	},
 	{
-		pattern: /^\/(apps|alternatives|discover)?$/,
-		header: "public, s-maxage=600, stale-while-revalidate=3600",
+		pattern: /^\/(apps|alternatives|discover|desktop)?$/,
+		header: `public, s-maxage=${ONE_WEEK}, stale-while-revalidate=${ONE_WEEK}`,
 	},
 ];
 
@@ -52,6 +56,7 @@ function robotsTxt(): Response {
 	const body = `User-agent: *
 Allow: /
 Disallow: /search
+Crawl-delay: 10
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;

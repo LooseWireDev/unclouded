@@ -21,42 +21,24 @@ import {
 
 // ─── Desktop-Only Filter ─────────────────────────────────────────────
 // Desktop-only = has at least one desktop platform tag but NO mobile tag.
-
-const DESKTOP_TAG_SLUGS = ["desktop", "linux", "macos", "windows"];
-const MOBILE_TAG_SLUGS = ["android", "ios"];
+// Single query with conditional aggregation instead of 4 nested subqueries.
 
 function desktopOnlyAppIds(db: DrizzleDB) {
-	const desktopTagIds = db
-		.select({ id: tags.id })
-		.from(tags)
-		.where(inArray(tags.slug, DESKTOP_TAG_SLUGS));
-
-	const mobileTagIds = db
-		.select({ id: tags.id })
-		.from(tags)
-		.where(inArray(tags.slug, MOBILE_TAG_SLUGS));
-
-	const appsWithDesktopTag = db
-		.select({ appId: appTags.appId })
-		.from(appTags)
-		.where(inArray(appTags.tagId, desktopTagIds));
-
-	const appsWithMobileTag = db
-		.select({ appId: appTags.appId })
-		.from(appTags)
-		.where(inArray(appTags.tagId, mobileTagIds));
-
-	// Apps that have a desktop tag but no mobile tag
 	return db
 		.select({ appId: appTags.appId })
 		.from(appTags)
+		.innerJoin(tags, eq(appTags.tagId, tags.id))
 		.where(
-			and(
-				inArray(appTags.appId, appsWithDesktopTag),
-				notInArray(appTags.appId, appsWithMobileTag),
+			or(
+				inArray(tags.slug, ["desktop", "linux", "macos", "windows"]),
+				inArray(tags.slug, ["android", "ios"]),
 			),
 		)
-		.groupBy(appTags.appId);
+		.groupBy(appTags.appId)
+		.having(
+			sql`sum(case when ${tags.slug} in ('desktop','linux','macos','windows') then 1 else 0 end) > 0
+			and sum(case when ${tags.slug} in ('android','ios') then 1 else 0 end) = 0`,
+		);
 }
 
 // ─── Types ──────────────────────────────────────────────────────────
@@ -376,7 +358,7 @@ export async function listDesktopApps(
 	const desktopTagIds = db
 		.select({ id: tags.id })
 		.from(tags)
-		.where(inArray(tags.slug, DESKTOP_TAG_SLUGS));
+		.where(inArray(tags.slug, ["desktop", "linux", "macos", "windows"]));
 
 	const appsWithDesktopTag = db
 		.select({ appId: appTags.appId })
