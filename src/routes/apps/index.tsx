@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppCard } from "~/components/app-card";
 import { Breadcrumb } from "~/components/breadcrumb";
@@ -74,6 +74,14 @@ export const Route = createFileRoute("/apps/")({
 			fetchApps({ data: { tagSlugs, page, limit: limit + 1 } }),
 			fetchTags(),
 		]);
+
+		if (apps.length === 0 && page > 1) {
+			throw redirect({
+				to: "/apps",
+				search: tagSlugs?.length ? { tags: tagSlugs.join(",") } : undefined,
+				statusCode: 302,
+			});
+		}
 
 		const hasMore = apps.length > limit;
 		const displayApps = hasMore ? apps.slice(0, limit) : apps;
