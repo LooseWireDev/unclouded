@@ -348,14 +348,17 @@ export default {
 		// Pass through to TanStack Start
 		const response = await tanstackFetch(request);
 
-		// Store cacheable responses in edge cache
+		// Buffer and store cacheable responses in edge cache.
+		// TanStack streams HTML (no Content-Length), so we must read the
+		// full body before cache.put() will accept it.
 		if (cacheHeader && response.status === 200 && request.method === "GET") {
 			const cacheKey = new Request(url.toString(), { method: "GET" });
-			const cacheable = new Response(response.body, response);
-			cacheable.headers.set("Cache-Control", cacheHeader);
-			// Fire-and-forget cache write
-			cache.put(cacheKey, cacheable.clone()).catch(() => {});
-			return cacheable;
+			const body = await response.arrayBuffer();
+			const headers = new Headers(response.headers);
+			headers.set("Cache-Control", cacheHeader);
+			const buffered = new Response(body, { status: 200, headers });
+			cache.put(cacheKey, buffered.clone()).catch(() => {});
+			return buffered;
 		}
 
 		return response;
