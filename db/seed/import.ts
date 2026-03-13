@@ -464,6 +464,17 @@ async function upsertAlternatives() {
 	console.log(`  ${stats.alternativesCreated} alternative mappings upserted`);
 }
 
+async function updateTagCounts() {
+	console.log("Updating tag counts...");
+	await client.execute(
+		"UPDATE tags SET app_count = (SELECT COUNT(*) FROM app_tags WHERE tag_id = tags.id)",
+	);
+	const result = await client.execute(
+		"SELECT COUNT(*) as total FROM tags WHERE app_count > 0",
+	);
+	console.log(`  ${result.rows[0].total} tags with apps`);
+}
+
 async function main() {
 	console.log("\nSeed import");
 	console.log("═".repeat(50));
@@ -483,6 +494,7 @@ async function main() {
 	await upsertWebApps();
 	await upsertProprietaryApps();
 	await upsertAlternatives();
+	await updateTagCounts();
 
 	console.log(`\n${"═".repeat(50)}`);
 	console.log("Import complete:");
