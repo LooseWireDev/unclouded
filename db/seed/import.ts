@@ -469,7 +469,9 @@ async function updateTagCounts() {
 	await client.execute(
 		"UPDATE tags SET app_count = (SELECT COUNT(*) FROM app_tags WHERE tag_id = tags.id)",
 	);
-	const result = await client.execute("SELECT COUNT(*) as total FROM tags WHERE app_count > 0");
+	const result = await client.execute(
+		"SELECT COUNT(*) as total FROM tags WHERE app_count > 0",
+	);
 	console.log(`  ${result.rows[0].total} tags with apps`);
 }
 
