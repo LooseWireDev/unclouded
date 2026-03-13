@@ -3,6 +3,7 @@ import {
 	defaultStreamHandler,
 } from "@tanstack/react-start/server";
 import { getDb } from "../../db/client";
+import { kvCached } from "../../db/kv-cache";
 import {
 	listAllAppSlugs,
 	listAllComparisonSlugs,
@@ -132,7 +133,7 @@ function sitemapPages(): Response {
 
 async function sitemapApps(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllAppSlugs(db);
+	const slugs = await kvCached("sitemapAppSlugs", () => listAllAppSlugs(db));
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -146,7 +147,9 @@ async function sitemapApps(): Promise<Response> {
 
 async function sitemapAlternatives(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllProprietaryAppSlugs(db);
+	const slugs = await kvCached("sitemapProprietaryAppSlugs", () =>
+		listAllProprietaryAppSlugs(db),
+	);
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -160,7 +163,9 @@ async function sitemapAlternatives(): Promise<Response> {
 
 async function sitemapCategories(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllTagSlugs(db, "category");
+	const slugs = await kvCached("sitemapCategorySlugs", () =>
+		listAllTagSlugs(db, "category"),
+	);
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -174,7 +179,7 @@ async function sitemapCategories(): Promise<Response> {
 
 async function sitemapTags(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllTagSlugs(db);
+	const slugs = await kvCached("sitemapTagSlugs", () => listAllTagSlugs(db));
 	const nonCategory = slugs.filter(
 		(s: { slug: string; type: string }) => s.type !== "category",
 	);
@@ -191,7 +196,9 @@ async function sitemapTags(): Promise<Response> {
 
 async function sitemapComparisons(): Promise<Response> {
 	const db = getDb();
-	const slugs = await listAllComparisonSlugs(db);
+	const slugs = await kvCached("sitemapComparisonSlugs", () =>
+		listAllComparisonSlugs(db),
+	);
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -205,7 +212,7 @@ async function sitemapComparisons(): Promise<Response> {
 
 async function sitemapLicenses(): Promise<Response> {
 	const db = getDb();
-	const licenses = await listLicenses(db);
+	const licenses = await kvCached("sitemapLicenses", () => listLicenses(db));
 	return xmlResponse(
 		urlset(
 			licenses
