@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { AppCard } from "~/components/app-card";
 import { Breadcrumb } from "~/components/breadcrumb";
 import { JsonLd } from "~/components/json-ld";
@@ -30,6 +30,13 @@ export const Route = createFileRoute("/license/$license")({
 		});
 
 		if (apps.length === 0 && page === 1) throw notFound();
+		if (apps.length === 0 && page > 1) {
+			throw redirect({
+				to: "/license/$license",
+				params,
+				statusCode: 302,
+			});
+		}
 
 		const hasMore = apps.length > LIMIT;
 		const displayApps = hasMore ? apps.slice(0, LIMIT) : apps;

@@ -1,4 +1,9 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	Link,
+	notFound,
+	redirect,
+} from "@tanstack/react-router";
 import { AppCard } from "~/components/app-card";
 import { Breadcrumb } from "~/components/breadcrumb";
 import { JsonLd } from "~/components/json-ld";
@@ -32,6 +37,14 @@ export const Route = createFileRoute("/category/$slug")({
 		const apps = await fetchAppsByTag({
 			data: { tagSlug: params.slug, page, limit: LIMIT + 1 },
 		});
+
+		if (apps.length === 0 && page > 1) {
+			throw redirect({
+				to: "/category/$slug",
+				params,
+				statusCode: 302,
+			});
+		}
 
 		const hasMore = apps.length > LIMIT;
 		const displayApps = hasMore ? apps.slice(0, LIMIT) : apps;
