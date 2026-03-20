@@ -103,8 +103,10 @@ export function AlternativeCard({
 				</CardFooter>
 
 				{app.sources && app.sources.length > 0 && (
+					// biome-ignore lint/a11y/noStaticElementInteractions: prevents card link click-through
 					<div
 						className="px-4 pb-4"
+						role="presentation"
 						onClick={(e) => e.preventDefault()}
 						onKeyDown={(e) => {
 							if (e.key === "Enter") e.preventDefault();

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/search")({
 		if (!deps.q.trim()) return { apps: [], proprietaryApps: [] };
 		return fetchSearchResults({ data: { query: deps.q } });
 	},
-	head: ({ loaderData }) => {
+	head: () => {
 		const title = "Search — Unclouded";
 		const description =
 			"Search for open source, privacy-respecting apps and alternatives.";

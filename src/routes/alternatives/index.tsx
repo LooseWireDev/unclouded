@@ -44,7 +44,6 @@ function AlternativesIndexPage() {
 		"@type": "ItemList",
 		name: "Open Source Alternatives to Popular Apps",
 		numberOfItems: apps.length,
-		// biome-ignore lint/suspicious/noExplicitAny: loader return type
 		itemListElement: apps.map((app: any, index: number) => ({
 			"@type": "ListItem",
 			position: index + 1,

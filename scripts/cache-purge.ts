@@ -1,94 +1,63 @@
-import "dotenv/config";
+import { execSync } from "node:child_process";
+import { writeFileSync, readFileSync, unlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
-const zoneId = process.env.CF_ZONE_ID;
-const apiToken = process.env.CF_API_TOKEN;
-const kvNamespaceId = process.env.CF_KV_NAMESPACE_ID;
+const KV_NAMESPACE_ID = "47a12e13810f43f0b110ac082b60e133";
 
-if (!zoneId || !apiToken) {
-	console.error("Missing CF_ZONE_ID or CF_API_TOKEN environment variables");
-	process.exit(1);
+const args = process.argv.slice(2);
+const purgeAll = args.includes("--all");
+const keyArgs = args.filter((a) => !a.startsWith("--"));
+
+if (!purgeAll && keyArgs.length === 0) {
+	console.log("Usage:");
+	console.log("  pnpm cache:purge <key> [key...]   Purge specific KV keys");
+	console.log("  pnpm cache:purge --all             Purge all KV keys");
+	console.log("");
+	console.log("Examples:");
+	console.log("  pnpm cache:purge getPopularApps getRecentApps");
+	console.log("  pnpm cache:purge --all");
+	process.exit(0);
 }
 
-// Purge Cloudflare edge cache
-const cacheResponse = await fetch(
-	`https://api.cloudflare.com/client/v4/zones/${zoneId}/purge_cache`,
-	{
-		method: "POST",
-		headers: {
-			Authorization: `Bearer ${apiToken}`,
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({ purge_everything: true }),
-	},
-);
-
-const cacheResult = await cacheResponse.json();
-
-if (cacheResult.success) {
-	console.log("Edge cache purged");
-} else {
-	console.error("Edge cache purge failed:", cacheResult.errors);
-	process.exit(1);
-}
-
-// Purge KV namespace
-if (!kvNamespaceId) {
-	console.log("No CF_KV_NAMESPACE_ID set, skipping KV purge");
-} else {
-	const accountId = process.env.CF_ACCOUNT_ID;
-	if (!accountId) {
-		console.error("Missing CF_ACCOUNT_ID for KV purge");
-		process.exit(1);
-	}
-
-	// List all keys
-	let cursor: string | undefined;
-	const allKeys: string[] = [];
-
-	do {
-		const params = new URLSearchParams();
-		if (cursor) params.set("cursor", cursor);
-
-		const listRes = await fetch(
-			`https://api.cloudflare.com/client/v4/accounts/${accountId}/storage/kv/namespaces/${kvNamespaceId}/keys?${params}`,
-			{ headers: { Authorization: `Bearer ${apiToken}` } },
+if (keyArgs.length > 0) {
+	for (const key of keyArgs) {
+		console.log(`Deleting key: ${key}`);
+		execSync(
+			`npx wrangler kv key delete "${key}" --namespace-id=${KV_NAMESPACE_ID} --remote`,
+			{ stdio: "inherit" },
 		);
+	}
+	console.log(`Purged ${keyArgs.length} key(s)`);
+} else {
+	const listFile = join(tmpdir(), "kv-keys-list.json");
+	const deleteFile = join(tmpdir(), "kv-keys-to-delete.json");
 
-		const listData: any = await listRes.json();
-		if (!listData.success) {
-			console.error("KV list failed:", listData.errors);
-			process.exit(1);
-		}
+	console.log("Listing remote KV keys...");
+	execSync(
+		`npx wrangler kv key list --namespace-id=${KV_NAMESPACE_ID} --remote > "${listFile}"`,
+		{ stdio: ["pipe", "pipe", "pipe"] },
+	);
 
-		allKeys.push(...listData.result.map((k: { name: string }) => k.name));
-		cursor = listData.result_info?.cursor;
-	} while (cursor);
+	const keys: { name: string }[] = JSON.parse(
+		readFileSync(listFile, "utf-8"),
+	);
+	unlinkSync(listFile);
 
-	if (allKeys.length === 0) {
+	if (keys.length === 0) {
 		console.log("KV namespace empty, nothing to purge");
 	} else {
-		// Bulk delete (max 10,000 per request)
-		for (let i = 0; i < allKeys.length; i += 10000) {
-			const batch = allKeys.slice(i, i + 10000);
-			const delRes = await fetch(
-				`https://api.cloudflare.com/client/v4/accounts/${accountId}/storage/kv/namespaces/${kvNamespaceId}/bulk`,
-				{
-					method: "DELETE",
-					headers: {
-						Authorization: `Bearer ${apiToken}`,
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(batch),
-				},
+		writeFileSync(deleteFile, JSON.stringify(keys.map((k) => k.name)));
+		try {
+			execSync(
+				`npx wrangler kv bulk delete "${deleteFile}" --namespace-id=${KV_NAMESPACE_ID} --remote --force`,
+				{ stdio: "inherit" },
 			);
-
-			const delData: any = await delRes.json();
-			if (!delData.success) {
-				console.error("KV bulk delete failed:", delData.errors);
-				process.exit(1);
-			}
+			console.log(`KV purged: ${keys.length} keys deleted`);
+		} finally {
+			try {
+				unlinkSync(deleteFile);
+			} catch {}
 		}
-
-		console.log(`KV purged: ${allKeys.length} keys deleted`);
 	}
 }

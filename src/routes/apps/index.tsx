@@ -126,7 +126,6 @@ function AppsPage() {
 		"@type": "ItemList",
 		name: "Open Source Privacy-Respecting Apps",
 		numberOfItems: apps.length,
-		// biome-ignore lint/suspicious/noExplicitAny: loader return type
 		itemListElement: apps.map((app: any, index: number) => ({
 			"@type": "ListItem",
 			position: index + 1,
@@ -280,6 +279,7 @@ function CategoryDropdown({
 					viewBox="0 0 12 12"
 					className={cn("size-3 transition-transform", open && "rotate-180")}
 					fill="currentColor"
+					aria-hidden="true"
 				>
 					<path
 						d="M2.5 4.5L6 8L9.5 4.5"
@@ -294,8 +294,12 @@ function CategoryDropdown({
 
 			{open && (
 				<>
-					{/* biome-ignore lint/a11y/useKeyWithClickEvents: backdrop dismiss */}
-					<div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+					{/* biome-ignore lint/a11y/noStaticElementInteractions: backdrop dismiss overlay */}
+					<div
+						role="presentation"
+						className="fixed inset-0 z-40"
+						onClick={() => setOpen(false)}
+					/>
 					<div className="absolute left-0 z-50 mt-1 max-h-64 w-48 overflow-y-auto rounded-lg border border-border bg-popover p-1 shadow-lg">
 						{tags.map((tag) => {
 							const isActive = selectedSlugs.includes(tag.slug);

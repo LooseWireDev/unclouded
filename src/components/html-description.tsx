@@ -12,6 +12,7 @@ export function HtmlDescription({ html, className }: HtmlDescriptionProps) {
 				"prose-description text-sm leading-relaxed text-muted-foreground [&_a]:text-sun-accent [&_a]:underline [&_a:hover]:text-sun-text [&_ol]:list-decimal [&_ol]:pl-5 [&_p+p]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mt-1",
 				className,
 			)}
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is sanitized with sanitize-html before storage
 			dangerouslySetInnerHTML={{ __html: html }}
 		/>
 	);

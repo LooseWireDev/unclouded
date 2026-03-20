@@ -25,7 +25,7 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "MIT",
+	"license": "AGPL-3.0-only",
 	"packageManager": "pnpm@10.29.2",
 	"dependencies": {
 		"@base-ui/react": "^1.2.0",
