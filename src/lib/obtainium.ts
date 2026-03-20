@@ -45,7 +45,22 @@ export function generateObtainiumLink(source: SourceInfo): string | null {
 
 	// If we have a full Obtainium config, use it for a proper deep link
 	if (meta?.obtainiumConfig) {
-		return `obtainium://app/${encodeURIComponent(JSON.stringify(meta.obtainiumConfig))}`;
+		const raw = meta.obtainiumConfig;
+		// Obtainium's App.fromJson requires id, url, author, name as non-null
+		// Strings, and additionalSettings as a JSON string. Ensure defaults
+		// for any configs stored before these were included.
+		const config: Record<string, unknown> = {
+			id: raw.id ?? source.packageName ?? "",
+			url: raw.url ?? source.url,
+			author: raw.author ?? "",
+			name: raw.name ?? "",
+			preferredApkIndex: raw.preferredApkIndex ?? 0,
+			additionalSettings: raw.additionalSettings ?? "{}",
+		};
+		if (raw.overrideSource != null) {
+			config.overrideSource = raw.overrideSource;
+		}
+		return `obtainium://app/${encodeURIComponent(JSON.stringify(config))}`;
 	}
 
 	// Otherwise generate a simple add link based on source type

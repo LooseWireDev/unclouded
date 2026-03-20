@@ -86,18 +86,19 @@ export function parseObtainiumConfigs(cacheDir: string): ParsedApp[] {
 			const sourceType = resolveSourceType(primary.url);
 
 			// Build the full Obtainium config object that can be used to generate
-			// a working obtainium://app/ deep link
+			// a working obtainium://app/ deep link.
+			// Obtainium's App.fromJson casts id, url, author, name as String
+			// (non-nullable), so all four must always be present.
 			const obtainiumConfig: Record<string, unknown> = {
+				id: primary.id,
 				url: primary.url,
+				author: primary.author ?? "",
 				name: primary.name,
+				preferredApkIndex: primary.preferredApkIndex ?? 0,
+				additionalSettings: primary.additionalSettings ?? "{}",
 			};
-			if (primary.author) obtainiumConfig.author = primary.author;
-			if (primary.additionalSettings)
-				obtainiumConfig.additionalSettings = primary.additionalSettings;
-			if (primary.overrideSource !== undefined)
+			if (primary.overrideSource != null)
 				obtainiumConfig.overrideSource = primary.overrideSource;
-			if (primary.preferredApkIndex !== undefined)
-				obtainiumConfig.preferredApkIndex = primary.preferredApkIndex;
 
 			const source: ParsedAppSource = {
 				source: sourceType,
