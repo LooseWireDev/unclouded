@@ -236,10 +236,14 @@ export const fetchRecentApps = createServerFn({ method: "GET" })
 export const fetchPopularApps = createServerFn({ method: "GET" })
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	.handler(async (): Promise<any> => {
-		return kvCached(cacheKey("getPopularApps"), () => {
-			const db = getDb();
-			return getPopularApps(db);
-		});
+		return kvCached(
+			cacheKey("getPopularApps"),
+			() => {
+				const db = getDb();
+				return getPopularApps(db);
+			},
+			{ ttl: 86400 },
+		);
 	});
 
 export const fetchComparisonBySlug = createServerFn({ method: "GET" })
