@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { writeFileSync, readFileSync, unlinkSync } from "node:fs";
+import { readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -39,9 +39,7 @@ if (keyArgs.length > 0) {
 		{ stdio: ["pipe", "pipe", "pipe"] },
 	);
 
-	const keys: { name: string }[] = JSON.parse(
-		readFileSync(listFile, "utf-8"),
-	);
+	const keys: { name: string }[] = JSON.parse(readFileSync(listFile, "utf-8"));
 	unlinkSync(listFile);
 
 	if (keys.length === 0) {
