@@ -7,6 +7,7 @@ function getKV(): KVNamespace {
 export async function kvCached<T>(
 	key: string,
 	fn: () => Promise<T>,
+	opts?: { ttl?: number },
 ): Promise<T> {
 	const kv = getKV();
 	const cached = await kv.get(key, "json");
@@ -14,7 +15,8 @@ export async function kvCached<T>(
 
 	const result = await fn();
 	// Fire-and-forget write — don't block the response
-	kv.put(key, JSON.stringify(result)).catch(() => {});
+	const putOpts = opts?.ttl ? { expirationTtl: opts.ttl } : undefined;
+	kv.put(key, JSON.stringify(result), putOpts).catch(() => {});
 	return result;
 }
 
