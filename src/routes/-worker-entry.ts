@@ -20,9 +20,9 @@ const SITE_URL = "https://unclouded.app";
 
 type CacheRule = { pattern: RegExp; header: string };
 
-// Data only changes on manual DB writes (seed/enrich), then cache:purge.
-// Cache everything aggressively — 1 week fresh, 1 week stale fallback.
+// Static content cached for 1 week, pages with dynamic data (homepage) for 1 day.
 const ONE_WEEK = 604800;
+const ONE_DAY = 86400;
 
 const cacheRules: CacheRule[] = [
 	{ pattern: /^\/search/, header: "no-store" },
@@ -40,7 +40,7 @@ const cacheRules: CacheRule[] = [
 	},
 	{
 		pattern: /^\/(apps|alternatives|discover|desktop)?$/,
-		header: `public, s-maxage=${ONE_WEEK}, stale-while-revalidate=${ONE_WEEK}`,
+		header: `public, s-maxage=${ONE_DAY}, stale-while-revalidate=${ONE_DAY}`,
 	},
 ];
 
