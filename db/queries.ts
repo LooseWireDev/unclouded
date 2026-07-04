@@ -671,12 +671,18 @@ export async function listAppsByLicense(
 // ─── Sitemap Queries ────────────────────────────────────────────────
 
 export async function listAllAppSlugs(db: DrizzleDB) {
-	return db.select({ slug: apps.slug }).from(apps).orderBy(apps.name);
+	return db
+		.select({ slug: apps.slug, updatedAt: apps.updatedAt })
+		.from(apps)
+		.orderBy(apps.name);
 }
 
 export async function listAllProprietaryAppSlugs(db: DrizzleDB) {
 	return db
-		.select({ slug: proprietaryApps.slug })
+		.select({
+			slug: proprietaryApps.slug,
+			updatedAt: proprietaryApps.updatedAt,
+		})
 		.from(proprietaryApps)
 		.orderBy(proprietaryApps.name);
 }
