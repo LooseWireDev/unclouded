@@ -6,7 +6,6 @@ import { getDb } from "../../db/client";
 import { kvCached } from "../../db/kv-cache";
 import {
 	listAllAppSlugs,
-	listAllComparisonSlugs,
 	listAllProprietaryAppSlugs,
 	listAllTagSlugs,
 	listLicenses,
@@ -15,6 +14,25 @@ import {
 const tanstackFetch = createStartHandler(defaultStreamHandler);
 
 const SITE_URL = "https://unclouded.app";
+const CANONICAL_HOST = "unclouded.app";
+
+// Redirect www.unclouded.app and plain-http requests to the canonical
+// https://unclouded.app origin. Canonical <link> tags alone are only a
+// hint — Google was indexing www.* duplicates. Scoped to production
+// hostnames so local dev and workers.dev previews are untouched.
+function canonicalRedirect(url: URL): Response | null {
+	const isProdHost =
+		url.hostname === CANONICAL_HOST ||
+		url.hostname.endsWith(`.${CANONICAL_HOST}`);
+	if (!isProdHost) return null;
+	if (url.hostname === CANONICAL_HOST && url.protocol === "https:") {
+		return null;
+	}
+	const target = new URL(url);
+	target.hostname = CANONICAL_HOST;
+	target.protocol = "https:";
+	return Response.redirect(target.toString(), 301);
+}
 
 // ─── Cache Control Rules ────────────────────────────────────────────
 
@@ -57,7 +75,6 @@ function robotsTxt(): Response {
 	const body = `User-agent: *
 Allow: /
 Disallow: /search
-Crawl-delay: 10
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;
@@ -90,13 +107,24 @@ ${entries}
 </sitemapindex>`;
 }
 
+// Serialize a lastmod value to a W3C date. Dates round-trip through the
+// KV cache as ISO strings, so accept both.
+function lastmodDate(value: Date | string): string {
+	return new Date(value).toISOString().slice(0, 10);
+}
+
 function urlset(
-	urls: { loc: string; priority?: string; changefreq?: string }[],
+	urls: {
+		loc: string;
+		priority?: string;
+		changefreq?: string;
+		lastmod?: string;
+	}[],
 ): string {
 	const entries = urls
 		.map(
 			(u) =>
-				`  <url><loc>${u.loc}</loc>${u.changefreq ? `<changefreq>${u.changefreq}</changefreq>` : ""}${u.priority ? `<priority>${u.priority}</priority>` : ""}</url>`,
+				`  <url><loc>${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}${u.changefreq ? `<changefreq>${u.changefreq}</changefreq>` : ""}${u.priority ? `<priority>${u.priority}</priority>` : ""}</url>`,
 		)
 		.join("\n");
 	return `<?xml version="1.0" encoding="UTF-8"?>
@@ -114,7 +142,6 @@ async function sitemapXml(): Promise<Response> {
 		`${SITE_URL}/sitemap-alternatives.xml`,
 		`${SITE_URL}/sitemap-categories.xml`,
 		`${SITE_URL}/sitemap-tags.xml`,
-		`${SITE_URL}/sitemap-comparisons.xml`,
 		`${SITE_URL}/sitemap-licenses.xml`,
 	];
 	return xmlResponse(sitemapIndex(sitemaps));
@@ -133,11 +160,14 @@ function sitemapPages(): Response {
 
 async function sitemapApps(): Promise<Response> {
 	const db = getDb();
-	const slugs = await kvCached("sitemapAppSlugs", () => listAllAppSlugs(db));
+	// v2: cache key bumped when lastmod was added so stale entries
+	// without updatedAt don't linger until TTL expiry
+	const slugs = await kvCached("sitemapAppSlugs:v2", () => listAllAppSlugs(db));
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
 				loc: `${SITE_URL}/apps/${s.slug}`,
+				lastmod: lastmodDate(s.updatedAt),
 				changefreq: "weekly",
 				priority: "0.7",
 			})),
@@ -147,13 +177,14 @@ async function sitemapApps(): Promise<Response> {
 
 async function sitemapAlternatives(): Promise<Response> {
 	const db = getDb();
-	const slugs = await kvCached("sitemapProprietaryAppSlugs", () =>
+	const slugs = await kvCached("sitemapProprietaryAppSlugs:v2", () =>
 		listAllProprietaryAppSlugs(db),
 	);
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
 				loc: `${SITE_URL}/alternatives/${s.slug}`,
+				lastmod: lastmodDate(s.updatedAt),
 				changefreq: "weekly",
 				priority: "0.8",
 			})),
@@ -194,22 +225,6 @@ async function sitemapTags(): Promise<Response> {
 	);
 }
 
-async function sitemapComparisons(): Promise<Response> {
-	const db = getDb();
-	const slugs = await kvCached("sitemapComparisonSlugs", () =>
-		listAllComparisonSlugs(db),
-	);
-	return xmlResponse(
-		urlset(
-			slugs.map((s) => ({
-				loc: `${SITE_URL}/compare/${s.slug}`,
-				changefreq: "monthly",
-				priority: "0.5",
-			})),
-		),
-	);
-}
-
 async function sitemapLicenses(): Promise<Response> {
 	const db = getDb();
 	const licenses = await kvCached("sitemapLicenses", () => listLicenses(db));
@@ -233,7 +248,10 @@ const sitemapHandlers: Record<string, () => Response | Promise<Response>> = {
 	"/sitemap-alternatives.xml": sitemapAlternatives,
 	"/sitemap-categories.xml": sitemapCategories,
 	"/sitemap-tags.xml": sitemapTags,
-	"/sitemap-comparisons.xml": sitemapComparisons,
+	// Comparison pages are noindexed (thin auto-generated content was
+	// tanking site-wide quality signals); 410 tells Google the sitemap
+	// is permanently gone rather than temporarily erroring.
+	"/sitemap-comparisons.xml": () => new Response(null, { status: 410 }),
 	"/sitemap-licenses.xml": sitemapLicenses,
 };
 
@@ -325,6 +343,17 @@ export default {
 		const url = new URL(request.url);
 		const { pathname } = url;
 
+		const redirect = canonicalRedirect(url);
+		if (redirect) return redirect;
+
+		// Normalize trailing slashes with a permanent redirect (the router's
+		// own normalization is a 307, which crawlers treat as temporary)
+		if (pathname.length > 1 && pathname.endsWith("/")) {
+			const target = new URL(url);
+			target.pathname = pathname.replace(/\/+$/, "");
+			return Response.redirect(target.toString(), 301);
+		}
+
 		// robots.txt + sitemaps
 		if (pathname === "/robots.txt") {
 			return robotsTxt();
@@ -343,11 +372,20 @@ export default {
 		// Pass through to TanStack Start
 		const response = await tanstackFetch(request);
 
-		// Set cache headers for browser caching
 		const cacheHeader = getCacheHeader(pathname);
-		if (cacheHeader && response.status === 200) {
+		// Comparison pages stay usable in-app but are kept out of search
+		// indexes — 25k thin auto-generated pages triggered a site-wide
+		// quality suppression (see GSC "Crawled - currently not indexed").
+		const noindex = pathname.startsWith("/compare/");
+
+		if ((cacheHeader && response.status === 200) || noindex) {
 			const newResponse = new Response(response.body, response);
-			newResponse.headers.set("Cache-Control", cacheHeader);
+			if (cacheHeader && response.status === 200) {
+				newResponse.headers.set("Cache-Control", cacheHeader);
+			}
+			if (noindex) {
+				newResponse.headers.set("X-Robots-Tag", "noindex");
+			}
 			return newResponse;
 		}
 
