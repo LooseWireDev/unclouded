@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppCard } from "~/components/app-card";
 import { Breadcrumb } from "~/components/breadcrumb";
 import {
@@ -18,9 +18,16 @@ const DEFAULT_LIMIT = 25;
 const LIMIT_OPTIONS = [25, 50, 100];
 const STORAGE_KEY = "unclouded-grid-layout";
 
-function getStoredLayout(): GridLayout {
-	if (typeof window === "undefined") return "3";
-	return (localStorage.getItem(STORAGE_KEY) as GridLayout) || "3";
+// Read the persisted layout after mount — reading localStorage during
+// render makes the client's first render differ from the server HTML
+// (hydration mismatch).
+function useStoredLayout() {
+	const [layout, setLayout] = useState<GridLayout>("3");
+	useEffect(() => {
+		const stored = localStorage.getItem(STORAGE_KEY) as GridLayout | null;
+		if (stored) setLayout(stored);
+	}, []);
+	return [layout, setLayout] as const;
 }
 
 interface AppsSearch {
@@ -95,7 +102,7 @@ function AppsPage() {
 	const { apps, tags, hasMore, page, limit } = Route.useLoaderData();
 	const { tags: tagsParam } = Route.useSearch();
 	const navigate = useNavigate({ from: Route.fullPath });
-	const [gridLayout, setGridLayout] = useState<GridLayout>(getStoredLayout);
+	const [gridLayout, setGridLayout] = useStoredLayout();
 
 	const selectedSlugs = tagsParam ? tagsParam.split(",").filter(Boolean) : [];
 
