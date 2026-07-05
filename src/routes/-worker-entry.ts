@@ -107,15 +107,24 @@ ${entries}
 </sitemapindex>`;
 }
 
-// Serialize a lastmod value to a W3C date. Dates round-trip through the
-// KV cache as ISO strings, so accept both. Some seeded rows carry
-// unparseable updated_at values — omit lastmod for those rather than
-// letting toISOString() throw and 500 the whole sitemap.
+// Serialize a raw updated_at value to a W3C date. The column holds ISO
+// strings (rows seeded before the import fix) or epoch seconds (after),
+// and numbers arrive as numeric strings after a KV round-trip. Omit
+// lastmod for anything unparseable rather than letting toISOString()
+// throw and 500 the whole sitemap.
 function lastmodDate(
-	value: Date | string | null | undefined,
+	value: string | number | null | undefined,
 ): string | undefined {
 	if (value == null) return undefined;
-	const d = new Date(value);
+	let d: Date;
+	const num = typeof value === "number" ? value : Number(value);
+	if (Number.isFinite(num)) {
+		// Epoch seconds vs milliseconds: anything below 1e12 is seconds
+		// (1e12 ms is 2001; 1e12 s is the year 33658)
+		d = new Date(num < 1e12 ? num * 1000 : num);
+	} else {
+		d = new Date(value);
+	}
 	if (Number.isNaN(d.getTime())) return undefined;
 	return d.toISOString().slice(0, 10);
 }
@@ -167,9 +176,9 @@ function sitemapPages(): Response {
 
 async function sitemapApps(): Promise<Response> {
 	const db = getDb();
-	// v2: cache key bumped when lastmod was added so stale entries
-	// without updatedAt don't linger until TTL expiry
-	const slugs = await kvCached("sitemapAppSlugs:v2", () => listAllAppSlugs(db));
+	// v3: cache key bumped when lastmod switched to raw updated_at values
+	// so stale/poisoned entries don't linger until TTL expiry
+	const slugs = await kvCached("sitemapAppSlugs:v3", () => listAllAppSlugs(db));
 	return xmlResponse(
 		urlset(
 			slugs.map((s) => ({
@@ -184,7 +193,7 @@ async function sitemapApps(): Promise<Response> {
 
 async function sitemapAlternatives(): Promise<Response> {
 	const db = getDb();
-	const slugs = await kvCached("sitemapProprietaryAppSlugs:v2", () =>
+	const slugs = await kvCached("sitemapProprietaryAppSlugs:v3", () =>
 		listAllProprietaryAppSlugs(db),
 	);
 	return xmlResponse(

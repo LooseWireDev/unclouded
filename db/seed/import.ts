@@ -110,7 +110,9 @@ async function upsertApps(dedupedApps: ParsedApp[]) {
 
 	// Track slug → appId for source/tag inserts
 	const slugToId = new Map<string, string>();
-	const now = new Date().toISOString();
+	// Epoch seconds — the drizzle schema reads these columns as
+	// integer timestamps; ISO strings parse as Invalid Date.
+	const now = Math.floor(Date.now() / 1000);
 
 	// Phase 1: Upsert all apps
 	const appStmts: InStatement[] = [];
@@ -289,7 +291,9 @@ async function upsertProprietaryApps() {
 
 	const allTags = await db.select().from(tags);
 	const tagLookup = new Map(allTags.map((t) => [t.slug, t.id]));
-	const now = new Date().toISOString();
+	// Epoch seconds — the drizzle schema reads these columns as
+	// integer timestamps; ISO strings parse as Invalid Date.
+	const now = Math.floor(Date.now() / 1000);
 
 	const propStmts: InStatement[] = [];
 	const propTagStmts: InStatement[] = [];
@@ -348,7 +352,9 @@ async function upsertWebApps() {
 
 	const allTags = await db.select().from(tags);
 	const tagLookup = new Map(allTags.map((t) => [t.slug, t.id]));
-	const now = new Date().toISOString();
+	// Epoch seconds — the drizzle schema reads these columns as
+	// integer timestamps; ISO strings parse as Invalid Date.
+	const now = Math.floor(Date.now() / 1000);
 
 	const appStmts: InStatement[] = [];
 	const tagStmts: InStatement[] = [];
