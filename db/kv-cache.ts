@@ -4,6 +4,10 @@ function getKV(): KVNamespace {
 	return env.KV;
 }
 
+// Default TTL so entries self-expire even if the manual purge script
+// isn't run after a reseed. Matches the 1-week edge cache window.
+const DEFAULT_TTL = 604800;
+
 export async function kvCached<T>(
 	key: string,
 	fn: () => Promise<T>,
@@ -14,9 +18,14 @@ export async function kvCached<T>(
 	if (cached !== null) return cached as T;
 
 	const result = await fn();
-	// Fire-and-forget write — don't block the response
-	const putOpts = opts?.ttl ? { expirationTtl: opts.ttl } : undefined;
-	kv.put(key, JSON.stringify(result), putOpts).catch(() => {});
+	// Null/undefined reads back as a cache miss, so storing it only
+	// burns a KV write on every lookup of a nonexistent slug.
+	if (result != null) {
+		// Fire-and-forget write — don't block the response
+		kv.put(key, JSON.stringify(result), {
+			expirationTtl: opts?.ttl ?? DEFAULT_TTL,
+		}).catch(() => {});
+	}
 	return result;
 }
 

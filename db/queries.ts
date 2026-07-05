@@ -670,13 +670,26 @@ export async function listAppsByLicense(
 
 // ─── Sitemap Queries ────────────────────────────────────────────────
 
+// updated_at is selected raw (not through drizzle's timestamp mapper):
+// rows seeded before the import fix hold ISO strings in this integer
+// column, which the mapper turns into Invalid Date. The sitemap
+// normalizes both formats.
 export async function listAllAppSlugs(db: DrizzleDB) {
-	return db.select({ slug: apps.slug }).from(apps).orderBy(apps.name);
+	return db
+		.select({
+			slug: apps.slug,
+			updatedAt: sql<string | number | null>`${apps.updatedAt}`,
+		})
+		.from(apps)
+		.orderBy(apps.name);
 }
 
 export async function listAllProprietaryAppSlugs(db: DrizzleDB) {
 	return db
-		.select({ slug: proprietaryApps.slug })
+		.select({
+			slug: proprietaryApps.slug,
+			updatedAt: sql<string | number | null>`${proprietaryApps.updatedAt}`,
+		})
 		.from(proprietaryApps)
 		.orderBy(proprietaryApps.name);
 }
