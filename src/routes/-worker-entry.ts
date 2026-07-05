@@ -108,9 +108,16 @@ ${entries}
 }
 
 // Serialize a lastmod value to a W3C date. Dates round-trip through the
-// KV cache as ISO strings, so accept both.
-function lastmodDate(value: Date | string): string {
-	return new Date(value).toISOString().slice(0, 10);
+// KV cache as ISO strings, so accept both. Some seeded rows carry
+// unparseable updated_at values — omit lastmod for those rather than
+// letting toISOString() throw and 500 the whole sitemap.
+function lastmodDate(
+	value: Date | string | null | undefined,
+): string | undefined {
+	if (value == null) return undefined;
+	const d = new Date(value);
+	if (Number.isNaN(d.getTime())) return undefined;
+	return d.toISOString().slice(0, 10);
 }
 
 function urlset(
