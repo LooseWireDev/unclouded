@@ -1,4 +1,5 @@
-import type { ParsedApp } from "../lib/types";
+import type { ThirdPartyFdroidRepo } from "../data/fdroid-repos";
+import type { ParsedApp, ParsedAppSource } from "../lib/types";
 
 type FDroidIndex = {
 	repo: { address: string };
@@ -37,11 +38,19 @@ function extractAntiFeatures(
 
 export type FDroidSourceType = "fdroid" | "izzyondroid";
 
+/**
+ * Parse any F-Droid-format index-v2 file. Pass "fdroid"/"izzyondroid" for
+ * the two main repos (which have per-app web pages), or a
+ * ThirdPartyFdroidRepo entry for a developer-run repo — those get the
+ * repo's human-facing page as the source URL plus a full Obtainium
+ * FDroidRepo config so install deep links work.
+ */
 export function parseFDroidIndex(
 	indexJson: FDroidIndex,
-	sourceType: FDroidSourceType,
+	sourceType: FDroidSourceType | ThirdPartyFdroidRepo,
 ): ParsedApp[] {
-	const repoAddress = indexJson.repo?.address || "";
+	const repo = typeof sourceType === "string" ? undefined : sourceType;
+	const repoAddress = indexJson.repo?.address || repo?.repoUrl || "";
 	const apps: ParsedApp[] = [];
 
 	for (const [packageName, pkg] of Object.entries(indexJson.packages)) {
@@ -58,10 +67,31 @@ export function parseFDroidIndex(
 			iconUrl = `${repoAddress}${iconPath}`;
 		}
 
-		const sourceUrl =
-			sourceType === "fdroid"
-				? `https://f-droid.org/packages/${packageName}/`
-				: `https://apt.izzysoft.de/fdroid/index/apk/${packageName}`;
+		let source: ParsedAppSource;
+		if (repo) {
+			source = {
+				source: repo.source,
+				url: repo.webUrl,
+				metadata: {
+					obtainiumConfig: {
+						id: packageName,
+						url: repoAddress,
+						name,
+						author: repo.name,
+						additionalSettings: JSON.stringify({ appIdOrName: packageName }),
+						overrideSource: "FDroidRepo",
+					},
+				},
+			};
+		} else {
+			source = {
+				source: sourceType as FDroidSourceType,
+				url:
+					sourceType === "fdroid"
+						? `https://f-droid.org/packages/${packageName}/`
+						: `https://apt.izzysoft.de/fdroid/index/apk/${packageName}`,
+			};
+		}
 
 		apps.push({
 			packageName,
@@ -74,7 +104,7 @@ export function parseFDroidIndex(
 			repositoryUrl: meta.sourceCode || undefined,
 			categories: meta.categories || [],
 			antiFeatures: extractAntiFeatures(meta.antiFeatures),
-			sources: [{ source: sourceType, url: sourceUrl }],
+			sources: [source],
 		});
 	}
 

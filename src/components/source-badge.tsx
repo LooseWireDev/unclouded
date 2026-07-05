@@ -9,6 +9,17 @@ const sourceStyles: Record<string, string> = {
 	sourceforge: "border-amber-500/30 bg-amber-500/10 text-amber-400",
 	direct: "border-purple-500/30 bg-purple-500/10 text-purple-400",
 	play_store: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+	guardian: "border-indigo-500/30 bg-indigo-500/10 text-indigo-400",
+	microg: "border-sky-500/30 bg-sky-500/10 text-sky-400",
+	molly: "border-rose-500/30 bg-rose-500/10 text-rose-400",
+	cromite: "border-cyan-500/30 bg-cyan-500/10 text-cyan-400",
+	bitwarden: "border-blue-500/30 bg-blue-500/10 text-blue-300",
+	threema: "border-lime-500/30 bg-lime-500/10 text-lime-400",
+	session: "border-violet-500/30 bg-violet-500/10 text-violet-400",
+	briar: "border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-400",
+	simplex: "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
+	newpipe: "border-red-500/30 bg-red-500/10 text-red-400",
+	calyx: "border-stone-400/30 bg-stone-400/10 text-stone-300",
 };
 
 const sourceLabels: Record<string, string> = {
@@ -20,6 +31,17 @@ const sourceLabels: Record<string, string> = {
 	sourceforge: "SourceForge",
 	direct: "Direct",
 	play_store: "Play Store",
+	guardian: "Guardian Project",
+	microg: "microG",
+	molly: "Molly",
+	cromite: "Cromite",
+	bitwarden: "Bitwarden",
+	threema: "Threema",
+	session: "Session",
+	briar: "Briar",
+	simplex: "SimpleX",
+	newpipe: "NewPipe",
+	calyx: "Calyx",
 };
 
 interface SourceBadgeProps {

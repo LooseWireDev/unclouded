@@ -286,6 +286,17 @@ const ALLOWED_ICON_HOSTS = [
 	"assets-prod.sumo.prod.webservices.mozgcp.net",
 	"brave.com",
 	"play-lh.googleusercontent.com",
+	// Third-party F-Droid repo hosts (db/seed/data/fdroid-repos.ts)
+	"microg.org",
+	"molly.im",
+	"cromite.org",
+	"mobileapp.bitwarden.com",
+	"releases.threema.ch",
+	"fdroid.getsession.org",
+	"briarproject.org",
+	"app.simplex.chat",
+	"archive.newpipe.net",
+	"calyxos.gitlab.io",
 ];
 
 const ICON_CACHE_SECONDS = 7 * 24 * 60 * 60; // 7 days

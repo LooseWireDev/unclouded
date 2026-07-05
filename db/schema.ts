@@ -53,7 +53,19 @@ export type SourceType =
 	| "codeberg"
 	| "sourceforge"
 	| "play_store"
-	| "direct"; // APK from website, etc.
+	| "direct" // APK from website, etc.
+	// Third-party F-Droid-format repos (see db/seed/data/fdroid-repos.ts)
+	| "guardian"
+	| "microg"
+	| "molly"
+	| "cromite"
+	| "bitwarden"
+	| "threema"
+	| "session"
+	| "briar"
+	| "simplex"
+	| "newpipe"
+	| "calyx";
 
 export type AppSourceMetadata = {
 	apkFilterRegex?: string;

@@ -9,6 +9,7 @@ type ObtainiumSource = {
 	source: string;
 	label: string;
 	link: string;
+	hasConfig: boolean;
 };
 
 const SOURCE_PRIORITY: Record<string, number> = {
@@ -17,8 +18,20 @@ const SOURCE_PRIORITY: Record<string, number> = {
 	codeberg: 2,
 	fdroid: 3,
 	izzyondroid: 4,
-	sourceforge: 5,
-	direct: 6,
+	// Developer-run F-Droid repos
+	guardian: 5,
+	microg: 5,
+	molly: 5,
+	cromite: 5,
+	bitwarden: 5,
+	threema: 5,
+	session: 5,
+	briar: 5,
+	simplex: 5,
+	newpipe: 5,
+	calyx: 5,
+	sourceforge: 6,
+	direct: 7,
 };
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -29,6 +42,17 @@ const SOURCE_LABELS: Record<string, string> = {
 	izzyondroid: "via IzzyOnDroid",
 	sourceforge: "via SourceForge",
 	direct: "Direct download",
+	guardian: "via Guardian Project repo",
+	microg: "via microG repo",
+	molly: "via Molly repo",
+	cromite: "via Cromite repo",
+	bitwarden: "via Bitwarden repo",
+	threema: "via Threema repo",
+	session: "via Session repo",
+	briar: "via Briar repo",
+	simplex: "via SimpleX repo",
+	newpipe: "via NewPipe repo",
+	calyx: "via Calyx repo",
 };
 
 /**
@@ -92,18 +116,15 @@ export function getObtainiumSources(sources: SourceInfo[]): ObtainiumSource[] {
 
 		results.push({
 			source: source.source,
-			label: meta?.obtainiumConfig
-				? "Obtainium config"
-				: (SOURCE_LABELS[source.source] ?? source.source),
+			label: SOURCE_LABELS[source.source] ?? source.source,
 			link,
+			hasConfig: Boolean(meta?.obtainiumConfig),
 		});
 	}
 
 	// Sources with obtainiumConfig get top priority, then by source type
 	return results.sort((a, b) => {
-		const aHasConfig = a.label === "Obtainium config" ? 0 : 1;
-		const bHasConfig = b.label === "Obtainium config" ? 0 : 1;
-		if (aHasConfig !== bHasConfig) return aHasConfig - bHasConfig;
+		if (a.hasConfig !== b.hasConfig) return a.hasConfig ? -1 : 1;
 		return (
 			(SOURCE_PRIORITY[a.source] ?? 99) - (SOURCE_PRIORITY[b.source] ?? 99)
 		);
