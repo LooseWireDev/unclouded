@@ -2,6 +2,7 @@ import "dotenv/config";
 import { execFileSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { thirdPartyFdroidRepos } from "./data/fdroid-repos";
 
 const CACHE_DIR = path.resolve(process.cwd(), ".cache");
 
@@ -78,6 +79,22 @@ async function main() {
 		path.join(CACHE_DIR, SOURCES.izzy.file),
 		"IzzyOnDroid index",
 	);
+
+	// Third-party repos are best-effort: a repo being down shouldn't
+	// block the whole fetch (existing cached copies keep being used).
+	for (const repo of thirdPartyFdroidRepos) {
+		try {
+			await fetchFile(
+				`${repo.repoUrl}/index-v2.json`,
+				path.join(CACHE_DIR, repo.cacheFile),
+				`${repo.name} repo index`,
+			);
+		} catch (err) {
+			console.warn(
+				`  [skip]   ${repo.name}: ${err instanceof Error ? err.message : err}`,
+			);
+		}
+	}
 
 	fetchGitRepo(
 		SOURCES.obtainium.repo,

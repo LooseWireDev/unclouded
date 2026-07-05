@@ -8,6 +8,7 @@ import * as schema from "../schema";
 import { appSources, apps, proprietaryApps, tags } from "../schema";
 import { alternativeMappings } from "./data/alternatives";
 import { appOverrides } from "./data/app-overrides";
+import { thirdPartyFdroidRepos } from "./data/fdroid-repos";
 import { proprietaryApps as proprietaryAppSeeds } from "./data/proprietary-apps";
 import { fdroidAntiFeatureMap, fdroidCategoryMap, tagSeeds } from "./data/tags";
 import { webApps as webAppSeeds } from "./data/web-apps";
@@ -31,6 +32,7 @@ const db = drizzle(client, { schema });
 const stats = {
 	fdroidParsed: 0,
 	izzyParsed: 0,
+	thirdPartyParsed: 0,
 	obtainiumParsed: 0,
 	uniqueApps: 0,
 	mergedSources: 0,
@@ -67,6 +69,20 @@ function parseAllSources(): ParsedApp[] {
 		allApps.push(...izzyApps);
 	} else {
 		console.warn("IzzyOnDroid index not found — run seed:fetch first");
+	}
+
+	for (const repo of thirdPartyFdroidRepos) {
+		const repoPath = path.join(CACHE_DIR, repo.cacheFile);
+		if (!fs.existsSync(repoPath)) {
+			console.warn(`${repo.name} index not found — run seed:fetch first`);
+			continue;
+		}
+		console.log(`Parsing ${repo.name} repo index...`);
+		const repoIndex = JSON.parse(fs.readFileSync(repoPath, "utf-8"));
+		const repoApps = parseFDroidIndex(repoIndex, repo);
+		stats.thirdPartyParsed += repoApps.length;
+		console.log(`  ${repoApps.length} apps parsed`);
+		allApps.push(...repoApps);
 	}
 
 	const obtainiumDir = path.join(CACHE_DIR, "obtainium");
@@ -142,7 +158,14 @@ async function upsertApps(dedupedApps: ParsedApp[]) {
 					license = COALESCE(excluded.license, apps.license),
 					website_url = COALESCE(excluded.website_url, apps.website_url),
 					repository_url = COALESCE(excluded.repository_url, apps.repository_url),
-					updated_at = excluded.updated_at`,
+					updated_at = CASE WHEN
+							apps.name IS NOT excluded.name
+							OR COALESCE(excluded.description, apps.description) IS NOT apps.description
+							OR COALESCE(excluded.icon_url, apps.icon_url) IS NOT apps.icon_url
+							OR COALESCE(excluded.license, apps.license) IS NOT apps.license
+							OR COALESCE(excluded.website_url, apps.website_url) IS NOT apps.website_url
+							OR COALESCE(excluded.repository_url, apps.repository_url) IS NOT apps.repository_url
+						THEN excluded.updated_at ELSE apps.updated_at END`,
 			args: [
 				appId,
 				parsed.name,
@@ -306,7 +329,14 @@ async function upsertProprietaryApps() {
 				ON CONFLICT (slug) DO UPDATE SET
 					name = excluded.name, description = excluded.description,
 					icon_url = excluded.icon_url, website_url = excluded.website_url,
-					package_name = excluded.package_name, updated_at = excluded.updated_at`,
+					package_name = excluded.package_name,
+					updated_at = CASE WHEN
+							proprietary_apps.name IS NOT excluded.name
+							OR proprietary_apps.description IS NOT excluded.description
+							OR proprietary_apps.icon_url IS NOT excluded.icon_url
+							OR proprietary_apps.website_url IS NOT excluded.website_url
+							OR proprietary_apps.package_name IS NOT excluded.package_name
+						THEN excluded.updated_at ELSE proprietary_apps.updated_at END`,
 			args: [
 				propId,
 				seed.name,
@@ -368,7 +398,12 @@ async function upsertWebApps() {
 					description = COALESCE(excluded.description, apps.description),
 					website_url = COALESCE(excluded.website_url, apps.website_url),
 					repository_url = COALESCE(excluded.repository_url, apps.repository_url),
-					updated_at = excluded.updated_at`,
+					updated_at = CASE WHEN
+							apps.name IS NOT excluded.name
+							OR COALESCE(excluded.description, apps.description) IS NOT apps.description
+							OR COALESCE(excluded.website_url, apps.website_url) IS NOT apps.website_url
+							OR COALESCE(excluded.repository_url, apps.repository_url) IS NOT apps.repository_url
+						THEN excluded.updated_at ELSE apps.updated_at END`,
 			args: [
 				generateId(),
 				seed.name,
@@ -505,7 +540,7 @@ async function main() {
 	console.log(`\n${"═".repeat(50)}`);
 	console.log("Import complete:");
 	console.log(
-		`  Parsed:  ${stats.fdroidParsed} F-Droid | ${stats.izzyParsed} Izzy | ${stats.obtainiumParsed} Obtainium`,
+		`  Parsed:  ${stats.fdroidParsed} F-Droid | ${stats.izzyParsed} Izzy | ${stats.thirdPartyParsed} third-party repos | ${stats.obtainiumParsed} Obtainium`,
 	);
 	console.log(
 		`  Deduped: ${stats.uniqueApps} unique (${stats.mergedSources} merged)`,
