@@ -65,14 +65,21 @@ function resolveSourceType(url: string): SourceType {
 }
 
 export function parseObtainiumConfigs(cacheDir: string): ParsedApp[] {
-	const appsDir = path.join(cacheDir, "data", "apps");
-	if (!fs.existsSync(appsDir)) {
-		console.warn(`Obtainium apps directory not found: ${appsDir}`);
+	// The upstream repo moved configs from data/apps/*.json to
+	// public/data/apps/{simple,complex}/*.json — support both layouts.
+	const appsDir = [
+		path.join(cacheDir, "public", "data", "apps"),
+		path.join(cacheDir, "data", "apps"),
+	].find((dir) => fs.existsSync(dir));
+	if (!appsDir) {
+		console.warn(`Obtainium apps directory not found under: ${cacheDir}`);
 		return [];
 	}
 
 	const apps: ParsedApp[] = [];
-	const files = fs.readdirSync(appsDir).filter((f) => f.endsWith(".json"));
+	const files = fs
+		.readdirSync(appsDir, { recursive: true, encoding: "utf-8" })
+		.filter((f) => f.endsWith(".json"));
 
 	for (const file of files) {
 		try {
@@ -110,7 +117,7 @@ export function parseObtainiumConfigs(cacheDir: string): ParsedApp[] {
 
 			apps.push({
 				packageName: primary.id,
-				name: primary.name || settings?.appName || file.replace(".json", ""),
+				name: primary.name || settings?.appName || path.basename(file, ".json"),
 				description:
 					config.description?.en ||
 					config.description?.["en-US"] ||
