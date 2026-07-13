@@ -44,6 +44,10 @@ const ONE_DAY = 86400;
 
 const cacheRules: CacheRule[] = [
 	{ pattern: /^\/search/, header: "no-store" },
+	// Server-fn GET responses (catalog queries keyed by their payload in
+	// the query string) are deterministic between reseeds, and the reseed
+	// flow already purges the edge cache
+	{ pattern: /^\/_serverFn\//, header: `public, s-maxage=${ONE_DAY}` },
 	{
 		pattern: /^\/sitemap.*\.xml$|^\/robots\.txt$/,
 		header: `public, s-maxage=${ONE_WEEK}`,
@@ -75,6 +79,7 @@ function robotsTxt(): Response {
 	const body = `User-agent: *
 Allow: /
 Disallow: /search
+Disallow: /compare
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;
@@ -363,10 +368,68 @@ async function handleIconProxy(request: Request): Promise<Response> {
 	}
 }
 
+// ─── Scraper Gate ───────────────────────────────────────────────────
+
+// /compare pages are 25k noindexed, robots-disallowed thin pages, yet
+// scraper fleets on residential proxies (fake browser UAs) crawl them
+// hard enough to exhaust the daily KV read quota. Real users only ever
+// fetch this HTML via a hard navigation — client-side nav goes through
+// /_serverFn — and every browser engine since ~2021 sends
+// Sec-Fetch-Mode: navigate on navigations, which scrapers and crawlers
+// don't. Refuse everything else before SSR spends KV reads on it.
+function isCompareScrape(request: Request, pathname: string): boolean {
+	if (!pathname.startsWith("/compare/")) return false;
+	if (request.method !== "GET") return false;
+	const accept = request.headers.get("Accept") ?? "";
+	const secFetchMode = request.headers.get("Sec-Fetch-Mode");
+	return !(accept.includes("text/html") && secFetchMode === "navigate");
+}
+
 // ─── Worker Entry ───────────────────────────────────────────────────
 
+async function renderResponse(
+	request: Request,
+	pathname: string,
+	cacheHeader: string | null,
+): Promise<Response> {
+	// robots.txt + sitemaps
+	if (pathname === "/robots.txt") {
+		return robotsTxt();
+	}
+
+	const sitemapHandler = sitemapHandlers[pathname];
+	if (sitemapHandler) {
+		return sitemapHandler();
+	}
+
+	// Pass through to TanStack Start
+	const response = await tanstackFetch(request);
+
+	// Comparison pages stay usable in-app but are kept out of search
+	// indexes — 25k thin auto-generated pages triggered a site-wide
+	// quality suppression (see GSC "Crawled - currently not indexed").
+	const noindex = pathname.startsWith("/compare/");
+
+	if ((cacheHeader && response.status === 200) || noindex) {
+		const newResponse = new Response(response.body, response);
+		if (cacheHeader && response.status === 200) {
+			newResponse.headers.set("Cache-Control", cacheHeader);
+		}
+		if (noindex) {
+			newResponse.headers.set("X-Robots-Tag", "noindex");
+		}
+		return newResponse;
+	}
+
+	return response;
+}
+
 export default {
-	async fetch(request: Request, _env: Env): Promise<Response> {
+	async fetch(
+		request: Request,
+		_env: Env,
+		ctx: ExecutionContext,
+	): Promise<Response> {
 		const url = new URL(request.url);
 		const { pathname } = url;
 
@@ -381,14 +444,8 @@ export default {
 			return Response.redirect(target.toString(), 301);
 		}
 
-		// robots.txt + sitemaps
-		if (pathname === "/robots.txt") {
-			return robotsTxt();
-		}
-
-		const sitemapHandler = sitemapHandlers[pathname];
-		if (sitemapHandler) {
-			return sitemapHandler();
+		if (isCompareScrape(request, pathname)) {
+			return new Response("Forbidden", { status: 403 });
 		}
 
 		// Icon proxy (keeps its own Cache API usage)
@@ -396,24 +453,33 @@ export default {
 			return handleIconProxy(request);
 		}
 
-		// Pass through to TanStack Start
-		const response = await tanstackFetch(request);
-
+		// Serve repeat GETs from the Cloudflare edge cache. Cache-Control
+		// headers alone do nothing for Worker-generated responses — they
+		// only enter the CDN cache through an explicit Cache API put.
 		const cacheHeader = getCacheHeader(pathname);
-		// Comparison pages stay usable in-app but are kept out of search
-		// indexes — 25k thin auto-generated pages triggered a site-wide
-		// quality suppression (see GSC "Crawled - currently not indexed").
-		const noindex = pathname.startsWith("/compare/");
+		const edgeCacheable =
+			request.method === "GET" &&
+			cacheHeader !== null &&
+			cacheHeader !== "no-store";
+		const cache = (caches as unknown as { default: Cache }).default;
 
-		if ((cacheHeader && response.status === 200) || noindex) {
-			const newResponse = new Response(response.body, response);
-			if (cacheHeader && response.status === 200) {
-				newResponse.headers.set("Cache-Control", cacheHeader);
+		if (edgeCacheable) {
+			const hit = await cache.match(request.url);
+			if (hit) {
+				const response = new Response(hit.body, hit);
+				response.headers.set("X-Edge-Cache", "HIT");
+				return response;
 			}
-			if (noindex) {
-				newResponse.headers.set("X-Robots-Tag", "noindex");
-			}
-			return newResponse;
+		}
+
+		const response = await renderResponse(request, pathname, cacheHeader);
+
+		if (
+			edgeCacheable &&
+			response.status === 200 &&
+			!response.headers.has("Set-Cookie")
+		) {
+			ctx.waitUntil(cache.put(request.url, response.clone()).catch(() => {}));
 		}
 
 		return response;
