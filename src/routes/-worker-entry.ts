@@ -467,7 +467,8 @@ export default {
 		// 404s are stored on every route (with NOT_FOUND_TTL), so the
 		// match below must also run for routes without a rule.
 		const cacheHeader = getCacheHeader(pathname);
-		const edgeCacheable = request.method === "GET" && cacheHeader !== "no-store";
+		const edgeCacheable =
+			request.method === "GET" && cacheHeader !== "no-store";
 		const cache = (caches as unknown as { default: Cache }).default;
 
 		if (edgeCacheable) {
