@@ -56,8 +56,6 @@ export async function kvCached<T>(
 	}
 
 	const result = await fn();
-	// Null/undefined reads back as a cache miss, so storing it only
-	// burns a KV write on every lookup of a nonexistent slug.
 	if (result != null) {
 		memSet(key, result);
 		// A bare floating promise is cancelled when the request context
@@ -73,6 +71,13 @@ export async function kvCached<T>(
 					console.error(`KV put failed for ${key}:`, err);
 				}),
 		);
+	} else {
+		// Negative results stay out of KV: a stored null reads back as a
+		// miss anyway, and the 1k/day free-plan write quota is too scarce
+		// to spend on scraper probes of nonexistent slugs. The isolate
+		// cache absorbs repeat lookups here; the edge cache holds the
+		// rendered 404 (see -worker-entry.ts).
+		memSet(key, null);
 	}
 	return result;
 }

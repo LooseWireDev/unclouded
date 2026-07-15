@@ -13,6 +13,7 @@ import { proprietaryApps as proprietaryAppSeeds } from "./data/proprietary-apps"
 import { fdroidAntiFeatureMap, fdroidCategoryMap, tagSeeds } from "./data/tags";
 import { webApps as webAppSeeds } from "./data/web-apps";
 import { deduplicateApps } from "./lib/dedup";
+import { updateDesktopOnlyFlags } from "./lib/desktop-only";
 import { generateId } from "./lib/id";
 import { sanitizeDescription } from "./lib/sanitize";
 import { slugify } from "./lib/slugify";
@@ -516,6 +517,12 @@ async function updateTagCounts() {
 	console.log(`  ${result.rows[0].total} tags with apps`);
 }
 
+async function updateDesktopFlags() {
+	console.log("Updating desktop-only flags...");
+	const total = await updateDesktopOnlyFlags(client);
+	console.log(`  ${total} desktop-only apps flagged`);
+}
+
 async function main() {
 	console.log("\nSeed import");
 	console.log("═".repeat(50));
@@ -536,6 +543,7 @@ async function main() {
 	await upsertProprietaryApps();
 	await upsertAlternatives();
 	await updateTagCounts();
+	await updateDesktopFlags();
 
 	console.log(`\n${"═".repeat(50)}`);
 	console.log("Import complete:");

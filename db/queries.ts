@@ -4,7 +4,7 @@
 // Imported by page loaders (via server functions) and /api/* routes.
 // ═══════════════════════════════════════════════════════════════════
 
-import { and, desc, eq, inArray, like, notInArray, or, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, like, or, sql } from "drizzle-orm";
 import type { DrizzleDB, TursoClient } from "./client";
 import type { SourceType, TagType } from "./schema";
 import {
@@ -22,25 +22,9 @@ import {
 
 // ─── Desktop-Only Filter ─────────────────────────────────────────────
 // Desktop-only = has at least one desktop platform tag but NO mobile tag.
-// Single query with conditional aggregation instead of 4 nested subqueries.
-
-function desktopOnlyAppIds(db: DrizzleDB) {
-	return db
-		.select({ appId: appTags.appId })
-		.from(appTags)
-		.innerJoin(tags, eq(appTags.tagId, tags.id))
-		.where(
-			or(
-				inArray(tags.slug, ["desktop", "linux", "macos", "windows"]),
-				inArray(tags.slug, ["android", "ios"]),
-			),
-		)
-		.groupBy(appTags.appId)
-		.having(
-			sql`sum(case when ${tags.slug} in ('desktop','linux','macos','windows') then 1 else 0 end) > 0
-			and sum(case when ${tags.slug} in ('android','ios') then 1 else 0 end) = 0`,
-		);
-}
+// Precomputed into apps.desktop_only at import time
+// (db/seed/lib/desktop-only.ts) — evaluating it here as a subquery
+// scanned the whole app_tags join on every list-query cache miss.
 
 // ─── Slim List Helper ────────────────────────────────────────────────
 // List pages only need card-relevant fields. Loading full sources
@@ -139,7 +123,7 @@ export async function listApps(
 	const conditions: ReturnType<typeof eq>[] = [];
 
 	// Exclude desktop-only apps
-	conditions.push(notInArray(apps.id, desktopOnlyAppIds(db)));
+	conditions.push(eq(apps.desktopOnly, false));
 
 	if (tagSlugs?.length) {
 		const matchingTagIds = db
@@ -372,12 +356,7 @@ export async function searchApps(db: DrizzleDB, query: string) {
 		db
 			.select(appCardColumns)
 			.from(apps)
-			.where(
-				and(
-					like(apps.name, pattern),
-					notInArray(apps.id, desktopOnlyAppIds(db)),
-				),
-			)
+			.where(and(like(apps.name, pattern), eq(apps.desktopOnly, false)))
 			.limit(20)
 			.orderBy(apps.name),
 		db
@@ -400,7 +379,7 @@ export async function getRecentApps(db: DrizzleDB) {
 	const rows = await db
 		.select(appCardColumns)
 		.from(apps)
-		.where(notInArray(apps.id, desktopOnlyAppIds(db)))
+		.where(eq(apps.desktopOnly, false))
 		.orderBy(sql`${apps.createdAt} desc`)
 		.limit(20);
 

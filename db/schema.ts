@@ -30,6 +30,13 @@ export const apps = sqliteTable("apps", {
 	license: text("license"), // e.g. "GPL-3.0", "MIT", "Apache-2.0"
 	websiteUrl: text("website_url"),
 	repositoryUrl: text("repository_url"),
+	// Has a desktop platform tag but no mobile tag. Derived from app_tags
+	// at import time (db/seed/lib/desktop-only.ts) so hot list queries
+	// filter on a column instead of re-scanning the app_tags join on
+	// every request.
+	desktopOnly: integer("desktop_only", { mode: "boolean" })
+		.notNull()
+		.default(false),
 	...timestamps,
 });
 

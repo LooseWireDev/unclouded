@@ -42,6 +42,13 @@ type CacheRule = { pattern: RegExp; header: string };
 const ONE_WEEK = 604800;
 const ONE_DAY = 86400;
 
+// Rendered 404s are edge-cached briefly on every route: scrapers probe
+// nonexistent slugs and junk paths, and each uncached 404 costs a full
+// SSR plus Turso round trips, because negative results never enter KV
+// (see db/kv-cache.ts). Kept short so a slug added by the next reseed
+// isn't masked for long.
+const NOT_FOUND_TTL = 3600;
+
 const cacheRules: CacheRule[] = [
 	{ pattern: /^\/search/, header: "no-store" },
 	// Server-fn GET responses (catalog queries keyed by their payload in
@@ -456,11 +463,12 @@ export default {
 		// Serve repeat GETs from the Cloudflare edge cache. Cache-Control
 		// headers alone do nothing for Worker-generated responses — they
 		// only enter the CDN cache through an explicit Cache API put.
+		// 200s are only stored on routes with an explicit cache rule;
+		// 404s are stored on every route (with NOT_FOUND_TTL), so the
+		// match below must also run for routes without a rule.
 		const cacheHeader = getCacheHeader(pathname);
 		const edgeCacheable =
-			request.method === "GET" &&
-			cacheHeader !== null &&
-			cacheHeader !== "no-store";
+			request.method === "GET" && cacheHeader !== "no-store";
 		const cache = (caches as unknown as { default: Cache }).default;
 
 		if (edgeCacheable) {
@@ -474,12 +482,18 @@ export default {
 
 		const response = await renderResponse(request, pathname, cacheHeader);
 
-		if (
-			edgeCacheable &&
-			response.status === 200 &&
-			!response.headers.has("Set-Cookie")
-		) {
-			ctx.waitUntil(cache.put(request.url, response.clone()).catch(() => {}));
+		if (edgeCacheable && !response.headers.has("Set-Cookie")) {
+			if (cacheHeader !== null && response.status === 200) {
+				ctx.waitUntil(cache.put(request.url, response.clone()).catch(() => {}));
+			} else if (response.status === 404) {
+				const negative = new Response(response.body, response);
+				negative.headers.set(
+					"Cache-Control",
+					`public, s-maxage=${NOT_FOUND_TTL}`,
+				);
+				ctx.waitUntil(cache.put(request.url, negative.clone()).catch(() => {}));
+				return negative;
+			}
 		}
 
 		return response;
